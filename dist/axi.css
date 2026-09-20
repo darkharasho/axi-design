@@ -113,16 +113,45 @@ body {
 a { color: inherit; }
 
 /* The focus ring is accent-coloured and thick enough to read against a
-   near-black outline, which a 1px ring does not. */
+   near-black outline, which a 1px ring does not. It is drawn entirely with
+   `outline`, which follows whatever radius the element already has: a
+   `border-radius` here would reshape the focused element itself, which was
+   harmless for our components only because each one's own radius happens to
+   land later in the build ORDER, and visibly wrong for an unclassed
+   checkbox or link. */
 :focus-visible {
   outline: var(--axi-border-control) solid var(--axi-accent);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 .axi-sr-only {
   position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
+
+/* Everything this language animates is the hover lift, and the lift is the
+   one thing a reader who has asked for less motion is asking not to see.
+   Neutralise the movement, not the appearance: the resting transforms - the
+   diamond's rotation, the sigil, the search glyph's centring - are geometry
+   rather than motion and are deliberately untouched, so nothing looks
+   different until you point at it. The !important is what lets this sit in
+   the base layer and still outrank component hover rules that come later in
+   the build ORDER at equal specificity. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .axi-btn:hover,
+  .axi-pill:hover,
+  .axi-pill[aria-pressed="true"]:hover,
+  .axi-select:hover,
+  .axi-card:hover,
+  .axi-drawer__close:hover {
+    transform: none !important;
+  }
 }
 
 /* --- primitives.css --- */
@@ -175,15 +204,23 @@ a { color: inherit; }
   color: var(--axi-accent-ink);
   box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
 }
-.axi-btn--primary:hover { color: var(--axi-accent-ink); }
+/* The one button that rests with a block already under it, so the generic
+   hover's translate alone would move element and block together and leave the
+   lower-right edge where it started - the "grows rather than lifts" failure
+   rule 4 warns about. It lifts the way a panel does: the block deepens too. */
+.axi-btn--primary:hover {
+  color: var(--axi-accent-ink);
+  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+}
 .axi-btn--ghost { background: transparent; }
 .axi-btn--dashed { background: transparent; border-style: dashed; }
 
 /* ---------- pill ---------- */
 /* A filter toggle. Its pressed state fills with whatever colour the consumer
    has put on it, so the control reads as the thing it filters to rather than
-   as a generic "selected". Consumers set that colour by overriding
-   --axi-pill-fill on the element. */
+   as a generic "selected". Consumers set that colour with --axi-pill-fill,
+   on the pill or on any ancestor - it is read through a fallback and never
+   declared on the component, which is what keeps both placements working. */
 .axi-pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 9px;
@@ -196,7 +233,6 @@ a { color: inherit; }
   text-transform: uppercase;
   cursor: pointer;
   transition: transform .1s, box-shadow .1s;
-  --axi-pill-fill: var(--axi-accent);
 }
 .axi-pill:hover {
   color: var(--axi-text);
@@ -204,9 +240,20 @@ a { color: inherit; }
   transform: translate(-2px, -2px);
 }
 .axi-pill[aria-pressed="true"] {
-  background: var(--axi-pill-fill);
+  background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);
   box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+}
+/* Spelled out rather than left to source order: `.axi-pill:hover` and
+   `.axi-pill[aria-pressed="true"]` have identical specificity, so without this
+   rule a pressed pill under the cursor kept its pressed block while still
+   taking the hover's translate - a slide, not a lift, decided by which rule
+   happened to come last in the file. A pressed pill keeps its fill and lifts. */
+.axi-pill[aria-pressed="true"]:hover {
+  background: var(--axi-pill-fill, var(--axi-accent));
+  color: var(--axi-accent-ink);
+  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  transform: translate(-2px, -2px);
 }
 
 /* ---------- chip ---------- */
@@ -243,7 +290,6 @@ a { color: inherit; }
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
   font: var(--axi-t-micro);
-  font-size: 11px;
 }
 
 /* ---------- diamond ---------- */
@@ -306,6 +352,7 @@ a { color: inherit; }
   background-position: calc(100% - 16px) calc(50% + 2px), calc(100% - 11px) calc(50% + 2px);
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
+  transition: transform .1s, box-shadow .1s;
 }
 .axi-select:hover {
   color: var(--axi-text);
@@ -365,7 +412,11 @@ a { color: inherit; }
 .axi-page {
   max-width: var(--axi-page);
   margin-inline: auto;
-  padding-inline: var(--axi-gutter);
+  /* The gutter is a knob because measures nest: a --narrow prose column or a
+     --wide grid placed inside a page that has already paid the gutter would
+     otherwise pay it twice, with no way to say so but an inline
+     `padding-inline: 0`. Set --axi-page-pad: 0 on the inner one. */
+  padding-inline: var(--axi-page-pad, var(--axi-gutter));
 }
 /* Prose. Beyond this measure a line of body text gets hard to track back to
    the start of the next one. */
@@ -380,7 +431,6 @@ a { color: inherit; }
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--axi-grid-min, 300px), 1fr));
   gap: var(--axi-gutter);
-  --axi-grid-min: 300px;
 }
 
 /* Vertical rhythm between siblings, set per-instance. */
@@ -389,7 +439,7 @@ a { color: inherit; }
 .axi-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--axi-row-gap, 10px); }
 
 @media (max-width: 640px) {
-  .axi-page { padding-inline: 16px; }
+  .axi-page { padding-inline: var(--axi-page-pad, 16px); }
   .axi-grid { grid-template-columns: 1fr; }
 }
 
@@ -496,7 +546,10 @@ a { color: inherit; }
    with aria-expanded; this styles the panel it opens. */
 .axi-menu { position: relative; }
 .axi-menu__pop {
-  position: absolute; top: calc(100% + 9px); left: 0; z-index: 30;
+  /* Above .axi-mast's z-index: 40. Both sit in the root stacking context, so
+     a toolbar scrolled under the sticky masthead would otherwise open its
+     menu behind it. */
+  position: absolute; top: calc(100% + 9px); left: 0; z-index: 41;
   width: var(--axi-menu-width, 310px);
   max-height: 340px; overflow-y: auto; padding: 8px;
   background: var(--axi-surface-raised);
@@ -603,6 +656,7 @@ a { color: inherit; }
   border: var(--axi-border-control) solid var(--axi-ink-line);
   color: var(--axi-text-dim);
   font-size: 15px; font-weight: 900; cursor: pointer;
+  transition: transform .1s, box-shadow .1s;
 }
 .axi-drawer__close:hover {
   background: var(--axi-accent); color: var(--axi-accent-ink);

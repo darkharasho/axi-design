@@ -24,11 +24,15 @@ body {
 a { color: inherit; }
 
 /* The focus ring is accent-coloured and thick enough to read against a
-   near-black outline, which a 1px ring does not. */
+   near-black outline, which a 1px ring does not. It is drawn entirely with
+   `outline`, which follows whatever radius the element already has: a
+   `border-radius` here would reshape the focused element itself, which was
+   harmless for our components only because each one's own radius happens to
+   land later in the build ORDER, and visibly wrong for an unclassed
+   checkbox or link. */
 :focus-visible {
   outline: var(--axi-border-control) solid var(--axi-accent);
   outline-offset: 2px;
-  border-radius: 4px;
 }
 
 .axi-sr-only {
@@ -36,3 +40,27 @@ a { color: inherit; }
   overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
 }
 
+/* Everything this language animates is the hover lift, and the lift is the
+   one thing a reader who has asked for less motion is asking not to see.
+   Neutralise the movement, not the appearance: the resting transforms - the
+   diamond's rotation, the sigil, the search glyph's centring - are geometry
+   rather than motion and are deliberately untouched, so nothing looks
+   different until you point at it. The !important is what lets this sit in
+   the base layer and still outrank component hover rules that come later in
+   the build ORDER at equal specificity. */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: .01ms !important;
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+  }
+  .axi-btn:hover,
+  .axi-pill:hover,
+  .axi-pill[aria-pressed="true"]:hover,
+  .axi-select:hover,
+  .axi-card:hover,
+  .axi-drawer__close:hover {
+    transform: none !important;
+  }
+}

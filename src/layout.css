@@ -11,7 +11,11 @@
 .axi-page {
   max-width: var(--axi-page);
   margin-inline: auto;
-  padding-inline: var(--axi-gutter);
+  /* The gutter is a knob because measures nest: a --narrow prose column or a
+     --wide grid placed inside a page that has already paid the gutter would
+     otherwise pay it twice, with no way to say so but an inline
+     `padding-inline: 0`. Set --axi-page-pad: 0 on the inner one. */
+  padding-inline: var(--axi-page-pad, var(--axi-gutter));
 }
 /* Prose. Beyond this measure a line of body text gets hard to track back to
    the start of the next one. */
@@ -26,7 +30,6 @@
   display: grid;
   grid-template-columns: repeat(auto-fill, minmax(var(--axi-grid-min, 300px), 1fr));
   gap: var(--axi-gutter);
-  --axi-grid-min: 300px;
 }
 
 /* Vertical rhythm between siblings, set per-instance. */
@@ -35,6 +38,6 @@
 .axi-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--axi-row-gap, 10px); }
 
 @media (max-width: 640px) {
-  .axi-page { padding-inline: 16px; }
+  .axi-page { padding-inline: var(--axi-page-pad, 16px); }
   .axi-grid { grid-template-columns: 1fr; }
 }

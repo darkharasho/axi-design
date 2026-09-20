@@ -47,15 +47,23 @@
   color: var(--axi-accent-ink);
   box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
 }
-.axi-btn--primary:hover { color: var(--axi-accent-ink); }
+/* The one button that rests with a block already under it, so the generic
+   hover's translate alone would move element and block together and leave the
+   lower-right edge where it started - the "grows rather than lifts" failure
+   rule 4 warns about. It lifts the way a panel does: the block deepens too. */
+.axi-btn--primary:hover {
+  color: var(--axi-accent-ink);
+  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+}
 .axi-btn--ghost { background: transparent; }
 .axi-btn--dashed { background: transparent; border-style: dashed; }
 
 /* ---------- pill ---------- */
 /* A filter toggle. Its pressed state fills with whatever colour the consumer
    has put on it, so the control reads as the thing it filters to rather than
-   as a generic "selected". Consumers set that colour by overriding
-   --axi-pill-fill on the element. */
+   as a generic "selected". Consumers set that colour with --axi-pill-fill,
+   on the pill or on any ancestor - it is read through a fallback and never
+   declared on the component, which is what keeps both placements working. */
 .axi-pill {
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 9px;
@@ -68,7 +76,6 @@
   text-transform: uppercase;
   cursor: pointer;
   transition: transform .1s, box-shadow .1s;
-  --axi-pill-fill: var(--axi-accent);
 }
 .axi-pill:hover {
   color: var(--axi-text);
@@ -76,9 +83,20 @@
   transform: translate(-2px, -2px);
 }
 .axi-pill[aria-pressed="true"] {
-  background: var(--axi-pill-fill);
+  background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);
   box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+}
+/* Spelled out rather than left to source order: `.axi-pill:hover` and
+   `.axi-pill[aria-pressed="true"]` have identical specificity, so without this
+   rule a pressed pill under the cursor kept its pressed block while still
+   taking the hover's translate - a slide, not a lift, decided by which rule
+   happened to come last in the file. A pressed pill keeps its fill and lifts. */
+.axi-pill[aria-pressed="true"]:hover {
+  background: var(--axi-pill-fill, var(--axi-accent));
+  color: var(--axi-accent-ink);
+  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  transform: translate(-2px, -2px);
 }
 
 /* ---------- chip ---------- */
@@ -115,7 +133,6 @@
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
   font: var(--axi-t-micro);
-  font-size: 11px;
 }
 
 /* ---------- diamond ---------- */
@@ -178,6 +195,7 @@
   background-position: calc(100% - 16px) calc(50% + 2px), calc(100% - 11px) calc(50% + 2px);
   background-size: 5px 5px, 5px 5px;
   background-repeat: no-repeat;
+  transition: transform .1s, box-shadow .1s;
 }
 .axi-select:hover {
   color: var(--axi-text);

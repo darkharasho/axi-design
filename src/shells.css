@@ -100,7 +100,10 @@
    with aria-expanded; this styles the panel it opens. */
 .axi-menu { position: relative; }
 .axi-menu__pop {
-  position: absolute; top: calc(100% + 9px); left: 0; z-index: 30;
+  /* Above .axi-mast's z-index: 40. Both sit in the root stacking context, so
+     a toolbar scrolled under the sticky masthead would otherwise open its
+     menu behind it. */
+  position: absolute; top: calc(100% + 9px); left: 0; z-index: 41;
   width: var(--axi-menu-width, 310px);
   max-height: 340px; overflow-y: auto; padding: 8px;
   background: var(--axi-surface-raised);
@@ -207,6 +210,7 @@
   border: var(--axi-border-control) solid var(--axi-ink-line);
   color: var(--axi-text-dim);
   font-size: 15px; font-weight: 900; cursor: pointer;
+  transition: transform .1s, box-shadow .1s;
 }
 .axi-drawer__close:hover {
   background: var(--axi-accent); color: var(--axi-accent-ink);
