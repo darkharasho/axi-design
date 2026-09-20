@@ -75,3 +75,42 @@
   --axi-t-eyebrow: 900 11.5px/1 var(--axi-sans);
   --axi-ls-eyebrow: .1em;
 }
+
+/* --- base.css --- */
+/* axi design language - base.
+   Element-level defaults every axi property inherits. Nothing here is a
+   component; if it needs a class, it belongs in a later layer. */
+
+*, *::before, *::after { box-sizing: border-box; }
+
+/* Dark is the only theme shipped today. Declaring the scheme means form
+   controls, scrollbars and the like come up dark from the first paint rather
+   than flashing light, and it is the one line a light theme will flip. */
+html { color-scheme: dark; }
+
+body {
+  margin: 0;
+  background: var(--axi-ground);
+  color: var(--axi-text);
+  font: var(--axi-t-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Links inherit their colour by default: in this language a link is usually
+   inside something that has already chosen an ink, and a globally accented
+   link would fight every card title and nav item. Components opt into the
+   accent where a link should read as one. */
+a { color: inherit; }
+
+/* The focus ring is accent-coloured and thick enough to read against a
+   near-black outline, which a 1px ring does not. */
+:focus-visible {
+  outline: var(--axi-border-control) solid var(--axi-accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.axi-sr-only {
+  position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0;
+}
