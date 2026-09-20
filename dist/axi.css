@@ -135,6 +135,10 @@ a { color: inherit; }
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  /* A panel owns its padding so every consumer doesn't have to invent one;
+     override per instance with --axi-panel-pad where a tighter or looser
+     fit is genuinely called for. */
+  padding: var(--axi-panel-pad, 26px);
 }
 
 /* ---------- button ---------- */
