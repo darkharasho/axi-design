@@ -1,0 +1,50 @@
+name: Deploy Pages
+on:
+  push:
+    branches: [main]
+    tags: ['v*']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: pages
+  cancel-in-progress: false
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with: { fetch-depth: 0 }
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm ci
+      - run: npx vitest run --maxWorkers=2
+
+      # Every published major version is rebuilt from its own tag on every
+      # deploy, rather than carried forward from whatever the last deploy
+      # happened to upload. GitHub Pages replaces the whole site each time, so
+      # a version that is not re-staged here silently disappears - and the
+      # promise that v1/ keeps serving forever is the one thing consumers are
+      # relying on.
+      - name: Stage the gallery and every published version
+        run: |
+          mkdir -p _site
+          cp -r index.html gallery.js dist _site/
+          for tag in $(git tag -l 'v*' | sort -V); do
+            major="${tag%%.*}"
+            mkdir -p "_site/$major"
+            git show "$tag:dist/axi.css" > "_site/$major/axi.css"
+            echo "staged $tag -> /$major/axi.css"
+          done
+          ls -R _site
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with: { path: _site }
+      - id: deployment
+        uses: actions/deploy-pages@v4

@@ -1,0 +1,15 @@
+name: Test
+on:
+  push: { branches: [main] }
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm ci
+      # Catches the stale-artifact case in CI too: if dist/ was not rebuilt,
+      # the build test fails here before anything can be tagged and published.
+      - run: npx vitest run --maxWorkers=2
