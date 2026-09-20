@@ -15,6 +15,7 @@
   .g-demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
   .g-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
   .g-swatch { width: 44px; height: 44px; border: var(--axi-border-control) solid var(--axi-ink-line); border-radius: 8px; }
+  .g-display { margin: 0; color: var(--axi-text); font: var(--axi-t-display); letter-spacing: var(--axi-ls-display); }
 </style>
 </head>
 <body>
@@ -22,7 +23,7 @@
 <header class="axi-mast">
   <div class="axi-mast__in">
     <a class="axi-brand" href="#">
-      <span class="axi-sigil">A</span>
+      <span class="axi-sigil" aria-hidden="true">A</span>
       <span class="axi-brand__name">axi-design<small>Pattern gallery</small></span>
     </a>
     <nav class="axi-tabs">
@@ -45,10 +46,16 @@
 <main class="axi-page">
 
   <section class="g-section">
+    <h2>Display</h2>
+    <p>The top of the type scale — <code>--axi-t-display</code> with its paired tracking. At most one per page: it is a poster, not a heading.</p>
+    <div class="g-display">axi</div>
+  </section>
+
+  <section class="g-section">
     <h2>Accent</h2>
     <p>The whole per-app override surface. Change the accent above; everything below follows.</p>
     <div class="axi-notice">
-      <span class="axi-notice__icon">!</span>
+      <span class="axi-notice__icon" aria-hidden="true">!</span>
       <p><b>One variable.</b> An app that sets <code>--axi-accent</code> and nothing else is correctly themed. If something on this page ignores the switcher, it hard-coded a colour and the contract test missed it.</p>
     </div>
   </section>
@@ -109,7 +116,7 @@
 
     <div class="axi-toolbar">
       <div class="axi-search" style="flex: 1 1 200px; max-width: 260px">
-        <span class="axi-search__icon">&#8981;</span>
+        <span class="axi-search__icon" aria-hidden="true">&#8981;</span>
         <label class="axi-sr-only" for="q">Search</label>
         <input class="axi-input" id="q" placeholder="Search…">
       </div>
@@ -120,10 +127,10 @@
         <option>Sort: score</option>
       </select>
       <div class="axi-menu">
-        <button class="axi-btn axi-btn--dashed" type="button" aria-expanded="false" id="menu-trigger">
+        <button class="axi-btn axi-btn--dashed" type="button" aria-expanded="false" aria-controls="menu-pop" id="menu-trigger">
           Filters <span class="axi-badge-count">3</span>
         </button>
-        <div class="axi-menu__pop" id="menu-pop" hidden>
+        <div class="axi-menu__pop" id="menu-pop" style="--axi-menu-width: 340px" hidden>
           <label><input type="checkbox" checked> Injects into the client</label>
           <label><input type="checkbox" checked> Simulates input</label>
           <label><input type="checkbox" checked> Reads process memory</label>
@@ -137,7 +144,7 @@
   <section class="g-section" id="shells">
     <h2>Shells</h2>
     <p>Cards in a grid, with and without a meaning-carrying strip. Wrapped at the wide measure: a dense catalog spends its width on columns, not margins.</p>
-    <div class="axi-page axi-page--wide" style="padding-inline: 0">
+    <div class="axi-page axi-page--wide" style="--axi-page-pad: 0">
     <div class="axi-grid" style="--axi-grid-min: 280px">
       <a class="axi-card axi-card--strip" href="#" style="--axi-card-strip: var(--axi-ok)">
         <div class="axi-card__head">
@@ -185,6 +192,17 @@
     </div>
     </div>
 
+    <div class="axi-row" style="--axi-row-gap: 12px; margin-top: 20px; align-items: stretch">
+      <div class="axi-panel" style="flex: 1 1 240px">
+        <p class="axi-eyebrow">Panel — default padding</p>
+        <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">A panel owns its padding so no consumer has to invent one.</p>
+      </div>
+      <div class="axi-panel" style="flex: 1 1 240px; --axi-panel-pad: 13px">
+        <p class="axi-eyebrow">Panel — <code>--axi-panel-pad: 13px</code></p>
+        <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Tighter, per instance, without a modifier class.</p>
+      </div>
+    </div>
+
     <div class="g-demo" style="margin-top: 20px">
       <button class="axi-btn" type="button" id="open-drawer">Open the drawer</button>
     </div>
@@ -199,7 +217,7 @@
     <h2>Prose</h2>
     <p>One class on the container; nothing inside carries a class.</p>
     <div class="axi-panel">
-      <div class="axi-prose axi-page axi-page--narrow" style="padding-inline: 0">
+      <div class="axi-prose axi-page axi-page--narrow" style="--axi-page-pad: 0">
         <h1>Installing the suite</h1>
         <p>The fastest way to get every app is <a href="#">AxiOM</a>, which installs and updates the rest for you. If you would rather install one app on its own, each has a standalone release.</p>
         <h2>Requirements</h2>
@@ -222,6 +240,14 @@ axilog parse ./logs/20260920-wvw.zevtc --summary</code></pre>
             <tr><td>AxiStream</td><td>Yes</td><td>NVENC only</td></tr>
           </tbody>
         </table>
+        <h3>First run, in order</h3>
+        <ol>
+          <li>Sign in with your API key.</li>
+          <li>Point AxiBridge at your arcdps log directory.</li>
+          <li>Paste a Discord webhook and send a test report.</li>
+        </ol>
+        <p><img src="data:image/svg+xml;charset=utf-8,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20viewBox%3D%220%200%20480%20120%22%3E%3Crect%20width%3D%22480%22%20height%3D%22120%22%20fill%3D%22%232b313d%22%2F%3E%3Crect%20x%3D%2216%22%20y%3D%2274%22%20width%3D%2260%22%20height%3D%2230%22%20fill%3D%22%232fd38a%22%2F%3E%3Crect%20x%3D%2296%22%20y%3D%2246%22%20width%3D%2260%22%20height%3D%2258%22%20fill%3D%22%23ffc53d%22%2F%3E%3Crect%20x%3D%22176%22%20y%3D%2228%22%20width%3D%2260%22%20height%3D%2276%22%20fill%3D%22%23ff7a2f%22%2F%3E%3Crect%20x%3D%22256%22%20y%3D%2262%22%20width%3D%2260%22%20height%3D%2242%22%20fill%3D%22%234ec3ff%22%2F%3E%3Crect%20x%3D%22336%22%20y%3D%2216%22%20width%3D%2260%22%20height%3D%2288%22%20fill%3D%22%23ff5252%22%2F%3E%3C%2Fsvg%3E" alt="Example chart from a fight report: five bars of differing height."></p>
+        <hr>
         <h4>Next steps</h4>
         <p>Continue to <a href="#">your first fight report</a>.</p>
       </div>
@@ -231,10 +257,10 @@ axilog parse ./logs/20260920-wvw.zevtc --summary</code></pre>
 </main>
 
 <div class="axi-scrim" id="scrim" hidden></div>
-<aside class="axi-drawer" id="drawer" hidden aria-label="Example detail">
+<aside class="axi-drawer" id="drawer" hidden role="dialog" aria-modal="true" aria-labelledby="drawer-title" style="--axi-drawer-width: 620px">
   <div class="axi-drawer__head">
     <button class="axi-drawer__close" id="close-drawer" type="button" aria-label="Close">&times;</button>
-    <h2>AxiBridge</h2>
+    <h2 id="drawer-title">AxiBridge</h2>
     <p style="margin: 10px 0 0; font: var(--axi-t-small); color: var(--axi-text-dim)">The drawer is the detail surface: one thing, in depth, without losing the list behind it.</p>
     <div class="axi-row" style="--axi-row-gap: 7px; margin-top: 13px">
       <span class="axi-chip axi-chip--warn">Beta</span>
