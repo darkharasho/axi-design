@@ -1,0 +1,252 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>axi design language — pattern gallery</title>
+<link rel="stylesheet" href="dist/axi.css">
+<style>
+  /* Gallery chrome only. Nothing here is part of the design language; it is
+     the scaffolding that displays it, kept in the page so the gallery cannot
+     accidentally become an unversioned seventh source file. */
+  .g-section { margin: 46px 0; }
+  .g-section > h2 { font: var(--axi-t-h2); letter-spacing: var(--axi-ls-h2); margin: 0 0 6px; }
+  .g-section > p { color: var(--axi-text-faint); margin: 0 0 20px; font: var(--axi-t-small); }
+  .g-demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
+  .g-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
+  .g-swatch { width: 44px; height: 44px; border: var(--axi-border-control) solid var(--axi-ink-line); border-radius: 8px; }
+</style>
+</head>
+<body>
+
+<header class="axi-mast">
+  <div class="axi-mast__in">
+    <a class="axi-brand" href="#">
+      <span class="axi-sigil">A</span>
+      <span class="axi-brand__name">axi-design<small>Pattern gallery</small></span>
+    </a>
+    <nav class="axi-tabs">
+      <a href="#" aria-current="page">Gallery</a>
+      <a href="#primitives">Primitives</a>
+      <a href="#shells">Shells</a>
+      <a href="#prose">Prose</a>
+    </nav>
+    <label class="axi-sr-only" for="accent">Accent colour</label>
+    <select class="axi-select" id="accent">
+      <option value="#ffc53d">Gold — default</option>
+      <option value="#b06bff">Violet — axi.wiki</option>
+      <option value="#2fd38a">Jade</option>
+      <option value="#ff5252">Tyrian</option>
+      <option value="#4ec3ff">Sky</option>
+    </select>
+  </div>
+</header>
+
+<main class="axi-page">
+
+  <section class="g-section">
+    <h2>Accent</h2>
+    <p>The whole per-app override surface. Change the accent above; everything below follows.</p>
+    <div class="axi-notice">
+      <span class="axi-notice__icon">!</span>
+      <p><b>One variable.</b> An app that sets <code>--axi-accent</code> and nothing else is correctly themed. If something on this page ignores the switcher, it hard-coded a colour and the contract test missed it.</p>
+    </div>
+  </section>
+
+  <section class="g-section">
+    <h2>Palette</h2>
+    <p>Status inks are fixed; only the accent moves.</p>
+    <div class="g-swatches">
+      <span class="g-swatch" style="background: var(--axi-accent)" title="accent"></span>
+      <span class="g-swatch" style="background: var(--axi-meta)" title="meta"></span>
+      <span class="g-swatch" style="background: var(--axi-ok)" title="ok"></span>
+      <span class="g-swatch" style="background: var(--axi-warn)" title="warn"></span>
+      <span class="g-swatch" style="background: var(--axi-danger)" title="danger"></span>
+      <span class="g-swatch" style="background: var(--axi-surface)" title="surface"></span>
+      <span class="g-swatch" style="background: var(--axi-surface-raised)" title="surface-raised"></span>
+      <span class="g-swatch" style="background: var(--axi-ground)" title="ground"></span>
+    </div>
+  </section>
+
+  <section class="g-section" id="primitives">
+    <h2>Primitives</h2>
+    <p>Buttons, pills, chips, inputs, the select, badges and the diamond.</p>
+
+    <div class="g-demo">
+      <a class="axi-btn axi-btn--primary" href="#">Primary</a>
+      <a class="axi-btn" href="#">Default</a>
+      <a class="axi-btn axi-btn--ghost" href="#">Ghost</a>
+      <a class="axi-btn axi-btn--dashed" href="#">Dashed</a>
+    </div>
+
+    <div class="g-demo">
+      <button class="axi-pill" aria-pressed="false" type="button">Unpressed</button>
+      <button class="axi-pill" aria-pressed="true" type="button">Pressed</button>
+      <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-ok)">Low</button>
+      <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-warn)">Elevated</button>
+      <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-danger)">High</button>
+    </div>
+
+    <div class="g-demo">
+      <span class="axi-chip">Neutral</span>
+      <span class="axi-chip axi-chip--accent">Accent</span>
+      <span class="axi-chip axi-chip--ok">Stable</span>
+      <span class="axi-chip axi-chip--warn">Beta</span>
+      <span class="axi-chip axi-chip--danger">Deprecated</span>
+      <span class="axi-chip axi-chip--meta">Annotation</span>
+    </div>
+
+    <div class="g-demo">
+      <span class="axi-diamond"></span>
+      <span class="axi-diamond axi-diamond--accent"></span>
+      <span class="axi-diamond axi-diamond--ok"></span>
+      <span class="axi-diamond axi-diamond--warn"></span>
+      <span class="axi-diamond axi-diamond--danger"></span>
+      <span class="axi-badge-count">12</span>
+    </div>
+
+    <div class="axi-toolbar">
+      <div class="axi-search" style="flex: 1 1 200px; max-width: 260px">
+        <span class="axi-search__icon">&#8981;</span>
+        <label class="axi-sr-only" for="q">Search</label>
+        <input class="axi-input" id="q" placeholder="Search…">
+      </div>
+      <label class="axi-sr-only" for="sort">Sort</label>
+      <select class="axi-select" id="sort">
+        <option>Sort: name</option>
+        <option>Sort: newest</option>
+        <option>Sort: score</option>
+      </select>
+      <div class="axi-menu">
+        <button class="axi-btn axi-btn--dashed" type="button" aria-expanded="false" id="menu-trigger">
+          Filters <span class="axi-badge-count">3</span>
+        </button>
+        <div class="axi-menu__pop" id="menu-pop" hidden>
+          <label><input type="checkbox" checked> Injects into the client</label>
+          <label><input type="checkbox" checked> Simulates input</label>
+          <label><input type="checkbox" checked> Reads process memory</label>
+          <label><input type="checkbox"> Archived upstream</label>
+          <label><input type="checkbox"> No release artifacts</label>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="g-section" id="shells">
+    <h2>Shells</h2>
+    <p>Cards in a grid, with and without a meaning-carrying strip.</p>
+    <div class="axi-grid" style="--axi-grid-min: 280px">
+      <a class="axi-card axi-card--strip" href="#" style="--axi-card-strip: var(--axi-ok)">
+        <div class="axi-card__head">
+          <span class="axi-card__glyph">OM</span>
+          <span class="axi-card__title">
+            <span class="axi-card__name">AxiOM</span>
+            <span class="axi-card__kind">Launcher</span>
+          </span>
+        </div>
+        <p>One launcher for every Axi app. Installs, updates and launches the whole suite.</p>
+        <div class="axi-row" style="--axi-row-gap: 6px">
+          <span class="axi-chip axi-chip--ok">Stable</span>
+          <span class="axi-chip">Desktop</span>
+        </div>
+        <div class="axi-card__meta">Electron <span class="axi-card__go">Docs &rarr;</span></div>
+      </a>
+
+      <a class="axi-card axi-card--strip" href="#" style="--axi-card-strip: var(--axi-warn)">
+        <div class="axi-card__head">
+          <span class="axi-card__glyph">BR</span>
+          <span class="axi-card__title">
+            <span class="axi-card__name">AxiBridge</span>
+            <span class="axi-card__kind">Log uploader</span>
+          </span>
+        </div>
+        <p>Uploads arcdps logs, summarizes WvW fights, and posts readable reports to Discord.</p>
+        <div class="axi-row" style="--axi-row-gap: 6px">
+          <span class="axi-chip axi-chip--warn">Beta</span>
+          <span class="axi-chip axi-chip--meta">arcdps</span>
+        </div>
+        <div class="axi-card__meta">Node <span class="axi-card__go">Docs &rarr;</span></div>
+      </a>
+
+      <a class="axi-card" href="#">
+        <div class="axi-card__head">
+          <span class="axi-card__glyph">LG</span>
+          <span class="axi-card__title">
+            <span class="axi-card__name">axilog</span>
+            <span class="axi-card__kind">No strip</span>
+          </span>
+        </div>
+        <p>A card with nothing to encode in a strip gets none. A coloured strip must mean something.</p>
+        <div class="axi-card__meta">Rust <span class="axi-card__go">Docs &rarr;</span></div>
+      </a>
+    </div>
+
+    <div class="g-demo" style="margin-top: 20px">
+      <button class="axi-btn" type="button" id="open-drawer">Open the drawer</button>
+    </div>
+
+    <blockquote class="axi-quote">
+      <p>Third-party programs are used at your own risk — ArenaNet tolerates addons rather than endorsing them.</p>
+      <cite>GW2 Addon Risk Guide</cite>
+    </blockquote>
+  </section>
+
+  <section class="g-section" id="prose">
+    <h2>Prose</h2>
+    <p>One class on the container; nothing inside carries a class.</p>
+    <div class="axi-panel" style="padding: 26px">
+      <div class="axi-prose axi-page axi-page--narrow" style="padding-inline: 0">
+        <h1>Installing the suite</h1>
+        <p>The fastest way to get every app is <a href="#">AxiOM</a>, which installs and updates the rest for you. If you would rather install one app on its own, each has a standalone release.</p>
+        <h2>Requirements</h2>
+        <p>The desktop apps run on <strong>Windows and Linux</strong>. Combat analysis additionally needs <code>arcdps</code> installed and loading correctly.</p>
+        <ul>
+          <li>A Guild Wars 2 installation</li>
+          <li>An API key with the <code>account</code> and <code>guilds</code> scopes</li>
+          <li>Roughly 400&nbsp;MB of disk for the full suite</li>
+        </ul>
+        <h3>Verifying the install</h3>
+        <pre><code>axilog --version
+axilog parse ./logs/20260920-wvw.zevtc --summary</code></pre>
+        <blockquote><p>If the parser reports zero agents, arcdps wrote the log but the fight never started.</p></blockquote>
+        <h2>Support matrix</h2>
+        <table>
+          <thead><tr><th>App</th><th>Windows</th><th>Linux</th></tr></thead>
+          <tbody>
+            <tr><td>AxiOM</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>AxiPulse</td><td>Yes</td><td>Yes</td></tr>
+            <tr><td>AxiStream</td><td>Yes</td><td>NVENC only</td></tr>
+          </tbody>
+        </table>
+        <h4>Next steps</h4>
+        <p>Continue to <a href="#">your first fight report</a>.</p>
+      </div>
+    </div>
+  </section>
+
+</main>
+
+<div class="axi-scrim" id="scrim" hidden></div>
+<aside class="axi-drawer" id="drawer" hidden aria-label="Example detail">
+  <div class="axi-drawer__head">
+    <button class="axi-drawer__close" id="close-drawer" type="button" aria-label="Close">&times;</button>
+    <h2>AxiBridge</h2>
+    <p style="margin: 10px 0 0; font: var(--axi-t-small); color: var(--axi-text-dim)">The drawer is the detail surface: one thing, in depth, without losing the list behind it.</p>
+    <div class="axi-row" style="--axi-row-gap: 7px; margin-top: 13px">
+      <span class="axi-chip axi-chip--warn">Beta</span>
+      <span class="axi-chip">Node</span>
+      <span class="axi-chip axi-chip--meta">arcdps</span>
+    </div>
+  </div>
+  <div class="axi-drawer__body">
+    <p class="axi-eyebrow">What it does</p>
+    <div class="axi-prose">
+      <p>Watches the arcdps log directory, uploads each new encounter, and posts a summary to a Discord webhook.</p>
+      <ul><li>Automatic upload on file close</li><li>Per-squad routing</li><li>Retry with backoff</li></ul>
+    </div>
+  </div>
+</aside>
+
+<script type="module" src="gallery.js"></script>
+</body>
+</html>
