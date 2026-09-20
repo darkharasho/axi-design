@@ -45,6 +45,10 @@
   --axi-offset-control: 3px;
   --axi-radius: 10px;
   --axi-radius-sm: 6px;
+  /* Not a form step: a hairline used inside prose (inline code, table rules,
+     the list bullet) where the two form steps above would read as too heavy
+     for a line of running text. */
+  --axi-border-hairline: 2px;
 
   /* --- form: measure --- */
   --axi-page: 1280px;             /* the default reading//browsing width */
@@ -621,3 +625,98 @@ a { color: inherit; }
   /* The offset blocks eat horizontal room a phone does not have. */
   .axi-notice, .axi-toolbar, .axi-card { box-shadow: 4px 4px 0 var(--axi-ink-line); }
 }
+
+/* --- prose.css --- */
+/* axi design language - prose.
+   A single class wrapping rendered markdown, so a content pipeline can emit
+   plain HTML with no classes at all and still land inside the language.
+
+   This layer has no ancestor in the source site, which was all cards and
+   controls. The restraint it needs is different: long-form reading wants
+   generous leading and quiet rules, and the offset blocks that make a card
+   feel physical would make a paragraph feel shouted. So nothing in here is
+   blocked except the code block and the table, which are genuinely objects
+   dropped into the text rather than part of its flow. */
+.axi-prose { color: var(--axi-text-dim); font: var(--axi-t-body); }
+
+.axi-prose > :first-child { margin-top: 0; }
+.axi-prose > :last-child { margin-bottom: 0; }
+
+.axi-prose h1 { margin: 0 0 18px; font: var(--axi-t-h1); letter-spacing: var(--axi-ls-h1); color: var(--axi-text); }
+.axi-prose h2 {
+  margin: 38px 0 14px; padding-top: 22px;
+  border-top: var(--axi-border-control) solid var(--axi-rule);
+  font: var(--axi-t-h2); letter-spacing: var(--axi-ls-h2); color: var(--axi-text);
+}
+.axi-prose h3 { margin: 28px 0 10px; font: var(--axi-t-h3); letter-spacing: var(--axi-ls-h3); color: var(--axi-text); }
+.axi-prose h4 {
+  margin: 22px 0 8px;
+  font: var(--axi-t-eyebrow); letter-spacing: var(--axi-ls-eyebrow);
+  text-transform: uppercase; color: var(--axi-text-faint);
+}
+
+.axi-prose p { margin: 0 0 16px; }
+.axi-prose strong { color: var(--axi-text); font-weight: 800; }
+/* Prose is the one place a link should announce itself: a reader scanning an
+   article is looking for them, and inheriting the body ink would hide them. */
+.axi-prose a { color: var(--axi-accent); font-weight: 600; text-underline-offset: 2px; }
+.axi-prose a:hover { color: var(--axi-text); }
+
+.axi-prose ul, .axi-prose ol { margin: 0 0 16px; padding-left: 22px; }
+.axi-prose li { margin: 0 0 7px; }
+/* The family motif as a bullet. Drawn with ::marker's replacement rather than
+   a background image so it inherits the list's own indentation. */
+.axi-prose ul { list-style: none; padding-left: 20px; }
+.axi-prose ul > li { position: relative; }
+.axi-prose ul > li::before {
+  content: ""; position: absolute; left: -20px; top: .55em;
+  width: 7px; height: 7px; transform: rotate(45deg);
+  background: var(--axi-accent);
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
+}
+
+.axi-prose code {
+  font-family: var(--axi-mono); font-size: .88em;
+  background: var(--axi-ground); color: var(--axi-text);
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
+  border-radius: 4px; padding: 1px 5px;
+}
+.axi-prose pre {
+  margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;
+  background: var(--axi-ground);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+}
+.axi-prose pre code { background: none; border: 0; padding: 0; font-size: 12.5px; line-height: 1.6; }
+
+.axi-prose blockquote {
+  margin: 0 0 18px;
+  padding: 11px 13px;
+  border-left: var(--axi-border-panel) solid var(--axi-accent);
+  background: var(--axi-ground);
+  border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
+}
+.axi-prose blockquote p { margin: 0; font-style: italic; }
+
+.axi-prose table {
+  width: 100%; margin: 0 0 18px;
+  border-collapse: collapse;
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  overflow: hidden;
+  font-size: 13.5px;
+}
+.axi-prose th {
+  text-align: left; padding: 10px 12px;
+  background: var(--axi-surface-raised); color: var(--axi-text);
+  font: var(--axi-t-micro); letter-spacing: var(--axi-ls-micro); text-transform: uppercase;
+}
+.axi-prose td { padding: 10px 12px; border-top: var(--axi-border-hairline) solid var(--axi-rule); }
+
+.axi-prose hr {
+  margin: 30px 0; height: 0;
+  border: 0; border-top: var(--axi-border-control) solid var(--axi-rule);
+}
+
+.axi-prose img { max-width: 100%; height: auto; border-radius: var(--axi-radius-sm); }

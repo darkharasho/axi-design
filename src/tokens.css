@@ -41,6 +41,10 @@
   --axi-offset-control: 3px;
   --axi-radius: 10px;
   --axi-radius-sm: 6px;
+  /* Not a form step: a hairline used inside prose (inline code, table rules,
+     the list bullet) where the two form steps above would read as too heavy
+     for a line of running text. */
+  --axi-border-hairline: 2px;
 
   /* --- form: measure --- */
   --axi-page: 1280px;             /* the default reading//browsing width */
