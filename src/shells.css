@@ -1,0 +1,241 @@
+/* axi design language - shells.
+   Assembled components. Each is built from the primitives rather than
+   redefining them, so a change to .axi-panel moves the notice, the toolbar,
+   the popover and the card together. */
+
+/* The small uppercase heading that labels a panel's contents. */
+.axi-eyebrow {
+  margin: 0 0 14px;
+  font: var(--axi-t-eyebrow);
+  letter-spacing: var(--axi-ls-eyebrow);
+  text-transform: uppercase;
+  color: var(--axi-text-faint);
+}
+
+/* ---------- masthead ---------- */
+.axi-mast {
+  position: sticky; top: 0; z-index: 40;
+  background: var(--axi-ground);
+  border-bottom: var(--axi-border-panel) solid var(--axi-ink-line);
+}
+.axi-mast__in {
+  max-width: var(--axi-page); margin-inline: auto;
+  padding-inline: var(--axi-gutter);
+  display: flex; align-items: center; gap: 22px; min-height: 66px; flex-wrap: wrap;
+}
+.axi-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
+/* The sigil is the diamond motif scaled up with a glyph on top. The diamond is
+   a rotated pseudo-element behind the text rather than a rotated box, so the
+   glyph stays upright. isolation keeps the negative z-index inside the sigil
+   instead of dropping it behind the masthead. */
+.axi-sigil {
+  position: relative; isolation: isolate;
+  width: 34px; height: 34px; flex: none;
+  display: grid; place-items: center;
+  color: var(--axi-accent-ink); font-weight: 900; font-size: 13px;
+}
+.axi-sigil::before {
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  transform: rotate(45deg);
+  border-radius: 5px;
+  background: var(--axi-accent);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+}
+.axi-brand__name { font: 800 17px/1.15 var(--axi-sans); letter-spacing: -.02em; }
+.axi-brand__name small {
+  display: block;
+  font: 700 10.5px/1.4 var(--axi-sans);
+  color: var(--axi-text-faint);
+  letter-spacing: .09em; text-transform: uppercase;
+}
+.axi-tabs { display: flex; gap: 8px; margin-left: auto; }
+.axi-tabs a {
+  padding: 8px 16px;
+  font: 800 13.5px/1 var(--axi-sans);
+  color: var(--axi-text-dim); text-decoration: none;
+  border: var(--axi-border-control) solid transparent;
+  border-radius: 8px;
+}
+.axi-tabs a:hover { color: var(--axi-text); border-color: var(--axi-rule); }
+/* The current tab is filled and blocked - the same treatment a pressed pill
+   gets, because it is the same idea: this one is on. */
+.axi-tabs a[aria-current="page"] {
+  background: var(--axi-accent);
+  color: var(--axi-accent-ink);
+  border-color: var(--axi-ink-line);
+  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+}
+
+/* ---------- notice ---------- */
+.axi-notice {
+  display: flex; gap: 14px; padding: 15px 18px;
+  background: var(--axi-surface);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+}
+.axi-notice__icon {
+  flex: none; width: 26px; height: 26px;
+  display: grid; place-items: center;
+  border-radius: var(--axi-radius-sm);
+  background: var(--axi-accent); color: var(--axi-accent-ink);
+  font-size: 14px; font-weight: 900;
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+}
+.axi-notice p { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
+.axi-notice b { color: var(--axi-accent); font-weight: 800; }
+
+/* ---------- toolbar ---------- */
+.axi-toolbar {
+  display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
+  padding: 14px;
+  background: var(--axi-surface);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+}
+
+/* ---------- menu popover ---------- */
+/* A disclosure, not a permanent row of controls. The trigger is an .axi-btn
+   with aria-expanded; this styles the panel it opens. */
+.axi-menu { position: relative; }
+.axi-menu__pop {
+  position: absolute; top: calc(100% + 9px); left: 0; z-index: 30;
+  width: var(--axi-menu-width, 310px);
+  max-height: 340px; overflow-y: auto; padding: 8px;
+  background: var(--axi-surface-raised);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: 9px;
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+}
+.axi-menu__pop[hidden] { display: none; }
+.axi-menu__pop label {
+  display: flex; gap: 9px; align-items: flex-start;
+  padding: 7px 8px; border-radius: var(--axi-radius-sm);
+  font-size: 13px; font-weight: 600; color: var(--axi-text-dim); cursor: pointer;
+}
+.axi-menu__pop label:hover { background: var(--axi-ground); color: var(--axi-text); }
+.axi-menu__pop input { margin: 3px 0 0; accent-color: var(--axi-accent); }
+
+/* ---------- card ---------- */
+.axi-card {
+  position: relative; overflow: hidden;
+  width: 100%; text-align: left;
+  display: flex; flex-direction: column; gap: 11px;
+  padding: 22px 16px 14px;
+  background: var(--axi-surface);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  font: inherit; color: inherit; text-decoration: none; cursor: pointer;
+  transition: transform .1s, box-shadow .1s;
+}
+.axi-card:hover {
+  transform: translate(-3px, -3px);
+  box-shadow: 10px 10px 0 var(--axi-ink-line);
+}
+/* The top strip is drawn from the card itself so a renderer does not have to
+   emit an extra element for it. It is opt-in: a card only gets a strip when
+   the consumer has a real value to encode in it, because a coloured strip that
+   means nothing is decoration impersonating data. */
+.axi-card--strip::before {
+  content: ""; position: absolute; top: 0; left: 0; right: 0; height: 9px;
+  background: var(--axi-card-strip, var(--axi-accent));
+  border-bottom: var(--axi-border-panel) solid var(--axi-ink-line);
+}
+.axi-card__head { display: flex; gap: 12px; align-items: flex-start; }
+.axi-card__glyph {
+  flex: none; width: 40px; height: 40px;
+  display: grid; place-items: center;
+  border-radius: 8px;
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  background: var(--axi-surface-raised);
+  color: var(--axi-text);
+  font: 900 15px/1 var(--axi-sans);
+}
+.axi-card__title { flex: 1; min-width: 0; }
+.axi-card__title .axi-card__name {
+  display: block;
+  font: var(--axi-t-h3); letter-spacing: var(--axi-ls-h3);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.axi-card__title .axi-card__kind {
+  display: block; margin-top: 3px;
+  font: 700 11px/1.3 var(--axi-sans);
+  color: var(--axi-text-faint);
+  letter-spacing: .08em; text-transform: uppercase;
+}
+.axi-card p { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
+/* Pushed to the bottom so that in an equalised grid row every card's meta
+   strip lands on the same line and the rules read as continuous across the
+   grid. The cost is empty space on cards with less content. */
+.axi-card__meta {
+  display: flex; gap: 14px; flex-wrap: wrap; align-items: center;
+  margin-top: auto; padding-top: 12px;
+  border-top: var(--axi-border-control) solid var(--axi-rule);
+  font: 700 12px/1 var(--axi-sans);
+  color: var(--axi-text-faint);
+}
+.axi-card__go { margin-left: auto; color: var(--axi-accent); font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
+.axi-card:hover .axi-card__go { color: var(--axi-text); }
+
+/* ---------- drawer ---------- */
+.axi-scrim { position: fixed; inset: 0; z-index: 50; background: var(--axi-scrim); border: 0; }
+.axi-drawer {
+  position: fixed; top: 0; right: 0; bottom: 0; z-index: 51;
+  width: min(var(--axi-drawer-width, 560px), 100vw);
+  display: flex; flex-direction: column;
+  background: var(--axi-surface);
+  border-left: var(--axi-border-panel) solid var(--axi-ink-line);
+}
+.axi-drawer[hidden], .axi-scrim[hidden] { display: none; }
+.axi-drawer__head {
+  position: relative;
+  padding: 20px 24px 18px;
+  border-bottom: var(--axi-border-panel) solid var(--axi-ink-line);
+}
+.axi-drawer__head h2 {
+  margin: 2px 0 0; padding-right: 44px;
+  font: var(--axi-t-h2); letter-spacing: var(--axi-ls-h2);
+}
+.axi-drawer__close {
+  position: absolute; top: 16px; right: 18px;
+  width: 32px; height: 32px;
+  display: grid; place-items: center;
+  border-radius: 8px;
+  background: var(--axi-ground);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  color: var(--axi-text-dim);
+  font-size: 15px; font-weight: 900; cursor: pointer;
+}
+.axi-drawer__close:hover {
+  background: var(--axi-accent); color: var(--axi-accent-ink);
+  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  transform: translate(-2px, -2px);
+}
+.axi-drawer__body { overflow-y: auto; padding: 18px 24px 30px; }
+
+/* ---------- pull-quote ---------- */
+/* A cited quotation. The accent rule down the left is the only place in the
+   language where colour marks a block rather than filling a chip - a quote is
+   someone else's words and wants to look borrowed. */
+.axi-quote {
+  margin: 0;
+  padding: 11px 13px;
+  border-left: var(--axi-border-panel) solid var(--axi-accent);
+  background: var(--axi-ground);
+  border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
+}
+.axi-quote p { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }
+.axi-quote cite {
+  display: block; margin-top: 7px;
+  font-style: normal; font-size: 11.5px; font-weight: 700;
+  color: var(--axi-accent);
+}
+
+@media (max-width: 640px) {
+  .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }
+  .axi-tabs { margin-left: 0; width: 100%; overflow-x: auto; }
+  /* The offset blocks eat horizontal room a phone does not have. */
+  .axi-notice, .axi-toolbar, .axi-card { box-shadow: 4px 4px 0 var(--axi-ink-line); }
+}
