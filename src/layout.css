@@ -1,0 +1,40 @@
+/* axi design language - layout.
+   Three measures, one grid, two spacing helpers. Deliberately small: a
+   layout system large enough to express any page is a framework, and every
+   property here can reach for plain CSS grid the moment it needs something
+   these do not cover. */
+
+/* The page wrapper. --axi-page is the default because most axi surfaces are
+   browsing views; the two modifiers exist because prose and dense catalogs
+   genuinely disagree about measure, and hard-coding either default made one
+   of them wrong. */
+.axi-page {
+  max-width: var(--axi-page);
+  margin-inline: auto;
+  padding-inline: var(--axi-gutter);
+}
+/* Prose. Beyond this measure a line of body text gets hard to track back to
+   the start of the next one. */
+.axi-page--narrow { max-width: var(--axi-page-narrow); }
+/* Dense card grids, where width spent on margins is a column not shown. */
+.axi-page--wide { max-width: var(--axi-page-wide); }
+
+/* Auto-fill card grid. The minimum column width is per-instance rather than
+   global: a grid of ten app cards and a grid of sixty catalog entries want
+   genuinely different minimums, and both are this same component. */
+.axi-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--axi-grid-min, 300px), 1fr));
+  gap: var(--axi-gutter);
+  --axi-grid-min: 300px;
+}
+
+/* Vertical rhythm between siblings, set per-instance. */
+.axi-stack { display: flex; flex-direction: column; gap: var(--axi-stack-gap, 12px); }
+/* A horizontal run that wraps rather than overflowing. */
+.axi-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--axi-row-gap, 10px); }
+
+@media (max-width: 640px) {
+  .axi-page { padding-inline: 16px; }
+  .axi-grid { grid-template-columns: 1fr; }
+}

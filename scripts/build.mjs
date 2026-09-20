@@ -8,7 +8,7 @@ import { fileURLToPath } from 'node:url'
 // anything that references them, and later layers deliberately override
 // earlier ones (a shell restyles a primitive it contains). Alphabetical order
 // would put `base` before `tokens` and quietly break the cascade.
-export const ORDER = ['tokens.css', 'base.css', 'primitives.css']
+export const ORDER = ['tokens.css', 'base.css', 'primitives.css', 'layout.css']
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
