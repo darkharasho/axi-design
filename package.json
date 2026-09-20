@@ -1,0 +1,11 @@
+{
+  "name": "axi-design",
+  "private": true,
+  "type": "module",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "build": "node scripts/build.mjs",
+    "test": "vitest run"
+  },
+  "devDependencies": { "vitest": "^2.1.0" }
+}

@@ -1,0 +1,73 @@
+/* axi design language - tokens.
+   The only file in this system permitted to contain a colour literal. Every
+   component resolves its colours through the names below, which is what keeps
+   a future light theme a palette swap instead of a rewrite.
+
+   Three layers:
+   - surface & text: the neutral ramp the language is drawn on
+   - accent & status: the per-app override surface. An app that sets
+     --axi-accent and nothing else is correctly themed.
+   - form: geometry and type. Shared by every property; overriding these
+     means leaving the design language, not theming it. */
+:root {
+  /* --- surface & text --- */
+  --axi-ground: #15181d;          /* the page itself */
+  --axi-surface: #222731;         /* a panel raised off the page */
+  --axi-surface-raised: #2b313d;  /* a chip or popover raised off a panel */
+  --axi-ink-line: #0c0e12;        /* the outline every raised element is drawn with */
+  --axi-rule: #3a4250;            /* internal rules, inside an outlined panel */
+  --axi-text: #f4f6f9;
+  --axi-text-dim: #a7b0be;
+  --axi-text-faint: #7c8695;
+  --axi-scrim: rgba(6, 7, 9, .72); /* behind a drawer */
+
+  /* --- accent & status --- */
+  --axi-accent: #ffc53d;
+  /* Text drawn on top of an accent fill. Near-black suits every accent bright
+     enough to pass contrast on this ground; an app choosing a dark accent
+     overrides this to --axi-text rather than editing components. */
+  --axi-accent-ink: var(--axi-ink-line);
+  --axi-meta: #4ec3ff;            /* the one cool ink: meta only, never a status */
+  --axi-ok: #2fd38a;
+  --axi-warn: #ff7a2f;
+  --axi-danger: #ff5252;
+
+  /* --- form: outline and offset --- */
+  /* Two steps, and only two. A panel is drawn heavier than a control so a
+     toolbar full of controls still reads as sitting inside its panel. */
+  --axi-border-panel: 4px;
+  --axi-offset-panel: 6px;
+  --axi-border-control: 3px;
+  --axi-offset-control: 3px;
+  --axi-radius: 10px;
+  --axi-radius-sm: 6px;
+
+  /* --- form: measure --- */
+  --axi-page: 1280px;             /* the default reading//browsing width */
+  --axi-page-narrow: 46rem;       /* prose */
+  --axi-page-wide: 1660px;        /* dense card grids */
+  --axi-gutter: 18px;
+
+  /* --- form: type --- */
+  --axi-sans: ui-sans-serif, system-ui, -apple-system, "Segoe UI Variable", "Segoe UI", Roboto, sans-serif;
+  --axi-mono: ui-monospace, SFMono-Regular, Menlo, monospace;
+  /* Font shorthands, so a component sets `font: var(--axi-t-h2)` in one
+     declaration. Tracking cannot ride in the shorthand, so the headings that
+     need it carry a paired --axi-ls-* token. */
+  --axi-t-display: 900 54px/1.02 var(--axi-sans);
+  --axi-ls-display: -.045em;
+  --axi-t-h1: 900 30px/1.1 var(--axi-sans);
+  --axi-ls-h1: -.035em;
+  --axi-t-h2: 900 24px/1.15 var(--axi-sans);
+  --axi-ls-h2: -.035em;
+  --axi-t-h3: 900 19px/1.2 var(--axi-sans);
+  --axi-ls-h3: -.025em;
+  --axi-t-body: 400 15px/1.55 var(--axi-sans);
+  --axi-t-small: 400 13.5px/1.5 var(--axi-sans);
+  --axi-t-label: 800 13px/1 var(--axi-sans);
+  --axi-ls-label: .02em;
+  --axi-t-micro: 800 11px/1 var(--axi-sans);
+  --axi-ls-micro: .04em;
+  --axi-t-eyebrow: 900 11.5px/1 var(--axi-sans);
+  --axi-ls-eyebrow: .1em;
+}
