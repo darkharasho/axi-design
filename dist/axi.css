@@ -439,7 +439,11 @@ a { color: inherit; }
 .axi-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--axi-row-gap, 10px); }
 
 @media (max-width: 640px) {
-  .axi-page { padding-inline: var(--axi-page-pad, 16px); }
+  /* The fallback must match the resting rule's (var(--axi-gutter), 18px) -
+     README.md documents --axi-page-pad's fallback as --axi-gutter, and a
+     literal here silently ignores a consumer's --axi-gutter override on
+     mobile, which is the one viewport where the gutter matters most. */
+  .axi-page { padding-inline: var(--axi-page-pad, var(--axi-gutter)); }
   .axi-grid { grid-template-columns: 1fr; }
 }
 
