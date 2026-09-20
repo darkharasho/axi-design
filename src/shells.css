@@ -132,7 +132,7 @@
 }
 .axi-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: 10px 10px 0 var(--axi-ink-line);
+  box-shadow: var(--axi-offset-panel-hover) var(--axi-offset-panel-hover) 0 var(--axi-ink-line);
 }
 /* The top strip is drawn from the card itself so a renderer does not have to
    emit an extra element for it. It is opt-in: a card only gets a strip when
@@ -236,6 +236,15 @@
 @media (max-width: 640px) {
   .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }
   .axi-tabs { margin-left: 0; width: 100%; overflow-x: auto; }
-  /* The offset blocks eat horizontal room a phone does not have. */
-  .axi-notice, .axi-toolbar, .axi-card { box-shadow: 4px 4px 0 var(--axi-ink-line); }
+  /* The offset blocks eat horizontal room a phone does not have, so the panel
+     step drops to the control step here rather than to an invented number.
+     The card's hover has to come down with it - left alone it kept deepening
+     to the panel hover block, so a card on a hover-emulating touch device
+     jumped further than it does on the desktop it was tuned for. */
+  .axi-notice, .axi-toolbar, .axi-card {
+    box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  }
+  .axi-card:hover {
+    box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  }
 }

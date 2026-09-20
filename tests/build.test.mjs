@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { buildCss, ORDER } from '../scripts/build.mjs'
 
@@ -20,5 +20,18 @@ describe('dist/axi.css', () => {
     const positions = ORDER.map((name) => built.indexOf(`/* --- ${name} --- */`))
     expect(positions.every((p) => p !== -1)).toBe(true)
     expect([...positions]).toEqual([...positions].sort((a, b) => a - b))
+  })
+
+  // ORDER is hand-maintained, and every check in this suite - the concatenation
+  // above, the colour-literal scan, the form-step scan - iterates ORDER rather
+  // than the directory. A source file missing from ORDER is therefore both
+  // absent from the published CSS and exempt from every rule, with a green
+  // run to say so. Assert the two sets match in both directions: a new file
+  // nobody listed fails, and a listed file nobody wrote fails too.
+  it('lists exactly the files in src/', () => {
+    const onDisk = readdirSync(resolve('src'))
+      .filter((name) => name.endsWith('.css'))
+      .sort()
+    expect(onDisk).toEqual([...ORDER].sort())
   })
 })

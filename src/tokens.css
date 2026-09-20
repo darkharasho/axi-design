@@ -39,6 +39,12 @@
   --axi-offset-panel: 6px;
   --axi-border-control: 3px;
   --axi-offset-control: 3px;
+  /* The deepened blocks a hover lifts into. Not a third and fourth step: a
+     step is a border+offset pair a thing rests at, and nothing rests at
+     these. They are tokenised so the offset check can enumerate every legal
+     block instead of admitting bare literals. */
+  --axi-offset-panel-hover: 10px;
+  --axi-offset-control-hover: 6px;
   --axi-radius: 10px;
   --axi-radius-sm: 6px;
   /* Not a form step: a hairline used inside prose (inline code, table rules,
