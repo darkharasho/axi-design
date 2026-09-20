@@ -29,8 +29,13 @@ describe('dist/axi.css', () => {
   // run to say so. Assert the two sets match in both directions: a new file
   // nobody listed fails, and a listed file nobody wrote fails too.
   it('lists exactly the files in src/', () => {
+    // Dotfiles (an editor lockfile such as Emacs's `.#base.css`) end in
+    // `.css` too, so `endsWith('.css')` alone still takes them - and unlike
+    // a real orphan, a dotfile can't be satisfied by adding it to ORDER: the
+    // build would try to read it as a source. Ignore anything starting with
+    // `.`; a genuine orphan `.css` file is still caught.
     const onDisk = readdirSync(resolve('src'))
-      .filter((name) => name.endsWith('.css'))
+      .filter((name) => name.endsWith('.css') && !name.startsWith('.'))
       .sort()
     expect(onDisk).toEqual([...ORDER].sort())
   })
