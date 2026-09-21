@@ -136,6 +136,15 @@ The same rule governs coloured strips on cards: a strip must encode real data.
 A strip that carries "category" is decoration impersonating data, and it takes
 the first position the eye lands on.
 
+And where the strip goes is part of the rule. Status colour **caps** the thing
+it judges — a short bar across the head of the card, above the value — rather
+than framing it down the left edge. A full-height stripe runs the height of the
+box, so it reads as the box's border: five cards in a row become five coloured
+frames, and the colour stops saying anything about any one number. A cap sits
+directly over the reading it is a verdict on, identifies it once, and then gets
+out of the way. Under rule 3 the cap is drawn at the panel weight; the card
+itself keeps its plain ink outline at the control weight.
+
 ## 6. One cool ink is reserved for meta
 
 `--axi-meta` marks metadata and annotation, and may never carry a status
@@ -191,6 +200,22 @@ their meanings inside a chart, so nothing else may borrow them for a category.
 
 The status inks still mean status inside a plot: a line drawn in `--axi-danger`
 is asserting that the quantity is bad, not that it is the third series.
+
+## 11. An indicator of work animates a composited property
+
+Spinners, progress strips and pulses almost always report on something
+expensive — a parse, a build, an upload. If the work blocks the main thread,
+anything animated by layout or paint freezes with it, and a frozen spinner is
+worse than no spinner: it is the app telling the reader it has crashed at the
+exact moment it is working hardest.
+
+So an indicator that reports on work may animate only `transform` and
+`opacity`, which the compositor runs off the main thread. No animated `width`,
+`left`, `background-position` or `background-color`. This is the one rule here
+that is about honesty rather than composition, and it is not negotiable for
+anything that claims to show liveness.
+
+Motion elsewhere is still rationed by rule 4.
 
 ## Tokens
 
