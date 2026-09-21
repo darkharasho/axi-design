@@ -237,6 +237,55 @@
   color: var(--axi-accent);
 }
 
+/* ---------- window ---------- */
+/* Chrome for a frameless desktop app, where the app is not a page inside a
+   browser but the outermost thing on the screen. Rule 3 says a raised
+   element is outlined; a window is the most raised element there is, so it
+   takes the panel outline. It carries no block, because a block is an
+   element's shadow on the surface behind it and there is nothing behind a
+   window that this language is entitled to draw on.
+   The titlebar is filled with the ink line rather than a surface: it is the
+   outline widened into a strip, which is why the app's content reads as
+   sitting inside the outline instead of under a second toolbar. */
+.axi-window {
+  height: 100vh;
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--axi-ground);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+}
+.axi-titlebar {
+  flex: none;
+  display: flex; align-items: center; gap: 12px;
+  height: 38px; padding-left: 14px;
+  background: var(--axi-ink-line);
+  border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+  color: var(--axi-text-faint);
+  /* The strip is the drag handle; the buttons opt back out in Electron. */
+  -webkit-app-region: drag;
+}
+.axi-titlebar__btns { margin-left: auto; display: flex; height: 100%; -webkit-app-region: no-drag; }
+.axi-titlebar__btns button {
+  width: 44px;
+  border: 0;
+  background: transparent;
+  color: var(--axi-text-faint);
+  font: var(--axi-t-label);
+  cursor: pointer;
+}
+/* No lift here. A window button is chrome, not content: it has nothing to
+   lift off, and 44px of movement in the corner of every screen is exactly
+   the scattered motion rule 4 rations. It answers on the neutral ramp. */
+.axi-titlebar__btns button:hover { background: var(--axi-surface); color: var(--axi-text); }
+/* Close is the one destructive control in the chrome, and the one place a
+   status ink belongs in a titlebar. */
+.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-line); }
+/* The scrolling region under the chrome. */
+.axi-window__body { flex: 1; overflow-y: auto; }
+
 @media (max-width: 640px) {
   .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }
   .axi-tabs { margin-left: 0; width: 100%; overflow-x: auto; }

@@ -23,7 +23,7 @@ live accent switcher.
 
 ## Per-instance knobs
 
-Nine custom properties are read with a fallback and never declared on the
+These custom properties are read with a fallback and never declared on the
 component, so you can set one on a single element or on any ancestor and it
 cascades. They are **not** theme tokens: setting them in `:root` is legal but
 meaningless for most of them, because they answer "how wide is *this* grid",
@@ -41,6 +41,15 @@ not "what does the system look like". Everything else is
 | `--axi-page-pad` | `.axi-page`'s horizontal gutter | `var(--axi-gutter)` | `<div class="axi-page axi-page--narrow" style="--axi-page-pad: 0">` |
 | `--axi-menu-width` | width of `.axi-menu__pop` | `310px` | `<div class="axi-menu__pop" style="--axi-menu-width: 380px">` |
 | `--axi-drawer-width` | width of `.axi-drawer` (capped at `100vw`) | `560px` | `<aside class="axi-drawer" style="--axi-drawer-width: 720px">` |
+| `--axi-series` | the ink a meter fill, bar, plot line or `.axi-diamond--series` is drawn in | `var(--axi-accent)` | `<span class="axi-meter__fill" style="--axi-series: var(--axi-ok)">` |
+| `--axi-meter-v` | how full one `.axi-meter__fill` is | `0%` | `<span class="axi-meter__fill" style="--axi-meter-v: 62%">` |
+| `--axi-meter-h` | height of a `.axi-meter` | `12px` | `<div class="axi-meter" style="--axi-meter-h: 18px">` |
+| `--axi-meter-label` / `--axi-meter-value` | the outer column widths of `.axi-meter-list` | `132px` / `62px` | `<div class="axi-meter-list" style="--axi-meter-label: 180px">` |
+| `--axi-bar-v` | height of one `.axi-bars__col` | `0%` | `<div class="axi-bars__col" style="--axi-bar-v: 78%">` |
+| `--axi-bar-part` | height of one `.axi-bars__part` within its column | `0%` | `<span class="axi-bars__part" style="--axi-bar-part: 40%">` |
+| `--axi-bars-gap` | gap between columns in `.axi-bars` | `6px` | `<div class="axi-bars" style="--axi-bars-gap: 2px">` |
+| `--axi-plot-h` | height of a `.axi-plot` or `.axi-bars` | `180px` | `<div class="axi-plot" style="--axi-plot-h: 240px">` |
+| `--axi-plot-rows` | how many horizontal rules a `.axi-plot` draws | `4` | `<div class="axi-plot" style="--axi-plot-rows: 6">` |
 
 `--axi-page-pad: 0` is the one to know about: it is how a measure nested
 inside another measure avoids paying the gutter twice.

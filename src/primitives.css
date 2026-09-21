@@ -149,6 +149,11 @@
 .axi-diamond--ok { background: var(--axi-ok); }
 .axi-diamond--warn { background: var(--axi-warn); }
 .axi-diamond--danger { background: var(--axi-danger); }
+/* A legend key, where the diamond stands for a series rather than a state.
+   Opt-in rather than a default on .axi-diamond: --axi-series is read from
+   whatever ancestor sets it, and a chart panel that sets one would otherwise
+   silently recolour every bullet inside it. */
+.axi-diamond--series { background: var(--axi-series, var(--axi-accent)); }
 
 /* ---------- input ---------- */
 .axi-input {

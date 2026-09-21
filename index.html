@@ -30,6 +30,7 @@
       <a href="#" aria-current="page">Gallery</a>
       <a href="#primitives">Primitives</a>
       <a href="#shells">Shells</a>
+      <a href="#data">Data</a>
       <a href="#prose">Prose</a>
     </nav>
     <label class="axi-sr-only" for="accent">Accent colour</label>
@@ -211,6 +212,117 @@
       <p>Third-party programs are used at your own risk — ArenaNet tolerates addons rather than endorsing them.</p>
       <cite>GW2 Addon Risk Guide</cite>
     </blockquote>
+  </section>
+
+  <section class="g-section" id="data">
+    <h2>Data</h2>
+    <p>Rules 8, 9 and 10. Everything here is panel interior: a table, a meter and a plot all sit inside a <code>.axi-panel</code>, so none of them carries a block of its own.</p>
+
+    <div class="axi-grid" style="--axi-grid-min: 150px; margin-bottom: 16px;">
+      <div class="axi-stat"><b class="axi-stat__n">47</b><span class="axi-stat__k">Fights</span></div>
+      <div class="axi-stat axi-stat--ok"><b class="axi-stat__n">31</b><span class="axi-stat__k">Won</span></div>
+      <div class="axi-stat axi-stat--danger"><b class="axi-stat__n">12</b><span class="axi-stat__k">Lost</span></div>
+      <div class="axi-stat axi-stat--meta"><b class="axi-stat__n">4</b><span class="axi-stat__k">Needs re-parse</span></div>
+    </div>
+    <p>A tile takes an ink only when its number has a state. <code>--meta</code> is the one that annotates: a count of something known <em>about</em> the data rather than measured from it.</p>
+
+    <div class="axi-panel" style="--axi-panel-pad: 18px; margin-bottom: 16px;">
+      <p class="axi-eyebrow">Top damage — 47 fights</p>
+      <table class="axi-table">
+        <thead>
+          <tr><th>Player</th><th>Damage</th><th>Down contrib.</th><th>Share</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td><span class="axi-table__who"><span class="axi-table__rank axi-table__rank--top">1</span> Skoll.4183</span></td>
+            <td class="axi-table__num">412,908</td><td>38</td><td>9.1%</td>
+          </tr>
+          <tr>
+            <td><span class="axi-table__who"><span class="axi-table__rank">2</span> Renna.9021</span></td>
+            <td class="axi-table__num">377,140</td><td>31</td><td>8.3%</td>
+          </tr>
+          <tr>
+            <td><span class="axi-table__who"><span class="axi-table__rank">3</span> Oakvale.5567</span></td>
+            <td class="axi-table__num">344,602</td><td>29</td><td>7.6%</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="axi-grid" style="--axi-grid-min: 300px;">
+      <div class="axi-panel" style="--axi-panel-pad: 18px;">
+        <p class="axi-eyebrow">Meters — where the damage went</p>
+        <div class="axi-meter-list">
+          <span class="axi-meter-list__name">Scourge</span>
+          <div class="axi-meter"><span class="axi-meter__fill" style="--axi-meter-v: 100%"></span></div>
+          <span class="axi-meter-list__value">1.4M</span>
+
+          <span class="axi-meter-list__name">Spellbreaker</span>
+          <div class="axi-meter"><span class="axi-meter__fill" style="--axi-meter-v: 63%; --axi-series: var(--axi-text-faint)"></span></div>
+          <span class="axi-meter-list__value">884k</span>
+
+          <span class="axi-meter-list__name">Firebrand</span>
+          <div class="axi-meter"><span class="axi-meter__fill" style="--axi-meter-v: 41%; --axi-series: var(--axi-text-faint)"></span></div>
+          <span class="axi-meter-list__value">571k</span>
+        </div>
+        <p style="margin: 14px 0 0; font: var(--axi-t-small); color: var(--axi-text-faint);">Rule 10 in one picture: the series being read is the accent, the ones it is being read against are the neutral ramp.</p>
+      </div>
+
+      <div class="axi-panel" style="--axi-panel-pad: 18px;">
+        <p class="axi-eyebrow">Bars — squad vs enemy downs, per fight</p>
+        <div class="axi-bars" style="--axi-plot-h: 150px; --axi-bars-gap: 5px;">
+          <div class="axi-bars__col" style="--axi-bar-v: 44%"><span class="axi-bars__part" style="--axi-bar-part: 62%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 38%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 72%"><span class="axi-bars__part" style="--axi-bar-part: 70%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 30%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 31%"><span class="axi-bars__part" style="--axi-bar-part: 30%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 70%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 88%"><span class="axi-bars__part" style="--axi-bar-part: 76%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 24%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 56%"><span class="axi-bars__part" style="--axi-bar-part: 55%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 45%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 67%"><span class="axi-bars__part" style="--axi-bar-part: 64%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 36%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 39%"><span class="axi-bars__part" style="--axi-bar-part: 42%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 58%; --axi-series: var(--axi-danger)"></span></div>
+          <div class="axi-bars__col" style="--axi-bar-v: 95%"><span class="axi-bars__part" style="--axi-bar-part: 81%; --axi-series: var(--axi-ok)"></span><span class="axi-bars__part" style="--axi-bar-part: 19%; --axi-series: var(--axi-danger)"></span></div>
+        </div>
+        <div class="axi-axis"><span>20:04</span><span>21:47</span></div>
+        <div class="axi-legend" style="margin-top: 12px;">
+          <span class="axi-legend__key"><i class="axi-diamond axi-diamond--ok"></i> Enemy downed</span>
+          <span class="axi-legend__key"><i class="axi-diamond axi-diamond--danger"></i> Squad downed</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="axi-panel" style="--axi-panel-pad: 18px; margin-top: 16px;">
+      <p class="axi-eyebrow">Plot — squad damage per second, peak 214k</p>
+      <div class="axi-plot" style="--axi-plot-h: 170px; --axi-plot-rows: 4;">
+        <svg class="axi-plot__svg" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+          <polyline class="axi-plot__line" style="--axi-series: var(--axi-text-faint)" points="0,96 8,90 16,88 24,70 32,76 40,62 48,74 56,58 64,72 72,66 80,80 88,74 96,86 100,90"></polyline>
+          <polyline class="axi-plot__line" points="0,92 8,78 16,84 24,46 32,52 40,28 48,36 56,20 64,44 72,30 80,58 88,40 96,66 100,70"></polyline>
+        </svg>
+      </div>
+      <div class="axi-axis"><span>Fight start</span><span>+4:12</span></div>
+      <div class="axi-legend" style="margin-top: 12px;">
+        <span class="axi-legend__key"><i class="axi-diamond axi-diamond--series"></i> Squad</span>
+        <span class="axi-legend__key"><i class="axi-diamond axi-diamond--series" style="--axi-series: var(--axi-text-faint)"></i> Enemy</span>
+      </div>
+      <p style="margin: 14px 0 0; font: var(--axi-t-small); color: var(--axi-text-faint);">The scale lives in the label, in words. There is no y-axis component, and no heatmap — intensity-by-tint is the one chart that cannot be drawn without breaking rule 2, so a distribution is bars or a sorted table.</p>
+    </div>
+
+    <p style="margin-top: 26px;">Window chrome, for a frameless desktop app. The outermost raised element, so it takes the panel outline — and no block, because nothing behind a window belongs to us.</p>
+    <div class="axi-window" style="height: 220px;">
+      <div class="axi-titlebar">
+        <i class="axi-diamond axi-diamond--accent" aria-hidden="true"></i>
+        AxiBridge — watching 4 folders
+        <span class="axi-titlebar__btns">
+          <button type="button" aria-label="Minimise">&minus;</button>
+          <button type="button" aria-label="Maximise">&square;</button>
+          <button type="button" aria-label="Close">&times;</button>
+        </span>
+      </div>
+      <div class="axi-window__body" style="padding: 18px;">
+        <div class="axi-row">
+          <span class="axi-chip axi-chip--ok">Watching</span>
+          <span class="axi-chip">12 logs today</span>
+          <span class="axi-chip axi-chip--meta">Auto-post on</span>
+        </div>
+      </div>
+    </div>
   </section>
 
   <section class="g-section" id="prose">

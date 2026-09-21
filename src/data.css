@@ -1,0 +1,243 @@
+/* axi design language - data.
+   Numbers, and the shapes numbers are drawn as. Everything here is panel
+   INTERIOR: a table, a meter and a plot all live inside a .axi-panel, and
+   none of them is a raised thing in its own right, so none of them carries a
+   block. They are drawn in rules (--axi-rule) and in the ink line, which is
+   what keeps a screen of forty metrics from reading as forty floating cards.
+
+   Three rules govern the file - docs/RULES.md 8, 9 and 10:
+   a table is the panel's interior; a quantity is drawn as length, never as
+   intensity; and a chart's ink is the accent, with the neutral ramp for
+   comparison and a domain palette only where the data owns its own colours. */
+
+/* ---------- stat tile ---------- */
+/* One number and its name. Flat on the ground inside its panel, so it takes
+   an outline and no block - it is content, not something raised off the
+   surface it sits on. The number stays in --axi-text unless it has a real
+   state: rule 5 applies to a figure exactly as it applies to a chip, and a
+   tile coloured for emphasis is decoration impersonating status. */
+.axi-stat {
+  padding: 12px 14px;
+  background: var(--axi-ground);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: 8px;
+}
+.axi-stat__n {
+  display: block;
+  font: var(--axi-t-h1);
+  letter-spacing: var(--axi-ls-h1);
+  color: var(--axi-text);
+  font-variant-numeric: tabular-nums;
+}
+.axi-stat__k {
+  display: block;
+  margin-top: 5px;
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+  color: var(--axi-text-faint);
+}
+.axi-stat--accent .axi-stat__n { color: var(--axi-accent); }
+.axi-stat--ok .axi-stat__n { color: var(--axi-ok); }
+.axi-stat--warn .axi-stat__n { color: var(--axi-warn); }
+.axi-stat--danger .axi-stat__n { color: var(--axi-danger); }
+/* The one tile that annotates instead of asserting: a count of something the
+   app knows *about* the data rather than a measurement of it. */
+.axi-stat--meta .axi-stat__n { color: var(--axi-meta); }
+
+/* ---------- table ---------- */
+/* Rule 8. Rows are separated by rules, never outlined and never blocked: the
+   panel is the raised thing and the table is what is inside it. The header
+   rule is the control weight so the head reads as a lid on the column; the
+   row rules are the hairline, which is exactly the case --axi-border-hairline
+   exists for - a line inside running content, where either form step would
+   turn a list of numbers into a grid of boxes. */
+.axi-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-variant-numeric: tabular-nums;
+}
+/* Numbers right, names left. Set on the element rather than asked of every
+   consumer, because a numeric column aligned left is unreadable and it is
+   the mistake every hand-built table makes. */
+.axi-table th,
+.axi-table td { text-align: right; white-space: nowrap; }
+.axi-table th:first-child,
+.axi-table td:first-child { text-align: left; }
+.axi-table th {
+  padding: 0 10px 10px;
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+  color: var(--axi-text-faint);
+  border-bottom: var(--axi-border-control) solid var(--axi-rule);
+}
+.axi-table td {
+  padding: 9px 10px;
+  font: var(--axi-t-small);
+  font-weight: 700;
+  color: var(--axi-text-dim);
+  border-bottom: var(--axi-border-hairline) solid var(--axi-rule);
+}
+/* The row under the cursor comes forward on the neutral ramp. Not an ink:
+   hovering a row is not a status, and forty rows that each flash a colour on
+   the way past the one you want is the tinted-everything failure rule 2 is
+   about. */
+.axi-table tbody tr:hover td { background: var(--axi-surface-raised); color: var(--axi-text); }
+/* The measured value in a row, as opposed to its supporting numbers. */
+.axi-table__num { color: var(--axi-text); }
+/* A name cell: an icon, a diamond or a rank beside the label. */
+.axi-table__who { display: flex; align-items: center; gap: 9px; }
+/* Rank is the only fill a table gets, and only where the position is real -
+   a podium, not a row number. An outlined rank is the ordinary case. */
+.axi-table__rank {
+  width: 22px; height: 22px; flex: none;
+  display: grid; place-items: center;
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  background: var(--axi-ground);
+  font: var(--axi-t-micro);
+  color: var(--axi-text-faint);
+}
+.axi-table__rank--top { background: var(--axi-accent); color: var(--axi-accent-ink); }
+
+/* ---------- meter ---------- */
+/* Rule 9: a proportion is a length. The track is the ground, the fill is the
+   value, and the fill is one ink at full strength - a tinted or faded bar is
+   the same lie as a tinted surface, and it is unreadable at the small sizes a
+   table of them is actually used at.
+   A meter holds one fill (a value) or several (a composition). There is no
+   divider between adjacent fills: two saturated inks already separate
+   themselves, and a line between them would be a third form step. */
+.axi-meter {
+  display: flex;
+  height: var(--axi-meter-h, 12px);
+  background: var(--axi-ground);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  overflow: hidden;
+}
+.axi-meter__fill {
+  flex: none;
+  height: 100%;
+  width: var(--axi-meter-v, 0%);
+  background: var(--axi-series, var(--axi-accent));
+}
+
+/* A labelled run of meters: the shape almost every "who did most of X" view
+   in an axi property turns out to be. Three columns, so the names, the bars
+   and the values each line up down the list; both outer columns are knobs
+   because a list of account names and a list of boon names disagree about
+   how much room a label needs. */
+.axi-meter-list {
+  display: grid;
+  grid-template-columns: var(--axi-meter-label, 132px) 1fr var(--axi-meter-value, 62px);
+  align-items: center;
+  gap: 9px 12px;
+}
+.axi-meter-list__name {
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font: var(--axi-t-small);
+  font-weight: 700;
+  color: var(--axi-text-dim);
+}
+.axi-meter-list__value {
+  text-align: right;
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  color: var(--axi-text);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- bars ---------- */
+/* The same rule stood on end. The baseline is drawn at the control weight
+   because it is an axis - the one line in a chart that is structure rather
+   than data - and every column is outlined in the ink line so a short column
+   is still a shape and not a smear. Columns share their baseline with it, so
+   they drop their own bottom border rather than doubling it. */
+.axi-bars {
+  display: flex;
+  align-items: flex-end;
+  gap: var(--axi-bars-gap, 6px);
+  height: var(--axi-plot-h, 180px);
+  border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
+}
+.axi-bars__col {
+  flex: 1 1 0;
+  min-width: 4px;
+  height: var(--axi-bar-v, 0%);
+  display: flex;
+  flex-direction: column-reverse;
+  overflow: hidden;
+  background: var(--axi-series, var(--axi-accent));
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-bottom: 0;
+  border-radius: var(--axi-radius-sm) var(--axi-radius-sm) 0 0;
+}
+/* A stacked column. The parts are laid out from the baseline up, in source
+   order, so the markup reads bottom-to-top the way the chart does. */
+.axi-bars__part {
+  flex: none;
+  width: 100%;
+  height: var(--axi-bar-part, 0%);
+  background: var(--axi-series, var(--axi-accent));
+}
+
+/* ---------- plot ---------- */
+/* A frame for a line or an area, with its horizontal rules drawn in. The
+   rules are hard stops in a repeating gradient, which is the select caret's
+   exception to rule 1 - a gradient used to draw a shape, with no soft
+   transition anywhere in it - and the only way to get N evenly spaced rules
+   without asking every consumer to emit N empty divs. */
+.axi-plot {
+  position: relative;
+  height: var(--axi-plot-h, 180px);
+  background-color: var(--axi-ground);
+  background-image: repeating-linear-gradient(
+    to top,
+    var(--axi-rule) 0 var(--axi-border-hairline),
+    transparent var(--axi-border-hairline) calc(100% / var(--axi-plot-rows, 4))
+  );
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  overflow: hidden;
+}
+/* The geometry itself is the consumer's - this language does not compute a
+   path - but its ink and weight are ours, so a line in an axi property is
+   the same line everywhere. */
+.axi-plot__svg { position: absolute; inset: 0; width: 100%; height: 100%; }
+.axi-plot__line {
+  fill: none;
+  stroke: var(--axi-series, var(--axi-accent));
+  stroke-width: var(--axi-border-control);
+  stroke-linejoin: round;
+  stroke-linecap: round;
+  vector-effect: non-scaling-stroke;
+}
+/* An area is the region under a line, filled at full strength like every
+   other fill in this language. It is opaque, so two overlapping areas are
+   not a chart this system draws - that is what the second line, or a second
+   plot, is for. */
+.axi-plot__area { fill: var(--axi-series, var(--axi-accent)); stroke: none; }
+
+/* ---------- axis and legend ---------- */
+/* The x labels under a plot. There is no y-axis component: the scale of a
+   chart belongs in the label above it, in words, where it is readable at a
+   glance and survives being screenshotted into Discord. */
+.axi-axis {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+  color: var(--axi-text-faint);
+}
+.axi-legend { display: flex; flex-wrap: wrap; gap: 7px 16px; }
+.axi-legend__key {
+  display: inline-flex; align-items: center; gap: 8px;
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+  color: var(--axi-text-dim);
+}

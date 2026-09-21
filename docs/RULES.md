@@ -9,8 +9,12 @@ needs a new rule written for it, or does not belong in the system.
 
 ## 1. No gradients on surfaces
 
-Flat fills only. The single exception in the codebase is the select caret,
-which uses two `linear-gradient`s to draw a triangle — a shape, not a surface.
+Flat fills only. The two exceptions in the codebase are both a gradient used
+to draw a *shape*, with no soft transition anywhere in them: the select caret
+(two `linear-gradient`s meeting to make a triangle) and `.axi-plot`'s
+gridlines (a `repeating-linear-gradient` of hard stops, which is how N evenly
+spaced rules get drawn without asking every consumer to emit N empty divs).
+A gradient across a surface is still forbidden, and always will be.
 
 ## 2. No colour at partial opacity over the ground
 
@@ -142,6 +146,51 @@ what makes it readable as commentary at a glance.
 
 A 45°-rotated outlined square. Bullet, status dot, language marker, and scaled
 up behind a glyph, the brand sigil.
+
+## 8. A table is the panel's interior
+
+Forty rows of numbers are not forty raised things. A table is drawn in rules —
+`--axi-rule` for the row lines, `--axi-border-hairline` for their weight — and
+never in outlines or blocks: the panel around it is the raised element, and the
+rows are what is inside it. Outlining the rows turns a list into a grid of
+boxes and costs the eye the vertical run down a column that makes a table worth
+using.
+
+One fill is allowed, in the rank column, and only where the rank is real — a
+podium position the data earned. A row *number* is not a rank, and filling it
+spends the brightest thing on screen on the fact that a list has a first line.
+
+The hover on a row is the neutral ramp, not an ink, for the same reason: moving
+the cursor down a table is not a series of status changes.
+
+## 9. A quantity is drawn as length, never intensity
+
+A proportion is a bar: the track is the ground, the fill is the value, and the
+fill is one ink at full strength. This is rule 2 applied to data — a bar faded
+to 30% to mean "30%" encodes the number twice, once legibly and once not, and
+the illegible copy is the one the eye reads first.
+
+The corollary is that this language does not draw a heatmap. Intensity-by-tint
+is the one chart type that cannot be built without the thing rule 2 forbids, so
+a distribution is drawn as bars, or as a table sorted by the value, or not at
+all.
+
+## 10. A chart's ink is the accent
+
+One series is the accent. A second, for comparison, is the neutral ramp —
+`--axi-text-faint` against the accent reads instantly as "this one, versus
+that one", and costs no new colour.
+
+Beyond two, stop and ask whether the data owns its own palette. A profession,
+a team, a map colour is domain data: it comes in per-instance through
+`--axi-series`, the way a card strip does, and it is the data's colour rather
+than the system's. If the data does *not* own a palette, a nine-colour chart is
+nine arbitrary inks competing with the five that already mean something —
+`--axi-ok`, `--axi-warn`, `--axi-danger`, `--axi-meta` and the accent keep
+their meanings inside a chart, so nothing else may borrow them for a category.
+
+The status inks still mean status inside a plot: a line drawn in `--axi-danger`
+is asserting that the quantity is bad, not that it is the third series.
 
 ## Tokens
 
