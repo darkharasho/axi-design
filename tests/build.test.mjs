@@ -40,3 +40,26 @@ describe('dist/axi.css', () => {
     expect(onDisk).toEqual([...ORDER].sort())
   })
 })
+
+// The exports map is the only thing standing between a consumer's import and
+// a resolution error, and nothing in this repo imports either path - so a
+// typo'd or renamed target is invisible here and fails in someone else's
+// build. Check every declared entry point points at a file that exists, and
+// that the tokens entry really is the tokens rather than, say, the whole
+// artifact: a consumer asking for the palette without the components would
+// otherwise get the components and never know why their app changed shape.
+describe('package exports', () => {
+  const pkg = JSON.parse(readFileSync(resolve('package.json'), 'utf8'))
+
+  it('every entry point resolves to a file that exists', () => {
+    for (const target of Object.values(pkg.exports)) {
+      expect(() => readFileSync(resolve(target), 'utf8')).not.toThrow()
+    }
+  })
+
+  it('ships the tokens without the components', () => {
+    const tokens = readFileSync(resolve(pkg.exports['./tokens.css']), 'utf8')
+    expect(tokens).toContain('--axi-accent')
+    expect(tokens).not.toContain('.axi-btn')
+  })
+})

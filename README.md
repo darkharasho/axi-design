@@ -17,12 +17,24 @@ In an app that bundles — anything on Vite, and every Electron app in the suite
 — install it and import the stylesheet instead:
 
 ```bash
-npm install github:darkharasho/axi-design#v1.4
+npm install github:darkharasho/axi-design#v1.5
 ```
 
 ```js
 import 'axi-design/axi.css'
 ```
+
+There is a third case: an app that already draws its own components through
+its own CSS variables, and wants to point them at ours rather than be
+rewritten. That app wants the palette without the components:
+
+```js
+import 'axi-design/tokens.css'
+```
+
+`--bg-card: var(--axi-surface)` and the like is then the whole port, and the
+values can never drift — which is what happens the moment the token block is
+copied into the consumer by hand.
 
 The two are not interchangeable. A `<link>` to the Pages URL is a network
 request at load, which is correct for a site and wrong for a desktop app: an

@@ -1,14 +1,15 @@
 {
   "name": "axi-design",
-  "version": "1.4.0",
+  "version": "1.5.0",
   "description": "The design language for the axi suite — flat and outlined, dark, drawn in saturated ink.",
   "type": "module",
   "repository": { "type": "git", "url": "git+https://github.com/darkharasho/axi-design.git" },
   "homepage": "https://darkharasho.github.io/axi-design/",
   "engines": { "node": ">=22" },
-  "//exports": "One entry point, and it is the built artifact. Consumers import the path rather than the package root because there is no JavaScript here to be a default export - `import 'axi-design/axi.css'` says what it does, and a bare `import 'axi-design'` resolving to a stylesheet would not.",
+  "//exports": "Two entry points, and both are stylesheets. Consumers import the path rather than the package root because there is no JavaScript here to be a default export - `import 'axi-design/axi.css'` says what it does, and a bare `import 'axi-design'` resolving to a stylesheet would not. ./tokens.css is the palette without the components, for an app that already draws its own components through its own variables and wants to point them at ours: it is the whole language for a consumer like that, and copying the token block by hand is the one way those values are guaranteed to drift.",
   "exports": {
     "./axi.css": "./dist/axi.css",
+    "./tokens.css": "./src/tokens.css",
     "./package.json": "./package.json"
   },
   "//sideEffects": "A stylesheet is nothing but a side effect. Without this a bundler treating the import as dead code would drop the whole design language from a production build.",
