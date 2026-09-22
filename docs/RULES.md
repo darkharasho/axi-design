@@ -145,6 +145,15 @@ directly over the reading it is a verdict on, identifies it once, and then gets
 out of the way. Under rule 3 the cap is drawn at the panel weight; the card
 itself keeps its plain ink outline at the control weight.
 
+A switch is the same rule in a slot. Its track fills to assert the setting's
+status and is empty otherwise; the slug that moves is `--axi-ink-line` in both
+states, so on and off differ in what colour is *in* the slot and never in how
+bright the moving part is. It carries no block — a block belongs to things you
+press, and a switch is a slot with something sitting in it — but it keeps a
+full ink edge at the control weight, because an off switch inside a panel is a
+surface on a surface and without the edge the track disappears and all you can
+see is a slug floating in the card.
+
 ## 6. One cool ink is reserved for meta
 
 `--axi-meta` marks metadata and annotation, and may never carry a status

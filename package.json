@@ -1,6 +1,6 @@
 {
   "name": "axi-design",
-  "version": "1.3.0",
+  "version": "1.4.0",
   "description": "The design language for the axi suite — flat and outlined, dark, drawn in saturated ink.",
   "type": "module",
   "repository": { "type": "git", "url": "git+https://github.com/darkharasho/axi-design.git" },

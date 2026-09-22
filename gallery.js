@@ -83,3 +83,12 @@ document.addEventListener('keydown', (e) => {
     trigger.focus()
   }
 })
+
+// The switches flip. Their whole state lives in aria-checked, so there is
+// nothing else to keep in sync - and a switch you cannot work is a switch you
+// cannot check against the accent switcher.
+document.querySelectorAll('.axi-switch').forEach((sw) => {
+  sw.addEventListener('click', () => {
+    sw.setAttribute('aria-checked', sw.getAttribute('aria-checked') === 'true' ? 'false' : 'true')
+  })
+})

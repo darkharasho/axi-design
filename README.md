@@ -17,7 +17,7 @@ In an app that bundles — anything on Vite, and every Electron app in the suite
 — install it and import the stylesheet instead:
 
 ```bash
-npm install github:darkharasho/axi-design#v1.3
+npm install github:darkharasho/axi-design#v1.4
 ```
 
 ```js
@@ -52,6 +52,8 @@ not "what does the system look like". Everything else is
 | Knob | Sets | Fallback | Example |
 |---|---|---|---|
 | `--axi-pill-fill` | the fill a pressed `.axi-pill` takes | `var(--axi-accent)` | `<button class="axi-pill" aria-pressed="true" style="--axi-pill-fill: var(--axi-danger)">` |
+| `--axi-switch-fill` | the fill an on `.axi-switch` takes | `var(--axi-accent)` | `<button class="axi-switch" aria-checked="true" style="--axi-switch-fill: var(--axi-danger)">` |
+| `--axi-switch-w` / `--axi-switch-h` / `--axi-switch-knob` | a `.axi-switch`'s track and slug size | `46px` / `26px` / `16px` | `<button class="axi-switch" style="--axi-switch-w: 32px; --axi-switch-h: 18px; --axi-switch-knob: 11px">` |
 | `--axi-card-strip` | the colour of `.axi-card--strip`'s top strip | `var(--axi-accent)` | `<a class="axi-card axi-card--strip" style="--axi-card-strip: var(--axi-ok)">` |
 | `--axi-grid-min` | minimum column width in `.axi-grid` | `300px` | `<div class="axi-grid" style="--axi-grid-min: 240px">` |
 | `--axi-row-gap` | gap between `.axi-row` children | `10px` | `<div class="axi-row" style="--axi-row-gap: 6px">` |

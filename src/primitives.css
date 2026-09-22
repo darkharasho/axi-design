@@ -99,6 +99,60 @@
   transform: translate(-2px, -2px);
 }
 
+/* ---------- switch ---------- */
+/* On/off for a setting, where a pill's "pressed" is not enough: a pill says
+   which of several filters you chose, a switch says what state one thing is
+   in when nothing else is on screen to compare it against. Rule 5 is what
+   makes it legible - the filled track asserts the setting's status, and the
+   status is the only thing that changes between the two states.
+
+   It is a slot with something sitting in it, so it takes no block: the block
+   belongs to things you press. The track carries a full ink edge at the
+   control weight and the raised surface, because an off switch inside a panel
+   is a surface on a surface - without the edge the track vanishes and all you
+   see is a slug floating in the card.
+
+   The slug is ink in both states. That is deliberate: on and off differ in
+   what colour is in the slot, never in how bright the part that moves is. */
+.axi-switch {
+  position: relative;
+  flex: none;
+  display: inline-block;
+  width: var(--axi-switch-w, 46px);
+  height: var(--axi-switch-h, 26px);
+  padding: 0;
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  background: var(--axi-surface-raised);
+  cursor: pointer;
+}
+/* Read through a fallback and never declared on the component, so a consumer
+   can set the on-colour on the switch or on any ancestor - the same contract
+   as --axi-pill-fill. A switch that turns something dangerous on can fill in
+   --axi-danger and say so. */
+.axi-switch[aria-checked="true"] { background: var(--axi-switch-fill, var(--axi-accent)); }
+/* Pinned to the track's insets rather than given a height and centred, so the
+   slug stays correct if the track is resized. Only its travel is a transform,
+   which is the one thing rule 11 lets move. */
+.axi-switch__knob {
+  position: absolute;
+  top: 2px; bottom: 2px; left: 2px;
+  width: var(--axi-switch-knob, 16px);
+  border-radius: 2px;
+  background: var(--axi-ink-line);
+  transition: transform .1s;
+}
+/* The travel is the track's inner width less the slug and its two insets.
+   Spelled as a calc over the same tokens the track is built from so it stays
+   right at any size, and - the part that matters - at any border weight: a
+   hard-coded travel measured against one weight puts the slug through the
+   right-hand edge the moment rule 3's numbers change. */
+.axi-switch[aria-checked="true"] .axi-switch__knob {
+  transform: translateX(calc(
+    var(--axi-switch-w, 46px) - 2 * var(--axi-border-control)
+    - var(--axi-switch-knob, 16px) - 4px));
+}
+
 /* ---------- chip ---------- */
 /* Filled asserts, outlined annotates. The unmodified chip is a neutral fact;
    the status modifiers assert a value; --meta is the only outlined variant and
