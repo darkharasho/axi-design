@@ -17,11 +17,11 @@ In an app that bundles — anything on Vite, and every Electron app in the suite
 — install it and import the stylesheet instead:
 
 ```bash
-npm install github:darkharasho/axi-design#v1.5
+npm install @axiapps/axi-design
 ```
 
 ```js
-import 'axi-design/axi.css'
+import '@axiapps/axi-design/axi.css'
 ```
 
 There is a third case: an app that already draws its own components through
@@ -29,7 +29,7 @@ its own CSS variables, and wants to point them at ours rather than be
 rewritten. That app wants the palette without the components:
 
 ```js
-import 'axi-design/tokens.css'
+import '@axiapps/axi-design/tokens.css'
 ```
 
 `--bg-card: var(--axi-surface)` and the like is then the whole port, and the
@@ -94,6 +94,11 @@ serving for as long as the Pages site exists. Non-breaking fixes republish
 `v1/axi.css` in place; anything that would break a consumer goes to `v2/`. No
 consumer should ever wake up to a changed class name.
 
+npm carries the exact version instead: `@axiapps/axi-design@1.6.0` is that
+build and no other, which is what a lockfile is for. The Pages URL and the
+package therefore answer different questions — "the current v1" and "the
+version I built against" — and a bundling app should always prefer the second.
+
 ## Develop
 
 ```bash
@@ -109,3 +114,8 @@ rebuild fails rather than shipping stale CSS.
 
 The rules the system is built on are in [docs/RULES.md](docs/RULES.md). Read
 them before adding a component.
+
+## Licence
+
+MIT. The suite's apps are GPL; the language they are drawn in is not, so
+anything can use it.

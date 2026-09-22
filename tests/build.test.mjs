@@ -63,3 +63,22 @@ describe('package exports', () => {
     expect(tokens).not.toContain('.axi-btn')
   })
 })
+
+// Everything in the suite imports this package, so "what are we allowed to do
+// with it" is a question about every app at once. The two halves of the answer
+// live in different files, and nothing but this test ties them together.
+describe('licensing', () => {
+  const pkg = JSON.parse(readFileSync(resolve('package.json'), 'utf8'))
+
+  it('declares the same licence the LICENSE file grants', () => {
+    expect(pkg.license).toBe('MIT')
+    expect(readFileSync(resolve('LICENSE'), 'utf8')).toMatch(/^MIT License/)
+  })
+
+  it('publishes the scope publicly', () => {
+    // A scoped package is restricted by default, and a restricted design
+    // language cannot be installed by the apps that need it.
+    expect(pkg.name.startsWith('@')).toBe(true)
+    expect(pkg.publishConfig?.access).toBe('public')
+  })
+})
