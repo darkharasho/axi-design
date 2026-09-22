@@ -7,11 +7,30 @@ One CSS file. No build step for consumers, no dependencies, no JavaScript.
 
 ## Use it
 
+On the web, link the published file:
+
 ```html
 <link rel="stylesheet" href="https://darkharasho.github.io/axi-design/v1/axi.css">
 ```
 
-Then set your accent:
+In an app that bundles — anything on Vite, and every Electron app in the suite
+— install it and import the stylesheet instead:
+
+```bash
+npm install github:darkharasho/axi-design#v1.3
+```
+
+```js
+import 'axi-design/axi.css'
+```
+
+The two are not interchangeable. A `<link>` to the Pages URL is a network
+request at load, which is correct for a site and wrong for a desktop app: an
+Electron window opened offline renders unstyled, and one opened online pays a
+round-trip before it can paint. Bundling resolves the file at build time, so
+the app ships with it.
+
+Either way, set your accent:
 
 ```css
 :root { --axi-accent: #b06bff; }

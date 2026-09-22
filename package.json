@@ -1,8 +1,27 @@
 {
   "name": "axi-design",
-  "private": true,
+  "version": "1.3.0",
+  "description": "The design language for the axi suite — flat and outlined, dark, drawn in saturated ink.",
   "type": "module",
+  "repository": { "type": "git", "url": "git+https://github.com/darkharasho/axi-design.git" },
+  "homepage": "https://darkharasho.github.io/axi-design/",
   "engines": { "node": ">=22" },
+  "//exports": "One entry point, and it is the built artifact. Consumers import the path rather than the package root because there is no JavaScript here to be a default export - `import 'axi-design/axi.css'` says what it does, and a bare `import 'axi-design'` resolving to a stylesheet would not.",
+  "exports": {
+    "./axi.css": "./dist/axi.css",
+    "./package.json": "./package.json"
+  },
+  "//sideEffects": "A stylesheet is nothing but a side effect. Without this a bundler treating the import as dead code would drop the whole design language from a production build.",
+  "sideEffects": [
+    "*.css"
+  ],
+  "//files": "dist/ is the artifact; src/ and docs/ ride along because RULES.md is the reason any of it is shaped the way it is, and a consumer reading a component wants it next to them. No tests, no gallery.",
+  "files": [
+    "dist",
+    "src",
+    "docs",
+    "README.md"
+  ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "test": "vitest run"
