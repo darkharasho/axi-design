@@ -20,7 +20,7 @@
   padding: 12px 14px;
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
 }
 .axi-stat__n {
   display: block;

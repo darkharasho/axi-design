@@ -50,7 +50,7 @@
   font-family: var(--axi-mono); font-size: .88em;
   background: var(--axi-ground); color: var(--axi-text);
   border: var(--axi-border-hairline) solid var(--axi-ink-line);
-  border-radius: 4px; padding: 1px 5px;
+  border-radius: var(--axi-radius-sm); padding: 1px 5px;
 }
 .axi-prose pre {
   margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;

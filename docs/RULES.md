@@ -95,10 +95,21 @@ deliberate asymmetry: it costs the (rare, deliberate) case of a bare named
 colour smuggled inside a data-URI SVG, in exchange for never blocking a font
 stack, a filename or a `content` string again.
 
-Radii are the one part of the form that is **not** enforced: `--axi-radius`
-and `--axi-radius-sm` exist, but controls carry a literal `8px` (and `9px`,
-`5px`, `4px` appear elsewhere). Treat the radius scale as convention, not
-contract, until it is tokenised.
+**The corner is square.** `--axi-radius` and `--axi-radius-sm` are both `0`.
+A hard outline, a hard block and a rounded corner are three decisions, and the
+rounded one quietly undoes the other two — the corner is the first place a
+flat outlined shape starts looking like a button borrowed from some other
+system. Nothing in the language rounds.
+
+The two tokens stay because the scale has to be able to come back: a consumer
+that wants soft corners sets them once and gets them everywhere. That is only
+true now that the components read them. They previously carried a hand-written
+`8px` on every control, with `9px`, `5px`, `4px`, `2px` and a `99px` lozenge
+scattered elsewhere, and this paragraph used to say to treat the scale as
+convention rather than contract. It is a contract now: panel-sized surfaces
+read `--axi-radius`, everything control-sized reads `--axi-radius-sm`, and
+`tests/tokens.test.mjs` fails on a literal radius in a component file the same
+way it fails on a literal border weight.
 
 ## 4. Hover lifts
 
@@ -180,6 +191,40 @@ spends the brightest thing on screen on the fact that a list has a first line.
 
 The hover on a row is the neutral ramp, not an ink, for the same reason: moving
 the cursor down a table is not a series of status changes.
+
+### The counterpart: a short list of things you act on
+
+Rule 8 is about a *reading*. Forty rows of numbers exist to be compared, and
+the comparison happens down a column — outlining the rows cuts the column into
+boxes and takes away the only reason the table was worth drawing.
+
+A launcher's list is not that. Each row is one thing, with its own name, its
+own state and its own verb sitting at the end of it. Nobody scans down such a
+list comparing rows; they find the one they came for and press it. There is no
+column to protect, and the flat interior treatment actively lies about what the
+row is, because the thing you are about to click looks like a line of a table.
+
+So: **a short list of objects you act on is drawn as a stack of cards** —
+outline and block, the same as any other raised thing.
+
+Three bounds, and the rule is only sound with all three:
+
+- **Short.** A dozen or so. The block is what says "press me", and past about
+  that many the blocks stop reading as depth and start reading as texture — at
+  which point the list has become a table again and rule 8 has it back.
+- **Control weight, not panel.** These cards sit *inside* a panel that already
+  carries a 6px block. A second 6px block nested in the first reads as two
+  planes arguing; the 3px control step reads as the contents of a box. This is
+  also the honest weight: each row is a control you press, not a surface.
+- **The outline stays `--axi-ink-line`.** Status goes on a filled shape inside
+  the row — the icon tile, a chip — and never on the row's own edge. Colouring
+  the edge is exactly the full-height stripe rule 5 rejects: five states become
+  five coloured frames and the colour stops saying anything about any one of
+  them.
+
+The test for which rule applies: *does the eye run down a column?* If yes, it
+is a table and it is drawn in rules. If every row ends in a button, it is a
+stack and it is drawn in cards.
 
 ## 9. A quantity is drawn as length, never intensity
 

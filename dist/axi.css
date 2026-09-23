@@ -49,8 +49,17 @@
      block instead of admitting bare literals. */
   --axi-offset-panel-hover: 10px;
   --axi-offset-control-hover: 6px;
-  --axi-radius: 10px;
-  --axi-radius-sm: 6px;
+  /* The form is sharp. A hard outline, a hard block and a rounded corner are
+     three decisions, and the rounded one softens the other two: the corner is
+     the first place a flat outlined shape can start looking like a button in
+     some other language. Two tokens rather than one because the scale still
+     has to be able to come back - a consumer that wants soft corners sets
+     these and gets them everywhere, which is the whole point of the pass that
+     took the hand-written 8px, 9px, 5px, 4px, 2px and 99px out of the
+     components. Panel-sized surfaces read --axi-radius; everything
+     control-sized reads --axi-radius-sm. */
+  --axi-radius: 0;
+  --axi-radius-sm: 0;
   /* Not a form step: a hairline used inside prose (inline code, table rules,
      the list bullet) where the two form steps above would read as too heavy
      for a line of running text. */
@@ -181,7 +190,7 @@ a { color: inherit; }
   display: inline-flex; align-items: center; gap: 8px;
   padding: 12px 20px;
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
   background: var(--axi-ground);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
@@ -225,7 +234,7 @@ a { color: inherit; }
   display: inline-flex; align-items: center; gap: 6px;
   padding: 10px 9px;
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
   background: var(--axi-ground);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
@@ -295,7 +304,7 @@ a { color: inherit; }
   position: absolute;
   top: 2px; bottom: 2px; left: 2px;
   width: var(--axi-switch-knob, 16px);
-  border-radius: 2px;
+  border-radius: var(--axi-radius-sm);
   background: var(--axi-ink-line);
   transition: transform .1s;
 }
@@ -340,7 +349,7 @@ a { color: inherit; }
 .axi-badge-count {
   display: inline-block;
   padding: 1px 7px;
-  border-radius: 99px;
+  border-radius: var(--axi-radius-sm);
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
   font: var(--axi-t-micro);
@@ -372,7 +381,7 @@ a { color: inherit; }
   padding: 11px 12px;
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
   color: var(--axi-text);
   font: var(--axi-t-label);
   font-size: 14px;
@@ -396,7 +405,7 @@ a { color: inherit; }
   appearance: none;
   padding: 10px 30px 10px 9px;
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
   background-color: var(--axi-ground);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
@@ -432,7 +441,7 @@ a { color: inherit; }
   .axi-select::picker(select) {
     margin-top: 9px; padding: 6px;
     border: var(--axi-border-panel) solid var(--axi-ink-line);
-    border-radius: 9px;
+    border-radius: var(--axi-radius);
     background: var(--axi-surface-raised);
     box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
   }
@@ -546,7 +555,7 @@ a { color: inherit; }
 .axi-sigil::before {
   content: ""; position: absolute; inset: 0; z-index: -1;
   transform: rotate(45deg);
-  border-radius: 5px;
+  border-radius: var(--axi-radius-sm);
   background: var(--axi-accent);
   border: var(--axi-border-control) solid var(--axi-ink-line);
 }
@@ -563,7 +572,7 @@ a { color: inherit; }
   font: 800 13.5px/1 var(--axi-sans);
   color: var(--axi-text-dim); text-decoration: none;
   border: var(--axi-border-control) solid transparent;
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
 }
 .axi-tabs a:hover { color: var(--axi-text); border-color: var(--axi-rule); }
 /* The current tab is filled and blocked - the same treatment a pressed pill
@@ -617,7 +626,7 @@ a { color: inherit; }
   max-height: 340px; overflow-y: auto; padding: 8px;
   background: var(--axi-surface-raised);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
-  border-radius: 9px;
+  border-radius: var(--axi-radius);
   box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
 }
 .axi-menu__pop[hidden] { display: none; }
@@ -659,7 +668,7 @@ a { color: inherit; }
 .axi-card__glyph {
   flex: none; width: 40px; height: 40px;
   display: grid; place-items: center;
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   background: var(--axi-surface-raised);
   color: var(--axi-text);
@@ -714,7 +723,7 @@ a { color: inherit; }
   position: absolute; top: 16px; right: 18px;
   width: 32px; height: 32px;
   display: grid; place-items: center;
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   color: var(--axi-text-dim);
@@ -834,7 +843,7 @@ a { color: inherit; }
   padding: 12px 14px;
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: 8px;
+  border-radius: var(--axi-radius-sm);
 }
 .axi-stat__n {
   display: block;
@@ -1109,7 +1118,7 @@ a { color: inherit; }
   font-family: var(--axi-mono); font-size: .88em;
   background: var(--axi-ground); color: var(--axi-text);
   border: var(--axi-border-hairline) solid var(--axi-ink-line);
-  border-radius: 4px; padding: 1px 5px;
+  border-radius: var(--axi-radius-sm); padding: 1px 5px;
 }
 .axi-prose pre {
   margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;

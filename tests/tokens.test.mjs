@@ -134,6 +134,28 @@ const isThirdFormStep = (text) => {
 }
 
 // ---------------------------------------------------------------------------
+// Rule 3, the corner: it comes from the scale or it does not exist.
+// ---------------------------------------------------------------------------
+
+// Every spelling of the property, including the two-axis longhands and the
+// logical forms. `border-radius` itself, `border-top-left-radius`, and
+// `border-start-end-radius` are all the same decision written three ways.
+const RADIUS_PROPERTY =
+  /^border(-(top|bottom)-(left|right)|-(start|end)-(start|end))?-radius\s*:/i
+
+// Percentages count. `border-radius: 50%` is a circle, which is a corner
+// decision made locally exactly as much as a literal `8px` is - and it is the
+// spelling a contributor reaches for when px has been blocked.
+const RADIUS_LENGTH =
+  /\b\d+(\.\d+)?(px|rem|em|ex|ch|pt|pc|cm|mm|in|q|vh|vw|vmin|vmax|%)/i
+
+// A bare unitless `0` is deliberately legal: it is not a value from the
+// scale, it is the absence of a corner, and a component that means "never
+// round this one, whatever the consumer sets" has no token to say it with.
+const isLiteralRadius = (text) =>
+  RADIUS_PROPERTY.test(text) && RADIUS_LENGTH.test(valueOf(text))
+
+// ---------------------------------------------------------------------------
 // Rule 3, column 2: every raised block is hard, never a blur.
 // ---------------------------------------------------------------------------
 
@@ -334,6 +356,22 @@ describe('token contract', () => {
     expect(offenders).toEqual([])
   })
 
+  it('takes every corner from the radius scale', () => {
+    // docs/RULES.md used to concede this one: the tokens existed but the
+    // components carried a hand-written 8px, so setting --axi-radius did
+    // nothing to a button and the scale was convention rather than contract.
+    // It is a contract now, and this is what holds it.
+    const offenders = []
+    for (const name of COMPONENT_FILES()) {
+      for (const { text, line } of declarations(read(name))) {
+        if (isLiteralRadius(text)) {
+          offenders.push(`${name}:${line}: ${text.trim().replace(/\s+/g, ' ')}`)
+        }
+      }
+    }
+    expect(offenders).toEqual([])
+  })
+
   it('draws every block hard, at a declared offset', () => {
     // The other half of rule 3, and the half docs/RULES.md used to claim was
     // enforced while nothing checked it: a box-shadow in this language is
@@ -445,6 +483,22 @@ describe('form-token and weight escape hatches', () => {
     // src/base.css's focus ring: a var() reference, no literal weight.
     expect(isThirdFormStep('outline: var(--axi-border-control) solid var(--axi-accent)')).toBe(false)
     expect(isThirdFormStep('outline-offset: 2px')).toBe(false)
+  })
+
+  it('catches a literal radius in every spelling, including a percentage', () => {
+    expect(isLiteralRadius('border-radius: 8px')).toBe(true)
+    expect(isLiteralRadius('border-top-left-radius: 0.5rem')).toBe(true)
+    expect(isLiteralRadius('border-start-end-radius: 9PX')).toBe(true)
+    expect(isLiteralRadius('border-radius: 50%')).toBe(true)
+    expect(isLiteralRadius('border-radius: 6px 6px 0 0')).toBe(true)
+  })
+
+  it('leaves the token, a bare zero, and the other border properties alone', () => {
+    expect(isLiteralRadius('border-radius: var(--axi-radius-sm)')).toBe(false)
+    expect(isLiteralRadius('border-radius: var(--axi-radius) var(--axi-radius) 0 0')).toBe(false)
+    expect(isLiteralRadius('border-radius: 0')).toBe(false)
+    expect(isLiteralRadius('border: var(--axi-border-control) solid var(--axi-ink-line)')).toBe(false)
+    expect(isLiteralRadius('border-spacing: 4px')).toBe(false)
   })
 
   it('catches filter: drop-shadow() and text-shadow', () => {

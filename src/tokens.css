@@ -45,8 +45,17 @@
      block instead of admitting bare literals. */
   --axi-offset-panel-hover: 10px;
   --axi-offset-control-hover: 6px;
-  --axi-radius: 10px;
-  --axi-radius-sm: 6px;
+  /* The form is sharp. A hard outline, a hard block and a rounded corner are
+     three decisions, and the rounded one softens the other two: the corner is
+     the first place a flat outlined shape can start looking like a button in
+     some other language. Two tokens rather than one because the scale still
+     has to be able to come back - a consumer that wants soft corners sets
+     these and gets them everywhere, which is the whole point of the pass that
+     took the hand-written 8px, 9px, 5px, 4px, 2px and 99px out of the
+     components. Panel-sized surfaces read --axi-radius; everything
+     control-sized reads --axi-radius-sm. */
+  --axi-radius: 0;
+  --axi-radius-sm: 0;
   /* Not a form step: a hairline used inside prose (inline code, table rules,
      the list bullet) where the two form steps above would read as too heavy
      for a line of running text. */
