@@ -24,10 +24,27 @@ export function buildCss(order = ORDER) {
   return `${BANNER}\n${parts.join('\n\n')}\n`
 }
 
+// The accents are data, not stylesheet source: accents.json is the single
+// source of truth and this generation is the only way dist/accents.css comes
+// to exist. It cannot live as src/accents.css - ORDER must match src/ exactly
+// and colour literals are forbidden outside tokens.css; accents are the
+// second sanctioned home for colour literals precisely because they are
+// generated from the data file. Opt-in: never concatenated into axi.css.
+export const ACCENTS = JSON.parse(readFileSync(resolve(ROOT, 'accents.json'), 'utf8'))
+
+export function buildAccentsCss(accents = ACCENTS) {
+  const rules = accents
+    .map((a) => `[data-axi-accent="${a.id}"] { --axi-accent: ${a.hex}; }`)
+    .join('\n')
+  return `${BANNER}\n${rules}\n`
+}
+
 // Only write when run directly, so importing this from a test never has the
 // side effect of rewriting the artifact the test is about to check.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   mkdirSync(resolve(ROOT, 'dist'), { recursive: true })
   writeFileSync(resolve(ROOT, 'dist/axi.css'), buildCss())
   console.log(`built dist/axi.css from ${ORDER.length} source(s)`)
+  writeFileSync(resolve(ROOT, 'dist/accents.css'), buildAccentsCss())
+  console.log(`built dist/accents.css from ${ACCENTS.length} accent(s)`)
 }

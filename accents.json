@@ -1,0 +1,13 @@
+[
+  { "id": "axi-gold", "label": "Axi Gold", "hex": "#ffc53d" },
+  { "id": "electric-blue", "label": "Electric Blue", "hex": "#3b82f6" },
+  { "id": "refined-cyan", "label": "Refined Cyan", "hex": "#5eadd5" },
+  { "id": "amber-warm", "label": "Amber Warm", "hex": "#f59e0b" },
+  { "id": "emerald-mint", "label": "Emerald Mint", "hex": "#34d399" },
+  { "id": "rose-pink", "label": "Rose Pink", "hex": "#f43f5e" },
+  { "id": "violet-purple", "label": "Violet Purple", "hex": "#8b5cf6" },
+  { "id": "crimson-red", "label": "Crimson Red", "hex": "#ef4444" },
+  { "id": "slate-silver", "label": "Slate Silver", "hex": "#94a3b8" },
+  { "id": "teal-ocean", "label": "Teal Ocean", "hex": "#14b8a6" },
+  { "id": "gold-bronze", "label": "Gold Bronze", "hex": "#d4a017" }
+]

@@ -1,6 +1,6 @@
 {
   "name": "@axiapps/axi-design",
-  "version": "1.6.0",
+  "version": "1.7.0",
   "description": "The design language for the axi suite — flat and outlined, dark, drawn in saturated ink.",
   "type": "module",
   "license": "MIT",
@@ -14,6 +14,8 @@
   "exports": {
     "./axi.css": "./dist/axi.css",
     "./tokens.css": "./src/tokens.css",
+    "./accents.css": "./dist/accents.css",
+    "./accents.json": "./accents.json",
     "./package.json": "./package.json"
   },
   "//sideEffects": "A stylesheet is nothing but a side effect. Without this a bundler treating the import as dead code would drop the whole design language from a production build.",
