@@ -309,6 +309,25 @@ literal, so a light theme is a second palette block, not a rewrite. It is not
 a token swap either — the saturated inks that read as vivid on near-black go
 washed out on white and would need retuning.
 
+## The official accents
+
+`--axi-accent` is the per-app theming surface, and the family now agrees on
+what may go in it. The official accents live in `accents.json` — id, label,
+hex — and `dist/accents.css` is generated from it: one
+`[data-axi-accent="<id>"]` selector per accent, setting `--axi-accent` and
+nothing else. An app opts in by importing `accents.css` alongside `axi.css`
+and setting `data-axi-accent` on its root element; an app that renders a
+picker reads `accents.json` for the ids and labels.
+
+accents.json is the second sanctioned home for a colour literal, after
+tokens.css — sanctioned because it is data the build generates from, not
+stylesheet source. Adding an accent means editing accents.json and running
+the build; hand-editing dist/accents.css is exactly as wrong as hand-editing
+dist/axi.css.
+
+The default remains `#ffc53d` Axi Gold, declared in tokens.css: an app that
+sets no `data-axi-accent` is gold, and correctly themed.
+
 ## Adding a component
 
 1. Which rule justifies it? If none, write the rule first or stop.

@@ -40,3 +40,13 @@ describe('the official accent list', () => {
     expect(css.match(/--axi-/g).length).toBe(ACCENTS.length)
   })
 })
+
+describe('gallery accent switcher', () => {
+  it('offers exactly the official accents, in order', () => {
+    const html = readFileSync(resolve('index.html'), 'utf8')
+    const select = html.match(/<select[^>]*id="accent"[\s\S]*?<\/select>/)[0]
+    const options = [...select.matchAll(/<option value="(#[0-9a-f]{6})">([^<]+)<\/option>/g)]
+      .map((m) => ({ hex: m[1], label: m[2] }))
+    expect(options).toEqual(ACCENTS.map((a) => ({ hex: a.hex, label: a.label })))
+  })
+})
