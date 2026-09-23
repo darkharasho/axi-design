@@ -40,6 +40,12 @@ jobs:
             mkdir -p "_site/$major"
             git show "$tag:dist/axi.css" > "_site/$major/axi.css"
             echo "staged $tag -> /$major/axi.css"
+            if git show "$tag:dist/accents.css" > "_site/$major/accents.css" 2>/dev/null; then
+              echo "staged $tag -> /$major/accents.css"
+            else
+              rm -f "_site/$major/accents.css"
+              echo "no accents.css in $tag (predates the accent list)"
+            fi
           done
           ls -R _site
 
