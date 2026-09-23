@@ -132,6 +132,15 @@ keeping the control's `translate(-2px, -2px)`.
 Nothing in this language fades, glows or pulses. The movement reads in
 peripheral vision and costs no colour.
 
+The lift being a transform has one structural consequence: a transformed
+element becomes the containing block for any `position: fixed` descendant.
+An overlay positioned in viewport coordinates — `.axi-tooltip` is the one
+this language ships — must therefore live as a child of `<body>`, never
+inside the component it annotates, or the first hover lift re-anchors it.
+The class draws only the box (ink-line ground, hairline rule border, micro
+type); measuring the trigger and setting `left`/`top` is the consumer's
+half, and `gallery.js` is the reference wiring.
+
 Every lift is turned off under `@media (prefers-reduced-motion: reduce)`, in
 `base.css`, once, for every consumer. Resting appearance is untouched: the
 diamond still rotates, because a rotation that never changes is geometry and

@@ -84,6 +84,35 @@ document.addEventListener('keydown', (e) => {
   }
 })
 
+/* ---------- tooltip ---------- */
+// .axi-tooltip draws the box; this is the consumer's half of the contract.
+// The element is created on demand and appended to <body> - never inside the
+// trigger's component, because position: fixed re-anchors to any transformed
+// ancestor and every hover lift in this language is a transform. It shows on
+// focus as well as hover, and the trigger keeps its own accessible text: the
+// tooltip is repetition for sighted mouse users, not the only copy.
+let tip = null
+const showTip = (el) => {
+  const r = el.getBoundingClientRect()
+  tip = document.createElement('div')
+  tip.className = 'axi-tooltip'
+  tip.textContent = el.dataset.axiTooltip
+  document.body.append(tip)
+  const t = tip.getBoundingClientRect()
+  tip.style.left = `${Math.round(r.left + r.width / 2 - t.width / 2)}px`
+  tip.style.top = `${Math.round(r.top - t.height - 6)}px`
+}
+const hideTip = () => {
+  tip?.remove()
+  tip = null
+}
+document.querySelectorAll('[data-axi-tooltip]').forEach((el) => {
+  el.addEventListener('mouseenter', () => showTip(el))
+  el.addEventListener('focus', () => showTip(el))
+  el.addEventListener('mouseleave', hideTip)
+  el.addEventListener('blur', hideTip)
+})
+
 // The switches flip. Their whole state lives in aria-checked, so there is
 // nothing else to keep in sync - and a switch you cannot work is a switch you
 // cannot check against the accent switcher.

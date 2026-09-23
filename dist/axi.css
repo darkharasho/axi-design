@@ -638,6 +638,28 @@ a { color: inherit; }
 .axi-menu__pop label:hover { background: var(--axi-ground); color: var(--axi-text); }
 .axi-menu__pop input { margin: 3px 0 0; accent-color: var(--axi-accent); }
 
+/* ---------- tooltip ---------- */
+/* One line of ink on the darkest surface in the language, so it reads over
+   anything it lands on. The class draws the box only; coordinates come from
+   the consumer's script (measure the trigger, set left/top — gallery.js is
+   the reference wiring). Two contracts travel with it: the element is
+   appended to <body>, never inside the component it annotates, because
+   position: fixed re-anchors to any transformed ancestor and rule 4 makes
+   every hovered ancestor transformed; and it never carries information that
+   exists nowhere else, because a keyboard or touch user may never see it. */
+.axi-tooltip {
+  position: fixed;
+  z-index: 99999;
+  padding: 5px 8px;
+  background: var(--axi-ink-line);
+  color: var(--axi-text);
+  border: var(--axi-border-hairline) solid var(--axi-rule);
+  border-radius: var(--axi-radius-sm);
+  font: var(--axi-t-micro);
+  white-space: nowrap;
+  pointer-events: none;
+}
+
 /* ---------- card ---------- */
 .axi-card {
   position: relative; overflow: hidden;
