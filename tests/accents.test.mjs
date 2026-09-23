@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
+import { execSync } from 'node:child_process'
 import { buildAccentsCss, ACCENTS } from '../scripts/build.mjs'
 
 // dist/accents.css is committed for the same reason dist/axi.css is: the
@@ -38,6 +39,21 @@ describe('the official accent list', () => {
     // Accents may set the accent and nothing else - a second declaration
     // would be a second theming surface.
     expect(css.match(/--axi-/g).length).toBe(ACCENTS.length)
+  })
+})
+
+// 1.7.0 shipped ./accents.json as an export but omitted it from the `files`
+// allowlist, so the published tarball never contained it and the export
+// could not resolve from a real install. This pins the packed file list so
+// that regression can't recur silently.
+describe('packaging', () => {
+  it('includes accents.json and the built stylesheets in the npm tarball', () => {
+    const output = execSync('npm pack --dry-run --json', { encoding: 'utf8' })
+    const [pack] = JSON.parse(output)
+    const paths = pack.files.map((f) => f.path)
+    expect(paths).toContain('accents.json')
+    expect(paths).toContain('dist/accents.css')
+    expect(paths).toContain('dist/axi.css')
   })
 })
 

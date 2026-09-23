@@ -1,6 +1,6 @@
 {
   "name": "@axiapps/axi-design",
-  "version": "1.7.0",
+  "version": "1.7.1",
   "description": "The design language for the axi suite — flat and outlined, dark, drawn in saturated ink.",
   "type": "module",
   "license": "MIT",
@@ -27,6 +27,7 @@
     "dist",
     "src",
     "docs",
+    "accents.json",
     "README.md"
   ],
   "scripts": {
