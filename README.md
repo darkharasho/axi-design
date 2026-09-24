@@ -83,6 +83,8 @@ not "what does the system look like". Everything else is
 | `--axi-bars-gap` | gap between columns in `.axi-bars` | `6px` | `<div class="axi-bars" style="--axi-bars-gap: 2px">` |
 | `--axi-plot-h` | height of a `.axi-plot` or `.axi-bars` | `180px` | `<div class="axi-plot" style="--axi-plot-h: 240px">` |
 | `--axi-plot-rows` | how many horizontal rules a `.axi-plot` draws | `4` | `<div class="axi-plot" style="--axi-plot-rows: 6">` |
+| `--axi-tick-w` / `--axi-tick-h` | size of one `.axi-ticks__tick` | `5px` / `15px` | `<div class="axi-ticks" style="--axi-tick-w: 7px">` |
+| `--axi-ticks-gap` | gap between marks in `.axi-ticks` | `3px` | `<div class="axi-ticks" style="--axi-ticks-gap: 2px">` |
 
 `--axi-page-pad: 0` is the one to know about: it is how a measure nested
 inside another measure avoids paying the gutter twice.

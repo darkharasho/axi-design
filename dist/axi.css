@@ -1028,6 +1028,42 @@ a { color: inherit; }
   background: var(--axi-series, var(--axi-accent));
 }
 
+/* ---------- ticks ---------- */
+/* A run of yes/no along a timeline: attended or missed, passed or failed,
+   shipped or skipped. This is rule 9 read the other way round - a bar has a
+   length because a quantity has one, and "no" has no length at all. Drawn as
+   a bar it has to be faked with a stub, and a stub reads as "a little bit",
+   which is the same lie as a faded fill. So every event here is one mark of
+   the same size, and what changes between them is only which ink it is drawn
+   in: rule 10's two series, the accent for the fact and the neutral ramp for
+   its absence.
+
+   Neither mark is outlined, which is the one place this departs from the
+   filled/empty pair the language reaches for first. At the size a run of
+   twenty sits in a table row the outline IS the mark - three pixels of edge
+   around one pixel of middle - so the pair would differ in nothing the eye
+   can resolve. A strip drawn large enough to outline is a bar chart, and
+   .axi-bars already is one.
+
+   Marks are a fixed width and never flex: a run of fourteen and a run of
+   three share a column in a table, and the short one has to read as a short
+   run rather than as fourteen fatter events. */
+.axi-ticks {
+  display: inline-flex;
+  align-items: stretch;
+  gap: var(--axi-ticks-gap, 3px);
+  height: var(--axi-tick-h, 15px);
+}
+.axi-ticks__tick {
+  flex: none;
+  width: var(--axi-tick-w, 5px);
+  background: var(--axi-rule);
+  border-radius: var(--axi-radius-sm);
+}
+.axi-ticks__tick--on {
+  background: var(--axi-series, var(--axi-accent));
+}
+
 /* ---------- plot ---------- */
 /* A frame for a line or an area, with its horizontal rules drawn in. The
    rules are hard stops in a repeating gradient, which is the select caret's

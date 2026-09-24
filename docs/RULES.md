@@ -247,6 +247,12 @@ is the one chart type that cannot be built without the thing rule 2 forbids, so
 a distribution is drawn as bars, or as a table sorted by the value, or not at
 all.
 
+The other corollary is that a thing with no quantity gets no length. A run of
+yes/no — attended or missed, passed or failed — is a sequence of facts, and a
+fact has no magnitude to draw: rendering "no" as a short bar says "a little
+bit" as loudly as a faded fill says "30%". That series is a row of marks of
+one size, differing only in ink, which is `.axi-ticks`.
+
 ## 10. A chart's ink is the accent
 
 One series is the accent. A second, for comparison, is the neutral ramp —
