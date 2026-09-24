@@ -12,7 +12,9 @@ import { KNOBS } from '../docs/manifest/knobs.mjs'
 // anything that references them, and later layers deliberately override
 // earlier ones (a shell restyles a primitive it contains). Alphabetical order
 // would put `base` before `tokens` and quietly break the cascade.
-export const ORDER = ['tokens.css', 'base.css', 'primitives.css', 'layout.css', 'shells.css', 'data.css', 'prose.css']
+// forms.css follows primitives.css because `textarea.axi-input` restyles a
+// primitive defined there, and a later file may restyle an earlier one.
+export const ORDER = ['tokens.css', 'base.css', 'primitives.css', 'forms.css', 'layout.css', 'shells.css', 'data.css', 'prose.css']
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 

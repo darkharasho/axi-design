@@ -158,3 +158,29 @@ describe('README knob table', () => {
     expect(section[1]).toBe(buildKnobTable())
   })
 })
+
+describe('the form layer', () => {
+  const forms = readFileSync('src/forms.css', 'utf8')
+
+  // Review Focus 3. appearance:none throws away the control the browser was
+  // drawing, including its focus ring. base.css draws a page-wide
+  // :focus-visible ring, so these inherit one - unless a rule here turns it
+  // off, which is the single line that would make them unusable by keyboard.
+  it('never turns the focus ring off', () => {
+    expect(forms).not.toMatch(/outline:\s*(none|0)\b/)
+  })
+
+  // Review Focus 5. The mark sits on an accent fill, so it is drawn in the
+  // ink meant for that - not in a text or surface token, which are for
+  // things on the ground and would invert in light mode.
+  it('draws the check mark in the accent ink', () => {
+    const mark = forms.slice(forms.indexOf('.axi-check::after'))
+    expect(mark).toMatch(/var\(--axi-accent-ink\)/)
+  })
+
+  it('shares one size and one fill knob between checkbox and radio', () => {
+    expect(forms).toMatch(/--axi-check-size/)
+    expect(forms).toMatch(/--axi-check-fill/)
+    expect(forms).not.toMatch(/--axi-radio-(size|fill)/)
+  })
+})

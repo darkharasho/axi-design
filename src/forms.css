@@ -1,0 +1,84 @@
+/* axi design language - forms.
+   Real inputs, styled. Every control here is an actual <input> or <textarea>
+   with `appearance: none`, never a <div> wearing a class: a checkbox that is
+   not an <input> does not submit with its form, does not toggle from the
+   keyboard, and is not announced as a checkbox. The language styles controls;
+   it does not reimplement them.
+
+   Rule 3's flat case governs the geometry: a control inside a panel is
+   outlined and carries no block, exactly as .axi-input and .axi-switch
+   already are. Rule 5 governs the state: the fill is what says "on".
+
+   The focus ring is deliberately absent from this file. base.css draws one
+   page-wide on :focus-visible, and appearance: none does not remove it - it
+   removes the browser's own. Suppressing the outline anywhere here would make
+   every control in it unusable by keyboard. */
+
+/* ---------- checkbox and radio ---------- */
+/* One box, two marks. --axi-radius is 0, so both are square and a round radio
+   would be the only rounded shape in the language - the first place a flat
+   outlined form starts looking like some other framework's. So they are told
+   apart by their mark instead: the checkbox gets a check, the radio gets the
+   family diamond (rule 7).
+
+   Both read the same two knobs on purpose. A form holding checkboxes and
+   radios together should not need two properties set to the same value to
+   keep its controls the same size. */
+.axi-check,
+.axi-radio {
+  appearance: none;
+  -webkit-appearance: none;
+  margin: 0;
+  flex: none;
+  width: var(--axi-check-size, 22px);
+  height: var(--axi-check-size, 22px);
+  display: inline-grid;
+  place-items: center;
+  background: var(--axi-ground);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  cursor: pointer;
+}
+/* The mark is always in the DOM and revealed with opacity rather than being
+   created on :checked, so the box never changes size as it toggles. */
+.axi-check::after {
+  content: "";
+  width: 55%;
+  height: 30%;
+  opacity: 0;
+  border-left: var(--axi-border-control) solid var(--axi-accent-ink);
+  border-bottom: var(--axi-border-control) solid var(--axi-accent-ink);
+  transform: translateY(-12%) rotate(-45deg);
+}
+.axi-check:checked { background: var(--axi-check-fill, var(--axi-accent)); }
+.axi-check:checked::after { opacity: 1; }
+/* The radio's mark is the diamond itself, so it is drawn in the fill rather
+   than on it - there is no filled box underneath it to sit on. */
+.axi-radio::after {
+  content: "";
+  width: 46%;
+  height: 46%;
+  opacity: 0;
+  background: var(--axi-check-fill, var(--axi-accent));
+  transform: rotate(45deg);
+}
+.axi-radio:checked::after { opacity: 1; }
+.axi-check:disabled,
+.axi-radio:disabled { cursor: not-allowed; opacity: .5; }
+
+/* ---------- textarea ---------- */
+/* Not a component: the same .axi-input a single-line field uses, with the two
+   things a <textarea> needs that an <input> does not. The font is restated
+   because a textarea does not inherit the page font in any browser, and a
+   form whose notes field is monospace while its name field is not is a bug
+   nobody files and everybody sees.
+
+   Resizing is vertical only. A textarea dragged wider than its field breaks
+   the column its form is laid out in, and the reader who did it has no way
+   to discover that the layout is not at fault. */
+textarea.axi-input {
+  min-height: var(--axi-textarea-h, 90px);
+  resize: vertical;
+  font-family: var(--axi-sans);
+  line-height: 1.5;
+}

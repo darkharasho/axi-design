@@ -78,7 +78,7 @@ maintainer's note from a measurement before reading either word.`,
     classes: ['.axi-input'],
     summary: 'A single-line text field, drawn on the ground rather than on a surface so it reads as a well cut into the panel it sits in.',
     rules: [],
-    knobs: [],
+    knobs: ['--axi-textarea-h'],
     notes: `It takes the control outline weight and no block: a block would make
 it look pressable, and the thing you press is the button next to it. The
 placeholder is the faint ink, so an empty field never reads as a filled one.
@@ -89,6 +89,11 @@ rather than the field.`,
         title: 'A labelled field',
         html: `<label class="axi-sr-only" for="input-demo">Squad name</label>
 <input class="axi-input" id="input-demo" placeholder="Squad name…" style="max-width: 260px">`,
+      },
+      {
+        title: 'A multi-line field',
+        note: 'Not a separate component - the same class, on a textarea. Resizing is vertical only, so a drag cannot break the form\'s column',
+        html: `<textarea class="axi-input" style="--axi-textarea-h: 120px" placeholder="What happened on this pull?"></textarea>`,
       },
     ],
   },

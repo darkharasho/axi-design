@@ -35,6 +35,7 @@ export function url(path = '') {
 
 export const LAYER_NAMES = {
   primitives: 'Primitives',
+  forms: 'Forms',
   layout: 'Layout',
   shells: 'Shells',
   data: 'Data',

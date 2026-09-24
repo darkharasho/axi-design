@@ -36,6 +36,24 @@ export const KNOBS = [
     example: '<button class="axi-switch" style="--axi-switch-knob: 11px">',
   },
   {
+    name: '--axi-check-size',
+    sets: 'the size of an `.axi-check` or `.axi-radio` box',
+    fallback: '`22px`',
+    example: '<input type="checkbox" class="axi-check" style="--axi-check-size: 16px">',
+  },
+  {
+    name: '--axi-check-fill',
+    sets: 'the fill a checked `.axi-check` takes, and the colour of a checked `.axi-radio`\'s diamond',
+    fallback: '`var(--axi-accent)`',
+    example: '<input type="checkbox" class="axi-check" style="--axi-check-fill: var(--axi-danger)">',
+  },
+  {
+    name: '--axi-textarea-h',
+    sets: 'the minimum height of a `<textarea class="axi-input">`',
+    fallback: '`90px`',
+    example: '<textarea class="axi-input" style="--axi-textarea-h: 200px">',
+  },
+  {
     name: '--axi-card-strip',
     sets: "the colour of `.axi-card--strip`'s top strip",
     fallback: '`var(--axi-accent)`',
