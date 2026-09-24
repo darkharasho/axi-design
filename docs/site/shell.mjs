@@ -11,11 +11,25 @@ export const ACCENTS = JSON.parse(readFileSync(resolve(ROOT, 'accents.json'), 'u
 // The site is served from /axi-design/ on Pages and from / by `npm run serve`.
 // Every link in every emitted page goes through url(); a hand-written absolute
 // href works in exactly one of those two places and fails silently in the
-// other, which is why tests/site.test.mjs scans the output for one.
+// other, which is why tests/shell.test.mjs scans the output for one.
 export const BASE = process.env.AXI_BASE ?? '/axi-design/'
 
 export function url(path = '') {
-  return `${BASE}/${String(path).replace(/^\/+/, '')}`.replace(/\/{2,}/g, '/')
+  const p = String(path)
+  // An off-site link is not ours to rebase, and the slash collapsing below
+  // would turn https:// into https:/ - a broken link that still looks like a
+  // URL at a glance. Matched on the scheme only: a protocol-relative //host/x
+  // is indistinguishable from the doubled-slash internal path just below, and
+  // that path is a shape this generator really produces while a
+  // protocol-relative URL is one it never writes.
+  if (/^[a-z][a-z0-9+.-]*:/i.test(p)) return p
+  const rel = p.replace(/^\/+/, '')
+  const bare = BASE.replace(/^\/+|\/+$/g, '')
+  // A caller passing a path url() already resolved must not get the base
+  // twice. Matching on the whole first segment, so /axi-design-notes/ is not
+  // mistaken for the base.
+  const under = bare && (rel === bare || rel.startsWith(`${bare}/`))
+  return `${BASE}/${under ? rel.slice(bare.length) : rel}`.replace(/\/{2,}/g, '/')
 }
 
 export const LAYER_NAMES = {

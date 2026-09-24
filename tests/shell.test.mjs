@@ -18,6 +18,23 @@ describe('url', () => {
   it('never emits a doubled slash', () => {
     expect(url('//components//')).not.toMatch(/\/\//)
   })
+
+  // url() is documented as the only place a link is made, so it is also where
+  // an off-site link arrives. Collapsing its slashes would break it silently.
+  // Scheme-only by design: a protocol-relative //host/path cannot be told
+  // apart from the doubled-slash internal path asserted above.
+  it('passes an off-site URL through untouched', () => {
+    expect(url('https://example.com/x')).toBe('https://example.com/x')
+    expect(url('mailto:x@example.com')).toBe('mailto:x@example.com')
+  })
+
+  it('does not prefix the base onto a path that already carries it', () => {
+    expect(url(url('start/'))).toBe(url('start/'))
+  })
+
+  it('does not mistake a longer first segment for the base', () => {
+    expect(url('axi-design-notes/')).toBe('/axi-design/axi-design-notes/')
+  })
 })
 
 describe('page', () => {
