@@ -14,7 +14,7 @@ export default [
       '.axi-stat--danger',
     ],
     summary: 'A single number and its label, flat inside a panel. The number stays in the plain text ink unless it carries a real state.',
-    rules: [5, 3],
+    rules: [5],
     knobs: [],
     notes: `A tile takes an ink only when its number has a state, exactly as a chip
 does under rule 5 - colour used for emphasis rather than status is the
@@ -46,7 +46,7 @@ not measured from it.`,
       '.axi-table__who',
     ],
     summary: 'A ranked list of rows inside a panel. Rows are separated by rules rather than outlined or blocked, because the panel is the raised thing and the table is its interior.',
-    rules: [8, 3],
+    rules: [8],
     knobs: [],
     notes: `Numbers are set right-aligned and names left-aligned on the element
 itself, not left to every consumer to remember. \`.axi-table__rank--top\` is
@@ -87,7 +87,7 @@ number stays outlined.`,
     layer: 'data',
     classes: ['.axi-meter', '.axi-meter__fill', '.axi-meter-list', '.axi-meter-list__name', '.axi-meter-list__value'],
     summary: 'A horizontal bar showing one value against its full extent. Drawn in the series ink, filled to a hard edge.',
-    rules: [1, 2, 9],
+    rules: [2, 9],
     knobs: ['--axi-meter-v', '--axi-meter-h', '--axi-series', '--axi-meter-label', '--axi-meter-value'],
     notes: `A meter says *how much*, and a quantity in this language is drawn as
 length. Reach for \`--axi-series\` to change which ink a bar is drawn in; never
