@@ -191,6 +191,12 @@ export const KNOBS = [
     fallback: '`3px`',
     example: '<div class="axi-ticks" style="--axi-ticks-gap: 2px">',
   },
+  {
+    name: '--axi-spinner-size',
+    sets: 'the size of an `.axi-spinner`',
+    fallback: '`20px`',
+    example: '<span class="axi-spinner" style="--axi-spinner-size: 34px"></span>',
+  },
 ]
 
 export function knobsFor(names) {

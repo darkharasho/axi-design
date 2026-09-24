@@ -1,0 +1,61 @@
+/* axi design language - feedback.
+   Things that report on work, and things that report on how work went. Rule
+   11 governs the first kind and is the one rule in this language described as
+   non-negotiable: an indicator of work may animate only `transform` and
+   `opacity`, because those are the two the compositor runs off the main
+   thread. A spinner animated by layout freezes with the work it reports on,
+   and a frozen spinner tells the reader the app crashed at the exact moment
+   it was working hardest. tests/motion.test.mjs enforces it. */
+
+/* ---------- spinner ---------- */
+/* The family motif, turning. A square rotated 45deg is the diamond, so the
+   loop runs 45deg -> 405deg: one full turn that begins and ends on the
+   motif rather than on a square.
+   That start and end also make it correct under reduced motion for free.
+   base.css collapses every animation to one .01ms iteration, which parks it
+   at 405deg - visually identical to the 45deg it started at. */
+@keyframes axi-spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
+.axi-spinner {
+  display: inline-block;
+  flex: none;
+  width: var(--axi-spinner-size, 20px);
+  height: var(--axi-spinner-size, 20px);
+  border: var(--axi-border-control) solid var(--axi-accent);
+  border-radius: var(--axi-radius-sm);
+  transform: rotate(45deg);
+  animation: axi-spin 1.1s linear infinite;
+}
+
+/* ---------- indeterminate meter ---------- */
+/* The .axi-meter that does not know how far along it is. The fill keeps a
+   fixed width and travels; `width` is never animated, which is the whole of
+   rule 11. --axi-meter-v is ignored in this mode - there is no value to
+   express, which is what indeterminate means. */
+@keyframes axi-meter-busy {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(400%); }
+}
+.axi-meter--busy .axi-meter__fill {
+  width: 25%;
+  animation: axi-meter-busy 1.3s ease-in-out infinite;
+}
+/* Unlike the spinner, this one's end state is not its start state: base.css
+   would park the fill clean off the right-hand end of the track, and a reader
+   who turns motion off would be shown an empty bar. So it is parked
+   deliberately, at rest and in view - a bar that says "working, and not
+   telling you how far" without moving. */
+@media (prefers-reduced-motion: reduce) {
+  .axi-meter--busy .axi-meter__fill { transform: none; width: 100%; }
+}
+
+/* ---------- notice status ---------- */
+/* Rule 5: the icon is the part of a notice that asserts something, so the
+   status lives there. The body text stays in the reading ink at every status
+   - a whole paragraph in the danger ink is the tinted-everything failure rule
+   2 exists to prevent, and it is unreadable besides. */
+.axi-notice--ok .axi-notice__icon { background: var(--axi-ok); }
+.axi-notice--warn .axi-notice__icon { background: var(--axi-warn); }
+.axi-notice--danger .axi-notice__icon { background: var(--axi-danger); }
+.axi-notice--ok b { color: var(--axi-ok); }
+.axi-notice--warn b { color: var(--axi-warn); }
+.axi-notice--danger b { color: var(--axi-danger); }

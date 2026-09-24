@@ -39,6 +39,7 @@ export const LAYER_NAMES = {
   layout: 'Layout',
   shells: 'Shells',
   data: 'Data',
+  feedback: 'Feedback',
   prose: 'Prose',
   utilities: 'Utilities',
 }

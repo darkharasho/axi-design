@@ -213,10 +213,11 @@ It sits at the same measure as the input, so give the wrapper the width.`,
     id: 'notice',
     name: 'Notice',
     layer: 'primitives',
-    classes: ['.axi-notice', '.axi-notice__icon'],
+    classes: ['.axi-notice', '.axi-notice__icon', '.axi-notice--ok', '.axi-notice--warn', '.axi-notice--danger'],
     summary: 'One paragraph the reader is not allowed to miss, raised at the panel weight with a filled glyph tile at its head.',
     rules: [3],
     knobs: [],
+    aliases: ['alert', 'banner'],
     notes: `Both of rule 3's weight steps appear in one component, which is the
 clearest place to see the pair: the notice itself takes the panel border and
 its 6px block, while the icon tile inside it takes the control border and no
@@ -229,6 +230,22 @@ marked without a class.`,
         html: `<div class="axi-notice">
   <span class="axi-notice__icon" aria-hidden="true">!</span>
   <p><b>One variable.</b> An app that sets <code>--axi-accent</code> and nothing else is correctly themed. If something ignores the accent switcher, it hard-coded a colour.</p>
+</div>`,
+      },
+      {
+        title: 'The three statuses',
+        note: 'Rule 5: the icon is the part that asserts, so the status lives there and the paragraph stays in the reading ink',
+        html: `<div class="axi-notice axi-notice--ok">
+  <div class="axi-notice__icon">✓</div>
+  <p><b>Parsed.</b> All 14 encounters matched a known boss.</p>
+</div>
+<div class="axi-notice axi-notice--warn">
+  <div class="axi-notice__icon">!</div>
+  <p><b>Partial.</b> Two encounters had no boss agent and were skipped.</p>
+</div>
+<div class="axi-notice axi-notice--danger">
+  <div class="axi-notice__icon">!</div>
+  <p><b>Failed.</b> The archive is missing its header.</p>
 </div>`,
       },
     ],

@@ -95,6 +95,7 @@ not "what does the system look like". Everything else is
 | `--axi-tick-w` | the width of one `.axi-ticks__tick` | `5px` | `<div class="axi-ticks" style="--axi-tick-w: 7px">` |
 | `--axi-tick-h` | the height of an `.axi-ticks` strip, and so of every mark in it | `15px` | `<div class="axi-ticks" style="--axi-tick-h: 22px">` |
 | `--axi-ticks-gap` | the gap between marks in `.axi-ticks` | `3px` | `<div class="axi-ticks" style="--axi-ticks-gap: 2px">` |
+| `--axi-spinner-size` | the size of an `.axi-spinner` | `20px` | `<span class="axi-spinner" style="--axi-spinner-size: 34px"></span>` |
 <!-- /axi:knobs -->
 
 `--axi-page-pad: 0` is the one to know about: it is how a measure nested
