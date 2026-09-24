@@ -184,3 +184,20 @@ describe('the form layer', () => {
     expect(forms).not.toMatch(/--axi-radio-(size|fill)/)
   })
 })
+
+describe('the toast region', () => {
+  const shells = readFileSync('src/shells.css', 'utf8')
+  const region = shells.slice(shells.indexOf('.axi-toasts {'), shells.indexOf('.axi-toast {'))
+
+  // Review Focus 4. The region is fixed and full-height, so an empty one
+  // would sit invisibly over the page and eat every click aimed at what is
+  // underneath it. The region is a layout box, not a surface.
+  it('lets clicks through when it is empty', () => {
+    expect(region).toMatch(/pointer-events:\s*none/)
+  })
+
+  it('takes clicks on the toasts themselves', () => {
+    const toast = shells.slice(shells.indexOf('.axi-toast {'))
+    expect(toast).toMatch(/pointer-events:\s*auto/)
+  })
+})

@@ -380,3 +380,120 @@
     box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
   }
 }
+
+/* ---------- modal ---------- */
+/* A real <dialog>. Focus trapping, Esc-to-close, inertness for everything
+   behind it and promotion to the top layer all come from the browser, and
+   none of them can be had from CSS - so the alternative was a <div> plus a
+   focus trap this language has no script to write.
+   That choice has one visible cost, and it is named here rather than left to
+   be discovered: a <dialog> brings its own ::backdrop, so the modal styles
+   that instead of reusing .axi-scrim. The two look identical and are not the
+   same element. Reusing .axi-scrim would have meant giving up <dialog>.
+   Panel weight and panel block: it is the most raised thing on the page. */
+.axi-modal {
+  padding: 0;
+  max-width: min(var(--axi-modal-width, 560px), calc(100vw - 32px));
+  background: var(--axi-surface);
+  color: var(--axi-text);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+}
+.axi-modal::backdrop { background: var(--axi-scrim); }
+/* The head and foot are divided from the body by rules, not by outlines: they
+   are parts of one raised thing, and rule 8's reading applies - a line inside
+   a raised surface separates its parts, it does not raise them. */
+.axi-modal__head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 15px 18px;
+  border-bottom: var(--axi-border-control) solid var(--axi-rule);
+}
+.axi-modal__head h2 { font: var(--axi-t-h3); letter-spacing: var(--axi-ls-h3); margin: 0; }
+.axi-modal__body { padding: 18px; font: var(--axi-t-small); color: var(--axi-text-dim); }
+.axi-modal__foot {
+  display: flex; justify-content: flex-end; gap: 9px;
+  padding: 15px 18px;
+  border-top: var(--axi-border-control) solid var(--axi-rule);
+}
+
+/* ---------- accordion ---------- */
+/* <details>/<summary>, so it opens and closes with no script and is
+   announced as a disclosure. The native marker is removed and replaced with
+   the family diamond, which rotates a quarter turn on [open] - a transform,
+   so it is inside rule 4's rationing without needing rule 11. */
+.axi-accordion {
+  background: var(--axi-surface);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+}
+/* Stacked accordions need the gap the block occupies, or each one's block
+   lands on the next one's outline. */
+.axi-accordion + .axi-accordion { margin-top: calc(var(--axi-offset-panel) + 8px); }
+.axi-accordion__head {
+  display: flex; align-items: center; gap: 12px;
+  padding: 14px 18px;
+  cursor: pointer;
+  list-style: none;
+  font: var(--axi-t-label);
+  letter-spacing: var(--axi-ls-label);
+  color: var(--axi-text);
+}
+.axi-accordion__head::-webkit-details-marker { display: none; }
+.axi-accordion__head::before {
+  content: "";
+  width: 8px; height: 8px; flex: none;
+  background: var(--axi-accent);
+  transform: rotate(45deg);
+  transition: transform .12s;
+}
+.axi-accordion[open] .axi-accordion__head::before { transform: rotate(180deg); }
+.axi-accordion__body {
+  padding: 0 18px 16px 38px;
+  font: var(--axi-t-small);
+  color: var(--axi-text-dim);
+}
+
+/* ---------- toasts ---------- */
+/* Layer 60, between the drawer and the tooltip.
+   The region is a layout box and nothing else: it is fixed and full-height,
+   so without pointer-events: none an empty one would sit invisibly over the
+   page and swallow every click aimed at what is underneath. The toasts
+   themselves take their events back.
+   This language ships no script, so appearing, stacking and leaving on a
+   timer are the consumer's: insert a .axi-toast into the region and remove it
+   when it is done. That is the same contract .axi-menu already publishes for
+   its open state, not a new kind of promise. */
+.axi-toasts {
+  position: fixed;
+  right: var(--axi-gutter);
+  bottom: var(--axi-gutter);
+  z-index: 60;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: calc(var(--axi-offset-control) + 9px);
+  pointer-events: none;
+}
+/* Control weight and control block, not panel: a stack of four panels over
+   the page is a wall. A toast is a chip-sized raised thing. */
+.axi-toast {
+  pointer-events: auto;
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 15px;
+  background: var(--axi-surface-raised);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  font: var(--axi-t-small);
+  color: var(--axi-text);
+}
+.axi-toast__dot {
+  width: 10px; height: 10px; flex: none;
+  background: var(--axi-accent);
+  transform: rotate(45deg);
+}
+.axi-toast--ok .axi-toast__dot { background: var(--axi-ok); }
+.axi-toast--warn .axi-toast__dot { background: var(--axi-warn); }
+.axi-toast--danger .axi-toast__dot { background: var(--axi-danger); }

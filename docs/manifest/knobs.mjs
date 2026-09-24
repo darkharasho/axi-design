@@ -60,6 +60,12 @@ export const KNOBS = [
     example: '<span class="axi-avatar" style="--axi-avatar-size: 28px">MS</span>',
   },
   {
+    name: '--axi-modal-width',
+    sets: 'the maximum width of an `.axi-modal`, before the viewport clamp',
+    fallback: '`560px`',
+    example: '<dialog class="axi-modal" style="--axi-modal-width: 760px">',
+  },
+  {
     name: '--axi-card-strip',
     sets: "the colour of `.axi-card--strip`'s top strip",
     fallback: '`var(--axi-accent)`',

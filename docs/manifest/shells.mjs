@@ -490,4 +490,134 @@ Mark the current page with \`aria-current="page"\`, which is what draws the fill
       },
     ],
   },
+  {
+    id: 'modal',
+    name: 'Modal',
+    layer: 'shells',
+    classes: ['.axi-modal', '.axi-modal__head', '.axi-modal__body', '.axi-modal__foot'],
+    summary: 'A real <dialog>. Focus trapping, Esc-to-close, inertness and the top layer come from the browser rather than from a script this language does not ship.',
+    rules: [3],
+    knobs: ['--axi-modal-width'],
+    aliases: ['dialog', 'popup', 'lightbox'],
+    notes: `Open it with \`el.showModal()\`, not by setting the \`open\` attribute.
+Only \`showModal()\` promotes the dialog to the top layer, makes the rest of the
+page inert and draws the backdrop; the bare attribute renders it inline with
+none of that, which is what the examples below do so they can sit in the page.
+
+A \`<dialog>\` brings its own \`::backdrop\`, so the modal styles that rather than
+reusing \`.axi-scrim\`. They look identical and are not the same element - the
+alternative was giving up \`<dialog>\` and hand-rolling a focus trap.
+
+The head and foot are divided from the body by rules rather than outlines:
+they are parts of one raised thing.`,
+    examples: [
+      {
+        title: 'A confirmation',
+        note: 'Shown inline with the open attribute so it sits in the page; a real one is opened with showModal() and draws a backdrop over everything',
+        html: `<dialog class="axi-modal" open style="position: static; margin: 0">
+  <div class="axi-modal__head">
+    <span class="axi-diamond axi-diamond--danger"></span>
+    <h2>Delete this log?</h2>
+  </div>
+  <div class="axi-modal__body">This removes the parsed encounter and its shareable link. The file on disk is untouched.</div>
+  <div class="axi-modal__foot">
+    <button class="axi-btn axi-btn--ghost">Cancel</button>
+    <button class="axi-btn axi-btn--primary">Delete</button>
+  </div>
+</dialog>`,
+      },
+      {
+        title: 'A wider one, with a form in it',
+        note: 'The width knob is clamped against the viewport, so a wide modal still fits a narrow window',
+        html: `<dialog class="axi-modal" open style="position: static; margin: 0; --axi-modal-width: 680px">
+  <div class="axi-modal__head"><h2>Upload settings</h2></div>
+  <div class="axi-modal__body">
+    <label class="axi-row"><input type="checkbox" class="axi-check" checked> Parse on upload</label>
+    <label class="axi-row"><input type="checkbox" class="axi-check"> Make the link public</label>
+  </div>
+  <div class="axi-modal__foot"><button class="axi-btn axi-btn--primary">Save</button></div>
+</dialog>`,
+      },
+    ],
+  },
+  {
+    id: 'accordion',
+    name: 'Accordion',
+    layer: 'shells',
+    classes: ['.axi-accordion', '.axi-accordion__head', '.axi-accordion__body'],
+    summary: 'A disclosure built on <details> and <summary>, so it opens and closes with no script and is announced as a disclosure.',
+    rules: [3, 7],
+    knobs: [],
+    aliases: ['collapse', 'disclosure', 'expander'],
+    notes: `The native marker is removed and replaced with the family diamond,
+which turns a quarter on \`[open]\`. The turn is a \`transform\`, so it sits inside
+rule 4's rationing of motion.
+
+Stacked accordions are spaced by the block's own depth plus a gap, or each
+one's block lands on the next one's outline.`,
+    examples: [
+      {
+        title: 'A short FAQ',
+        note: 'The first is open; open is a native attribute, not a class',
+        html: `<details class="axi-accordion" open>
+  <summary class="axi-accordion__head">What counts as an attempt?</summary>
+  <div class="axi-accordion__body">Any pull with at least one damage event, whether or not the boss reached a phase change.</div>
+</details>
+<details class="axi-accordion">
+  <summary class="axi-accordion__head">Why is my DPS different here?</summary>
+  <div class="axi-accordion__body">Target damage only, measured over the active window rather than the whole pull.</div>
+</details>`,
+      },
+      {
+        title: 'One on its own',
+        html: `<details class="axi-accordion">
+  <summary class="axi-accordion__head">Advanced parser options</summary>
+  <div class="axi-accordion__body">Everything here changes how a log is read, not how it is displayed.</div>
+</details>`,
+      },
+    ],
+  },
+  {
+    id: 'toast',
+    name: 'Toast',
+    layer: 'shells',
+    classes: ['.axi-toasts', '.axi-toast', '.axi-toast__dot', '.axi-toast--ok', '.axi-toast--warn', '.axi-toast--danger'],
+    summary: 'A stack of transient messages in the corner of the page. The CSS ships the region and the message; appearing and leaving on a timer are the consumer’s, because this language ships no script.',
+    rules: [3, 5],
+    knobs: [],
+    aliases: ['snackbar', 'notification', 'flash'],
+    notes: `Insert a \`.axi-toast\` into the region and remove it when it is done.
+There is no timer here and no animation: that is the same contract \`.axi-menu\`
+publishes for its open state, not a new kind of promise.
+
+The region is \`pointer-events: none\` and each toast takes its events back. The
+region is fixed and full-height, so without that an empty one would sit
+invisibly over the page and swallow every click aimed underneath it.
+
+A toast is control weight, not panel: four panels stacked over the page is a
+wall.
+
+The region lives at layer 60 - above the drawer, below the tooltip. See the
+layer stack in the rules.`,
+    examples: [
+      {
+        title: 'A stack of three',
+        note: 'Shown in flow rather than fixed to the corner, so the demo can hold it',
+        html: `<div class="axi-toasts" style="position: static">
+  <div class="axi-toast"><i class="axi-toast__dot"></i> Link copied to clipboard</div>
+  <div class="axi-toast axi-toast--ok"><i class="axi-toast__dot"></i> Upload finished — 3 logs parsed</div>
+  <div class="axi-toast axi-toast--danger"><i class="axi-toast__dot"></i> Could not reach the server</div>
+</div>`,
+      },
+      {
+        title: 'One with a name on it',
+        html: `<div class="axi-toasts" style="position: static">
+  <div class="axi-toast axi-toast--warn">
+    <span class="axi-avatar" style="--axi-avatar-size: 24px">KJ</span>
+    Kay left the squad
+  </div>
+</div>`,
+      },
+    ],
+  },
 ]
