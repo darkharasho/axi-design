@@ -105,11 +105,14 @@ describe('landing and gallery', () => {
     expect(written).toContain('index.html')
   })
 
+  // Asserting the hrefs alone is satisfied by the shell's top nav, which is on
+  // every page - the landing page could lose both its calls to action and the
+  // test would still pass. Match the buttons themselves.
   it('shows the install snippet and routes onward', () => {
     const html = read('index.html')
     expect(html).toContain('@axiapps/axi-design')
-    expect(html).toContain(`href="${'/axi-design/start/'}"`)
-    expect(html).toContain(`href="${'/axi-design/components/'}"`)
+    expect(html).toMatch(/<a class="axi-btn axi-btn--primary" href="\/axi-design\/start\/">/)
+    expect(html).toMatch(/<a class="axi-btn" href="\/axi-design\/components\/">/)
   })
 
   it('writes the gallery and its script', () => {
