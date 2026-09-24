@@ -343,6 +343,31 @@ If an app picks an accent dark enough that near-black text on it fails
 contrast, it also sets `--axi-accent-ink: var(--axi-text)`. It should not edit
 components.
 
+### Layer stack
+
+Every `z-index` in this language is one of the layers below, and a component
+that needs to sit above something picks its layer here rather than inventing a
+number. A number not in this table is a component shouting over the stack
+instead of joining it.
+
+| Layer | z-index | What sits here |
+|---|---|---|
+| Sticky chrome | 40 | `.axi-mast` |
+| Popovers | 41 | `.axi-menu__pop`, `.axi-picker__pop` |
+| Scrim | 50 | `.axi-scrim` |
+| Drawer | 51 | `.axi-drawer` |
+| Toasts | 60 | `.axi-toasts` |
+| Tooltip | 70 | `.axi-tooltip` |
+| Modal | top layer | `dialog.axi-modal`, promoted by `showModal()` |
+
+The modal has no number on purpose. A `<dialog>` opened with `showModal()` is
+promoted to the browser's top layer, which sits above every `z-index` there is;
+writing a number in that row would describe a competition the modal is not in.
+
+A negative `z-index` inside a component's own `isolation` context — the sigil's
+backing shape — is not a layer and is not listed. It is invisible outside the
+component that owns it.
+
 ## Light mode
 
 Not shipped. The system is *structured* for it: no component contains a colour

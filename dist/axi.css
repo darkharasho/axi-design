@@ -757,7 +757,11 @@ a { color: inherit; }
    exists nowhere else, because a keyboard or touch user may never see it. */
 .axi-tooltip {
   position: fixed;
-  z-index: 99999;
+  /* Layer 70: above the drawer and its scrim, above toasts, below a
+     showModal()-ed dialog's top layer - which it was below anyway, since the
+     top layer is above every z-index. 99999 was not a layer, it was an
+     argument with one. */
+  z-index: 70;
   padding: 5px 8px;
   background: var(--axi-ink-line);
   color: var(--axi-text);
