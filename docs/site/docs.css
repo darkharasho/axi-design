@@ -90,7 +90,12 @@ body { margin: 0; }
 .docs-tile__demo { margin-top: 14px; pointer-events: none; }
 .docs-section { margin: 0 0 56px; }
 
-/* Search results, anchored under the mast's input. */
+/* Search results, anchored under the mast's input. .axi-search is position:
+   relative, but the results panel is its sibling rather than its child - the
+   panel is not part of the control - so the containing block it anchors to
+   belongs to this wrapper. */
+.docs-search { position: relative; }
+
 .docs-results {
   position: absolute; top: 100%; z-index: 20; width: 320px;
   background: var(--axi-surface-raised);

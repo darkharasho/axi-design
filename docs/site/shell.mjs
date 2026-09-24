@@ -81,7 +81,7 @@ ${description ? `<meta name="description" content="${description}">` : ''}
     <span class="axi-brand__name">axi-design<small>v${VERSION}</small></span>
   </a>
   <nav class="axi-tabs">${tabs}</nav>
-  <div style="position: relative">
+  <div class="docs-search">
     <div class="axi-search"><span class="axi-search__icon" aria-hidden="true">&#8981;</span>
       <input class="axi-input" id="q" type="search" placeholder="Search components&#8230;" autocomplete="off"></div>
     <div class="docs-results" id="results" hidden></div>
