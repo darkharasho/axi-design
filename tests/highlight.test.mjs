@@ -1,10 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { escapeHtml, highlight } from '../docs/site/highlight.mjs'
 import { entries } from '../docs/manifest/index.mjs'
-
-const unhighlight = (html) =>
-  html.replace(/<\/?span[^>]*>/g, '')
-    .replace(/&quot;/g, '"').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
+import { unhighlight } from './unhighlight.mjs'
 
 describe('escapeHtml', () => {
   it('escapes the four characters that can break out of a code block', () => {

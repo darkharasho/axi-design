@@ -1,10 +1,12 @@
 import { describe, it, expect, beforeAll, afterAll } from 'vitest'
+import { execFileSync } from 'node:child_process'
 import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { build } from '../scripts/site.mjs'
 import { entries, findEntry } from '../docs/manifest/index.mjs'
 import { LAYER_NAMES } from '../docs/site/shell.mjs'
+import { unhighlight } from './unhighlight.mjs'
 
 let out, written
 beforeAll(() => {
@@ -47,8 +49,7 @@ describe('a component page', () => {
   it('renders each example live and as code', () => {
     for (const ex of entry.examples) {
       expect(html).toContain(ex.title)
-      expect(html).toContain(ex.html)                           // the live demo, raw
-      expect(html).toContain('<span class="t-tag">div</span>')  // the same markup, highlighted
+      expect(html).toContain(ex.html)  // the live demo, raw
     }
   })
 
@@ -72,6 +73,66 @@ describe('emitted links', () => {
       const html = read(path)
       const offenders = [...html.matchAll(/(?:href|src)="\/(?!axi-design\/)[^"]*"/g)].map((m) => m[0])
       expect(offenders, `${path} has links outside the base path`).toEqual([])
+    }
+  })
+})
+
+// The guard above whitelists the production base, so it cannot see a
+// hand-written `href="/axi-design/start/"` - the likelier mistake, since the
+// wrong way to get a URL is to copy one out of the built site. Under a
+// different base that link is simply wrong, which is what this catches.
+//
+// It has to be a child process. shell.mjs resolves BASE as a module-load
+// const, so a second in-process build() re-emits the first base and the
+// assertion would pass without proving anything (R-29).
+describe('the site under a different base', () => {
+  let rootOut, rootWritten
+  beforeAll(() => {
+    rootOut = mkdtempSync(resolve(tmpdir(), 'axi-site-root-'))
+    const site = new URL('../scripts/site.mjs', import.meta.url).href
+    const out = execFileSync(process.execPath, ['--input-type=module', '-e',
+      `const { build } = await import(${JSON.stringify(site)})
+       process.stdout.write(JSON.stringify(build(${JSON.stringify(rootOut)})))`],
+    { env: { ...process.env, AXI_BASE: '/' }, encoding: 'utf8' })
+    rootWritten = JSON.parse(out)
+  })
+
+  it('builds the whole site', () => {
+    expect(rootWritten.length).toBe(written.length)
+  })
+
+  // Anchored to the start of the attribute value, so the deliberate
+  // https://darkharasho.github.io/axi-design/v1/axi.css install sample is
+  // excluded by having a scheme rather than by being named here.
+  it('carries the production base into no link at all', () => {
+    for (const path of rootWritten.filter((p) => p.endsWith('.html'))) {
+      const html = readFileSync(resolve(rootOut, path), 'utf8')
+      const offenders = [...html.matchAll(/(?:href|src)="\/axi-design\/[^"]*"/g)].map((m) => m[0])
+      expect(offenders, `${path} hardcodes the production base`).toEqual([])
+    }
+  })
+
+  afterAll(() => rmSync(rootOut, { recursive: true, force: true }))
+})
+
+// The invariant the whole manifest exists for: one string, rendered twice. The
+// demo half was pinned; the code-block half was not, and the reviewer stripped
+// every style= attribute out of it with all 127 tests still green - the meter
+// page then offered a copyable empty meter under a demo filled to 62%. This
+// walks every entry and every example and compares the code block, with its
+// highlighting undone, to the manifest string character for character. It also
+// subsumes the old per-example `t-tag">div` assertion, which was constant
+// inside the loop and proved only that *some* highlighted div was on the page.
+describe('the code block is the demo', () => {
+  it('shows exactly the string the demo was rendered from, for every example', () => {
+    for (const e of entries()) {
+      const html = read(`components/${e.id}/index.html`)
+      e.examples.forEach((ex, i) => {
+        const id = `code-${e.id}-${i}`
+        const m = html.match(new RegExp(`<code id="${id}">([\\s\\S]*?)</code>`))
+        expect(m, `${e.id}: no code block ${id}`).not.toBeNull()
+        expect(unhighlight(m[1]), `${e.id}/"${ex.title}" drifted from its demo`).toBe(ex.html)
+      })
     }
   })
 })
