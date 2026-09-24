@@ -380,4 +380,39 @@ having measured the trigger: the box is unchanged, only who positions it moves.`
       },
     ],
   },
+  {
+    id: 'avatar',
+    name: 'Avatar',
+    layer: 'primitives',
+    classes: ['.axi-avatar', '.axi-avatar--accent', '.axi-avatar__img'],
+    summary: 'A square holding initials or a picture. Square because a circle is the one shape this language does not have.',
+    rules: [],
+    knobs: ['--axi-avatar-size'],
+    aliases: ['gravatar', 'profile', 'userpic'],
+    notes: `It follows the radius scale like everything else, so setting
+\`--axi-radius-sm\` rounds avatars along with every other control - which is the
+honest version of "can the avatars be round".
+
+\`.axi-avatar__img\` uses \`object-fit\` on a real \`<img>\` rather than a background
+image, so the alt text survives and a broken source is visible instead of
+silently blank.`,
+    examples: [
+      {
+        title: 'Initials',
+        html: `<span class="axi-avatar">MS</span>
+<span class="axi-avatar axi-avatar--accent">KJ</span>`,
+      },
+      {
+        title: 'A picture',
+        html: `<span class="axi-avatar"><img class="axi-avatar__img" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2740%27%3E%3Crect width=%2740%27 height=%2740%27 fill=%27%23ffc53d%27/%3E%3C/svg%3E" alt="Avatar"></span>`,
+      },
+      {
+        title: 'In a row, at two sizes',
+        html: `<div class="axi-row">
+  <span class="axi-avatar" style="--axi-avatar-size: 28px">AR</span>
+  <span class="axi-avatar">AR</span>
+</div>`,
+      },
+    ],
+  },
 ]

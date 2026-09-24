@@ -405,3 +405,31 @@
 .axi-picker__opt:focus-visible { outline-offset: -3px; }
 .axi-picker__opt[aria-selected='true'] { color: var(--axi-text); }
 .axi-picker__opt[aria-selected='true']::before { color: var(--axi-accent); }
+
+/* ---------- avatar ---------- */
+/* A square, because a circle is the one shape this language does not have:
+   --axi-radius is 0, and a round avatar would be the only rounded thing on
+   the page. It follows the radius scale like everything else, so a consumer
+   who wants round avatars sets --axi-radius-sm and gets rounded controls
+   everywhere - which is the honest version of the request.
+   Flat: outlined, no block. An avatar is content inside a panel, the same as
+   .axi-stat and .axi-table__rank, not a thing raised off it. */
+.axi-avatar {
+  width: var(--axi-avatar-size, 40px);
+  height: var(--axi-avatar-size, 40px);
+  flex: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--axi-ground);
+  color: var(--axi-text-dim);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  font: var(--axi-t-label);
+  letter-spacing: var(--axi-ls-label);
+  text-transform: uppercase;
+}
+.axi-avatar--accent { background: var(--axi-accent); color: var(--axi-accent-ink); }
+/* object-fit rather than a background-image, so the <img>'s alt text survives
+   and a broken source is visible rather than silently blank. */
+.axi-avatar__img { width: 100%; height: 100%; object-fit: cover; display: block; }

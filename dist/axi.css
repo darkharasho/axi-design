@@ -574,6 +574,34 @@ a { color: inherit; }
 .axi-picker__opt[aria-selected='true'] { color: var(--axi-text); }
 .axi-picker__opt[aria-selected='true']::before { color: var(--axi-accent); }
 
+/* ---------- avatar ---------- */
+/* A square, because a circle is the one shape this language does not have:
+   --axi-radius is 0, and a round avatar would be the only rounded thing on
+   the page. It follows the radius scale like everything else, so a consumer
+   who wants round avatars sets --axi-radius-sm and gets rounded controls
+   everywhere - which is the honest version of the request.
+   Flat: outlined, no block. An avatar is content inside a panel, the same as
+   .axi-stat and .axi-table__rank, not a thing raised off it. */
+.axi-avatar {
+  width: var(--axi-avatar-size, 40px);
+  height: var(--axi-avatar-size, 40px);
+  flex: none;
+  display: grid;
+  place-items: center;
+  overflow: hidden;
+  background: var(--axi-ground);
+  color: var(--axi-text-dim);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  font: var(--axi-t-label);
+  letter-spacing: var(--axi-ls-label);
+  text-transform: uppercase;
+}
+.axi-avatar--accent { background: var(--axi-accent); color: var(--axi-accent-ink); }
+/* object-fit rather than a background-image, so the <img>'s alt text survives
+   and a broken source is visible rather than silently blank. */
+.axi-avatar__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
 /* --- forms.css --- */
 /* axi design language - forms.
    Real inputs, styled. Every control here is an actual <input> or <textarea>
@@ -1023,6 +1051,59 @@ textarea.axi-input {
 .axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-line); }
 /* The scrolling region under the chrome. */
 .axi-window__body { flex: 1; overflow-y: auto; }
+
+/* ---------- breadcrumbs ---------- */
+/* A path, not a control strip. The separator is the family diamond (rule 7)
+   drawn in the rule ink, so it reads as punctuation rather than as a third
+   link the reader could click.
+   The current crumb is NOT filled. Rule 5 reserves a fill for a state
+   something is in - pressed, on, current-as-in-selected - and the last crumb
+   is a position, not a control that is on. It takes the full text ink and the
+   label weight instead. */
+.axi-crumbs {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+  font: var(--axi-t-small);
+}
+.axi-crumbs a { color: var(--axi-text-dim); text-decoration: none; }
+.axi-crumbs a:hover { color: var(--axi-accent); }
+.axi-crumbs__sep {
+  width: 6px; height: 6px; flex: none;
+  background: var(--axi-rule);
+  transform: rotate(45deg);
+}
+.axi-crumbs [aria-current="page"] { color: var(--axi-text); font-weight: 800; }
+
+/* ---------- pagination ---------- */
+/* The same idea .axi-tabs already expresses, applied to a row of pages: the
+   current one is filled and blocked, because "this one is on" is what a fill
+   means here. Written as its own component rather than as a tabs modifier
+   because a pager sits under content and a tab strip sits in a titlebar, and
+   the two disagree about everything except that treatment. */
+.axi-pages { display: flex; gap: 7px; align-items: center; flex-wrap: wrap; }
+.axi-pages__n {
+  min-width: 36px;
+  padding: 8px 10px;
+  text-align: center;
+  font: var(--axi-t-label);
+  letter-spacing: var(--axi-ls-label);
+  color: var(--axi-text-dim);
+  text-decoration: none;
+  background: var(--axi-surface-raised);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+}
+.axi-pages__n:hover { color: var(--axi-text); }
+.axi-pages__n[aria-current="page"] {
+  background: var(--axi-accent);
+  color: var(--axi-accent-ink);
+  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+}
+/* The elided run between two page numbers. Not a control and never focusable:
+   it is the only thing in the row a reader cannot go to. */
+.axi-pages__gap { color: var(--axi-text-faint); padding: 0 2px; }
 
 @media (max-width: 640px) {
   .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }

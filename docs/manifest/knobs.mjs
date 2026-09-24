@@ -54,6 +54,12 @@ export const KNOBS = [
     example: '<textarea class="axi-input" style="--axi-textarea-h: 200px">',
   },
   {
+    name: '--axi-avatar-size',
+    sets: 'the size of an `.axi-avatar` square',
+    fallback: '`40px`',
+    example: '<span class="axi-avatar" style="--axi-avatar-size: 28px">MS</span>',
+  },
+  {
     name: '--axi-card-strip',
     sets: "the colour of `.axi-card--strip`'s top strip",
     fallback: '`var(--axi-accent)`',

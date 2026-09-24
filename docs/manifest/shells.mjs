@@ -420,4 +420,74 @@ the end of the masthead.`,
       },
     ],
   },
+  {
+    id: 'crumbs',
+    name: 'Breadcrumbs',
+    layer: 'shells',
+    classes: ['.axi-crumbs', '.axi-crumbs__sep'],
+    summary: 'The path to the page you are on. The separator is the family diamond, and the last crumb is marked with aria-current rather than filled.',
+    rules: [7],
+    knobs: [],
+    aliases: ['breadcrumb', 'breadcrumbs'],
+    notes: `The current crumb is not filled. Rule 5 reserves a fill for a state
+a thing is in, and the last crumb is a position rather than a control that is
+on - so it takes the full text ink and the label weight instead.`,
+    examples: [
+      {
+        title: 'A three-level path',
+        html: `<nav class="axi-crumbs" aria-label="Breadcrumb">
+  <a href="#">Raids</a>
+  <i class="axi-crumbs__sep"></i>
+  <a href="#">Wing 4</a>
+  <i class="axi-crumbs__sep"></i>
+  <span aria-current="page">Deimos</span>
+</nav>`,
+      },
+      {
+        title: 'One level up',
+        html: `<nav class="axi-crumbs" aria-label="Breadcrumb">
+  <a href="#">Logs</a>
+  <i class="axi-crumbs__sep"></i>
+  <span aria-current="page">2026-09-24</span>
+</nav>`,
+      },
+    ],
+  },
+  {
+    id: 'pages',
+    name: 'Pagination',
+    layer: 'shells',
+    classes: ['.axi-pages', '.axi-pages__n', '.axi-pages__gap'],
+    summary: 'A row of page links. The current page is filled and blocked, the same treatment the current tab gets, because it is the same idea: this one is on.',
+    rules: [5],
+    knobs: [],
+    aliases: ['pagination', 'pager', 'paging'],
+    notes: `\`.axi-pages__gap\` is the elided run between two page numbers. It is
+the only thing in the row that is not a link, and it is never focusable.
+
+Mark the current page with \`aria-current="page"\`, which is what draws the fill
+- there is no \`--current\` modifier class to keep in sync with it.`,
+    examples: [
+      {
+        title: 'A long run with an elision',
+        html: `<nav class="axi-pages" aria-label="Pagination">
+  <a class="axi-pages__n" href="#" aria-label="Previous">‹</a>
+  <a class="axi-pages__n" href="#">1</a>
+  <a class="axi-pages__n" href="#" aria-current="page">2</a>
+  <a class="axi-pages__n" href="#">3</a>
+  <span class="axi-pages__gap">…</span>
+  <a class="axi-pages__n" href="#">9</a>
+  <a class="axi-pages__n" href="#" aria-label="Next">›</a>
+</nav>`,
+      },
+      {
+        title: 'A short run',
+        html: `<nav class="axi-pages" aria-label="Pagination">
+  <a class="axi-pages__n" href="#" aria-current="page">1</a>
+  <a class="axi-pages__n" href="#">2</a>
+  <a class="axi-pages__n" href="#">3</a>
+</nav>`,
+      },
+    ],
+  },
 ]
