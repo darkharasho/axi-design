@@ -143,6 +143,24 @@ export const KNOBS = [
     fallback: '`4`',
     example: '<div class="axi-plot" style="--axi-plot-rows: 6">',
   },
+  {
+    name: '--axi-tick-w',
+    sets: 'the width of one `.axi-ticks__tick`',
+    fallback: '`5px`',
+    example: '<div class="axi-ticks" style="--axi-tick-w: 7px">',
+  },
+  {
+    name: '--axi-tick-h',
+    sets: 'the height of an `.axi-ticks` strip, and so of every mark in it',
+    fallback: '`15px`',
+    example: '<div class="axi-ticks" style="--axi-tick-h: 22px">',
+  },
+  {
+    name: '--axi-ticks-gap',
+    sets: 'the gap between marks in `.axi-ticks`',
+    fallback: '`3px`',
+    example: '<div class="axi-ticks" style="--axi-ticks-gap: 2px">',
+  },
 ]
 
 export function knobsFor(names) {

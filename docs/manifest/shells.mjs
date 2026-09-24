@@ -256,8 +256,8 @@ classes of their own.`,
     examples: [
       {
         title: 'An open filter menu',
-        note: 'Shown open; a real one starts with the hidden attribute set',
-        html: `<div class="axi-menu" style="height: 260px">
+        note: 'Shown open; a real one starts with the hidden attribute set. The popover hangs below the trigger, so the room for it is reserved under the box, not inside it',
+        html: `<div class="axi-menu" style="margin-bottom: 200px">
   <button class="axi-btn axi-btn--dashed" type="button" aria-expanded="true" aria-controls="menu-demo-pop">
     Filters <span class="axi-badge-count">3</span>
   </button>

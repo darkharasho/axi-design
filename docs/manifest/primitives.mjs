@@ -318,4 +318,61 @@ status inks.`,
       },
     ],
   },
+  {
+    id: 'picker',
+    name: 'Picker',
+    layer: 'primitives',
+    classes: ['.axi-picker', '.axi-picker__btn', '.axi-picker__pop', '.axi-picker__pop--fixed', '.axi-picker__opt'],
+    summary: 'A button and a popover wearing the closed box and list styling of a select - the dropdown to reach for when the platform will not let the language draw the native one.',
+    rules: [3],
+    knobs: [],
+    notes: `Prefer the native \`<select>\` where it works: it comes with keyboard
+handling, typeahead, and a popup that can escape the window. This is what you
+use when it does not. On platforms that will not style the open list, what
+lands there is a raised surface the language cannot reach - no ink outline, no
+offset block, the OS's own selection colour - which is rule 3 broken by a box
+we do not own. The fix is to stop asking the OS to draw it.
+
+The popover carries the *panel* weight, not the control weight, because it is
+a raised surface rather than a control. It is never narrower than the box it
+came out of: a list that shrinks to its text is a list that has moved, and the
+eye has to find the column again.
+
+The tick sits in every row and is inked only in the chosen one. Giving it to
+the selected row alone shifts every label by its width as the choice moves,
+which turns picking an option into the list twitching.
+
+Like the menu and the tooltip, the language ships no script. \`hidden\`,
+\`aria-expanded\` and \`aria-selected\` are the whole state and the consumer
+toggles them; \`gallery.js\` is the reference wiring, arrow keys and Escape
+included. Inside a pane that scrolls or a panel that clips, \`position:
+absolute\` puts the list where the overflow can eat it - and the offset block
+falls outside the popover's box, so the block is the first thing to go. Add
+\`--fixed\`, append the popover to \`<body>\`, and set left/top from script
+having measured the trigger: the box is unchanged, only who positions it moves.`,
+    examples: [
+      {
+        title: 'A picker, open',
+        note: 'Shown open. The popover hangs below the box, so the margin reserves its room; the width keeps rows off a second line',
+        html: `<div class="axi-picker" style="width: 200px; margin-bottom: 110px">
+  <button class="axi-picker__btn" type="button" aria-haspopup="listbox" aria-expanded="true" aria-controls="picker-demo">Jul 2026</button>
+  <div class="axi-picker__pop" id="picker-demo" role="listbox">
+    <button class="axi-picker__opt" type="button" role="option" aria-selected="true">Jul 2026</button>
+    <button class="axi-picker__opt" type="button" role="option" aria-selected="false">Jun 2026</button>
+    <button class="axi-picker__opt" type="button" role="option" aria-selected="false">May 2026</button>
+  </div>
+</div>`,
+      },
+      {
+        title: 'The closed box',
+        note: 'What a consumer actually ships: state lives on the attributes',
+        html: `<div class="axi-picker">
+  <button class="axi-picker__btn" type="button" aria-haspopup="listbox" aria-expanded="false" aria-controls="picker-closed">Jul 2026</button>
+  <div class="axi-picker__pop" id="picker-closed" role="listbox" hidden>
+    <button class="axi-picker__opt" type="button" role="option" aria-selected="true">Jul 2026</button>
+  </div>
+</div>`,
+      },
+    ],
+  },
 ]

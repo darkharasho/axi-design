@@ -31,6 +31,58 @@ document.addEventListener('click', (e) => {
   setMenu(false)
 })
 
+/* ---------- picker ---------- */
+// .axi-picker is the dropdown whose list is ours rather than the OS's, and a
+// <select> hands you all of this for free - so this block is the bill for
+// drawing it yourself, and it is the whole bill. Roving focus over the
+// options, arrows and Home/End to move it, Escape back to the trigger, the
+// value written back into the trigger's label, and aria-selected as the one
+// place the choice is stored. A picker missing any of these is worse than the
+// native popup it replaced, however well it matches the palette.
+const picker = document.querySelector('.axi-picker')
+const pickTrigger = document.getElementById('month-trigger')
+const pickPop = document.getElementById('month-pop')
+const options = [...pickPop.querySelectorAll('.axi-picker__opt')]
+
+const setPicker = (open) => {
+  pickTrigger.setAttribute('aria-expanded', String(open))
+  pickPop.hidden = !open
+  // Opening lands on the current choice, not on the top of the list: the
+  // first arrow press should step away from where you already are.
+  if (open) (options.find((o) => o.getAttribute('aria-selected') === 'true') ?? options[0]).focus()
+}
+
+const choose = (opt) => {
+  for (const o of options) o.setAttribute('aria-selected', String(o === opt))
+  pickTrigger.textContent = opt.textContent.trim()
+  setPicker(false)
+  pickTrigger.focus()
+}
+
+pickTrigger.addEventListener('click', () => {
+  setPicker(pickTrigger.getAttribute('aria-expanded') !== 'true')
+})
+for (const opt of options) opt.addEventListener('click', () => choose(opt))
+
+pickPop.addEventListener('keydown', (e) => {
+  const i = options.indexOf(document.activeElement)
+  if (i < 0) return
+  const to =
+    e.key === 'ArrowDown' ? Math.min(i + 1, options.length - 1)
+    : e.key === 'ArrowUp' ? Math.max(i - 1, 0)
+    : e.key === 'Home' ? 0
+    : e.key === 'End' ? options.length - 1
+    : null
+  if (to === null) return
+  e.preventDefault()
+  options[to].focus()
+})
+
+document.addEventListener('click', (e) => {
+  if (pickPop.hidden || picker.contains(e.target)) return
+  setPicker(false)
+})
+
 /* ---------- drawer ---------- */
 // role="dialog" + aria-modal are in the markup; the trapping is here. `inert`
 // on everything behind the drawer does almost all of it for free - it removes
@@ -76,7 +128,10 @@ drawer.addEventListener('keydown', (e) => {
 document.addEventListener('keydown', (e) => {
   if (e.key !== 'Escape') return
   if (!drawer.hidden) setDrawer(false)
-  else if (!pop.hidden) {
+  else if (!pickPop.hidden) {
+    setPicker(false)
+    pickTrigger.focus()
+  } else if (!pop.hidden) {
     setMenu(false)
     trigger.focus()
   }

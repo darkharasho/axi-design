@@ -111,6 +111,17 @@ read `--axi-radius`, everything control-sized reads `--axi-radius-sm`, and
 `tests/tokens.test.mjs` fails on a literal radius in a component file the same
 way it fails on a literal border weight.
 
+**A box the OS draws is a box that breaks this.** A native `<select>` popup is
+a raised list the language cannot reach: no ink outline, no offset block, and
+its own selection colour where the accent belongs. `.axi-select` styles the
+closed box and hands the list to `appearance: base-select` where the browser
+has it — but most do not yet, and an Electron app is pinned to whatever
+Chromium its version shipped. `.axi-picker` is the way out: the same closed
+box on a button, and the list drawn as a popover that takes the panel weight
+like any other raised surface. Reach for the native select first, because it
+brings keyboard handling and a popup that can leave the window; reach for the
+picker when the popup it opens is not one this rule can touch.
+
 ## 4. Hover lifts
 
 The lift is per form step, not one universal number: a control has no resting
@@ -246,6 +257,12 @@ The corollary is that this language does not draw a heatmap. Intensity-by-tint
 is the one chart type that cannot be built without the thing rule 2 forbids, so
 a distribution is drawn as bars, or as a table sorted by the value, or not at
 all.
+
+The other corollary is that a thing with no quantity gets no length. A run of
+yes/no — attended or missed, passed or failed — is a sequence of facts, and a
+fact has no magnitude to draw: rendering "no" as a short bar says "a little
+bit" as loudly as a faded fill says "30%". That series is a row of marks of
+one size, differing only in ink, which is `.axi-ticks`.
 
 ## 10. A chart's ink is the accent
 

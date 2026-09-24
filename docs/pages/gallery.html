@@ -32,7 +32,7 @@
 
   <section class="docs-section" id="primitives">
     <h2>Primitives</h2>
-    <p>Buttons, pills, chips, inputs, the select, badges and the diamond.</p>
+    <p>Buttons, pills, chips, inputs, the select and the picker, badges and the diamond.</p>
 
     <div class="axi-stack" style="--axi-stack-gap: 20px; margin-bottom: 16px">
       <div class="docs-gallery-row" style="margin-bottom: 0">
@@ -98,6 +98,22 @@
         <option>Sort: newest</option>
         <option>Sort: score</option>
       </select>
+      <!-- The same dropdown with its list drawn by us instead of the OS. Put
+           beside the select on purpose: open both and the only difference
+           should be which one can be styled on this browser. -->
+      <div class="axi-picker">
+        <span class="axi-sr-only" id="month-label">Month</span>
+        <button class="axi-picker__btn" type="button" id="month-trigger"
+                aria-haspopup="listbox" aria-expanded="false"
+                aria-controls="month-pop" aria-labelledby="month-label month-trigger">Jul 2026</button>
+        <div class="axi-picker__pop" id="month-pop" role="listbox" aria-labelledby="month-label" hidden>
+          <button class="axi-picker__opt" type="button" role="option" aria-selected="false">Sep 2026</button>
+          <button class="axi-picker__opt" type="button" role="option" aria-selected="false">Aug 2026</button>
+          <button class="axi-picker__opt" type="button" role="option" aria-selected="true">Jul 2026</button>
+          <button class="axi-picker__opt" type="button" role="option" aria-selected="false">Jun 2026</button>
+          <button class="axi-picker__opt" type="button" role="option" aria-selected="false">May 2026</button>
+        </div>
+      </div>
       <div class="axi-menu">
         <button class="axi-btn axi-btn--dashed" type="button" aria-expanded="false" aria-controls="menu-pop" id="menu-trigger">
           Filters <span class="axi-badge-count">3</span>
@@ -258,6 +274,24 @@
           <span class="axi-legend__key"><i class="axi-diamond axi-diamond--danger"></i> Squad downed</span>
         </div>
       </div>
+    </div>
+
+    <div class="axi-panel" style="--axi-panel-pad: 18px; margin-top: 16px;">
+      <p class="axi-eyebrow">Ticks — raid attendance, last fourteen</p>
+      <div class="axi-meter-list" style="--axi-meter-label: 150px; --axi-meter-value: 86px;">
+        <span class="axi-meter-list__name">Miruis.9162</span>
+        <div class="axi-ticks"><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span></div>
+        <span class="axi-meter-list__value">12 / 14</span>
+
+        <span class="axi-meter-list__name">Funkle.4913</span>
+        <div class="axi-ticks"><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span></div>
+        <span class="axi-meter-list__value">5 / 14</span>
+
+        <span class="axi-meter-list__name">Impette.6210</span>
+        <div class="axi-ticks" style="--axi-series: var(--axi-text-faint)"><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick axi-ticks__tick--on"></span><span class="axi-ticks__tick"></span><span class="axi-ticks__tick"></span></div>
+        <span class="axi-meter-list__value">1 / 14</span>
+      </div>
+      <p style="margin: 14px 0 0; font: var(--axi-t-small); color: var(--axi-text-faint);">A yes/no run has no magnitude, so it gets no length: every mark is the same size and only the ink changes. Drawing the misses as short bars would say &ldquo;a little bit&rdquo; about something that did not happen.</p>
     </div>
 
     <div class="axi-panel" style="--axi-panel-pad: 18px; margin-top: 16px;">

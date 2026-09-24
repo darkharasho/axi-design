@@ -211,4 +211,80 @@ per rule 5.`,
       },
     ],
   },
+  {
+    id: 'ticks',
+    name: 'Tick strip',
+    layer: 'data',
+    classes: ['.axi-ticks', '.axi-ticks__tick', '.axi-ticks__tick--on'],
+    summary: 'A run of yes/no facts drawn as marks of one size, differing only in ink - the shape rule 9 asks for when a series has no magnitude to draw.',
+    rules: [9, 10],
+    knobs: ['--axi-tick-w', '--axi-tick-h', '--axi-ticks-gap', '--axi-series'],
+    notes: `Rule 9 names this component by hand: attended or missed, passed or
+failed, is a sequence of facts, and a fact has no magnitude. Drawing "no" as a
+short bar says "a little bit" exactly as loudly as a faded fill says "30%", so
+every mark is the same size and only the ink moves.
+
+Marks are a fixed width and never flex. A run of fourteen and a run of three
+can share a table column, and the short one has to read as a short run rather
+than as fourteen fatter events - which is what a flexing strip would turn it
+into. An on mark takes \`--axi-series\` per rule 10, so a second strip compared
+against the first costs no new colour.
+
+Do not reach for this to draw a quantity: a strip drawn large enough to outline
+is a bar chart, and \`.axi-bars\` already is one.`,
+    examples: [
+      {
+        title: 'A run of fourteen days',
+        note: 'Same size throughout; only the ink says yes',
+        html: `<div class="axi-ticks">
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+</div>`,
+      },
+      {
+        title: 'Two runs compared',
+        note: 'The second series is a per-instance --axi-series',
+        html: `<div class="axi-ticks">
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+</div>
+<div class="axi-ticks" style="--axi-series: var(--axi-danger)">
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+</div>`,
+      },
+      {
+        title: 'A denser strip',
+        note: 'Narrower marks, tighter gap, taller run',
+        html: `<div class="axi-ticks" style="--axi-tick-w: 3px; --axi-ticks-gap: 2px; --axi-tick-h: 22px">
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+  <span class="axi-ticks__tick axi-ticks__tick--on"></span>
+</div>`,
+      },
+    ],
+  },
 ]
