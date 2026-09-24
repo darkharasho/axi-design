@@ -1,4 +1,9 @@
+import primitives from './primitives.mjs'
+import layout from './layout.mjs'
+import shells from './shells.mjs'
 import data from './data.mjs'
+import prose from './prose.mjs'
+import utilities from './utilities.mjs'
 
 // Sidebar order. Not the order of src/ - that file split is by cascade
 // order, not by category, and the two genuinely differ (.axi-panel is defined
@@ -10,7 +15,7 @@ export const RESERVED_IDS = [
   'index', 'start', 'rules', 'theming', 'components', 'gallery', 'search', 'llms',
 ]
 
-const BY_LAYER = { primitives: [], layout: [], shells: [], data, prose: [], utilities: [] }
+const BY_LAYER = { primitives, layout, shells, data, prose, utilities }
 
 export function entries() {
   return LAYERS.flatMap((layer) => BY_LAYER[layer] ?? [])

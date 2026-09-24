@@ -96,3 +96,17 @@ describe('manifest against the stylesheet', () => {
     }
   })
 })
+
+// The forcing function. An undocumented component fails the build, which is
+// how a component added in round two cannot land without its page. There is
+// deliberately no exclusion list: a class that genuinely belongs to no visual
+// family gets a real entry under the `utilities` layer. An exclusion list is
+// precisely the escape hatch the rest of this repo's tests are written to
+// avoid, because it turns "undocumented" into a one-line, unreviewed opt-out.
+describe('coverage', () => {
+  it('documents every class src/ defines', () => {
+    const claimed = new Set(ALL.flatMap((e) => e.classes))
+    const undocumented = definedClasses().filter((cls) => !claimed.has(cls))
+    expect(undocumented, `undocumented: ${undocumented.join(' ')}`).toEqual([])
+  })
+})
