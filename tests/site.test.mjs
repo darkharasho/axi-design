@@ -4,6 +4,7 @@ import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { build } from '../scripts/site.mjs'
 import { entries, findEntry } from '../docs/manifest/index.mjs'
+import { LAYER_NAMES } from '../docs/site/shell.mjs'
 
 let out, written
 beforeAll(() => {
@@ -118,6 +119,34 @@ describe('landing and gallery', () => {
   it('writes the gallery and its script', () => {
     expect(written).toContain('gallery/index.html')
     expect(written).toContain('gallery.js')
+  })
+})
+
+describe('machine-readable output', () => {
+  it('writes the search index with an entry per component', () => {
+    expect(written).toContain('search.json')
+    const index = JSON.parse(read('search.json'))
+    expect(index.length).toBe(entries().length)
+    expect(index[0]).toHaveProperty('classes')
+  })
+
+  // Every other surface shows a layer's display name, not its raw id - a
+  // search result showing "data" instead of "Data" would be the one place
+  // this site leaks an internal identifier at a reader. search.js is a
+  // browser module and cannot import LAYER_NAMES itself (shell.mjs reads
+  // process.env), so the index carries the display name pre-projected.
+  it('projects the layer display name onto each search entry', () => {
+    const index = JSON.parse(read('search.json'))
+    for (const item of index) expect(item.layerName).toBe(LAYER_NAMES[item.layer])
+  })
+
+  it('writes llms.txt naming every component, class and knob', () => {
+    expect(written).toContain('llms.txt')
+    const txt = read('llms.txt')
+    for (const e of entries()) {
+      expect(txt).toContain(e.name)
+      for (const cls of e.classes) expect(txt).toContain(cls)
+    }
   })
 })
 

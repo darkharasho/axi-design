@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { url, page, sidebar, LAYER_NAMES, VERSION } from '../docs/site/shell.mjs'
+import { url, page, sidebar, LAYER_NAMES, VERSION, BASE } from '../docs/site/shell.mjs'
 import { LAYERS } from '../docs/manifest/index.mjs'
 
 describe('url', () => {
@@ -63,6 +63,13 @@ describe('page', () => {
   // is the single most likely way this site ships silently broken.
   it('emits no absolute link that bypassed url()', () => {
     expect(html).not.toMatch(/(?:href|src)="\/(?!axi-design\/)/)
+  })
+
+  // search.js is a browser module and reads document.documentElement.dataset.base
+  // to fetch search.json from the right place; with no data-base it falls back
+  // to '/', which works at the site root and 404s on Pages under /axi-design/.
+  it('emits the base path as a data attribute for client scripts', () => {
+    expect(html).toContain(`data-base="${BASE}"`)
   })
 })
 

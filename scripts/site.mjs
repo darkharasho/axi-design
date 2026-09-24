@@ -4,8 +4,9 @@ import { fileURLToPath } from 'node:url'
 import { entries } from '../docs/manifest/index.mjs'
 import { componentPage, componentsIndex } from '../docs/site/render.mjs'
 import { renderMarkdown } from '../docs/site/markdown.mjs'
-import { page } from '../docs/site/shell.mjs'
+import { page, LAYER_NAMES } from '../docs/site/shell.mjs'
 import { landing } from '../docs/site/landing.mjs'
+import { llmsTxt } from '../docs/site/llms.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -67,6 +68,14 @@ export function build(outDir) {
   copy('docs/site/accent.js', 'accent.js')
   copy('docs/site/copy.js', 'copy.js')
   copy('docs/site/search.js', 'search.js')
+
+  // Six fields, not the five the brief's search client shows: layerName is
+  // the projected display name, since search.js is a browser module and
+  // cannot import LAYER_NAMES from shell.mjs (which reads process.env at
+  // load) - every other surface on the site shows "Data", never "data".
+  write('search.json', JSON.stringify(entries().map(({ id, name, layer, summary, classes }) =>
+    ({ id, name, layer, layerName: LAYER_NAMES[layer], summary, classes }))))
+  write('llms.txt', llmsTxt())
 
   return written
 }

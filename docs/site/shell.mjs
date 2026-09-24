@@ -78,7 +78,7 @@ export function page({ title, nav, body, toc = '', sidebar: side = '', descripti
     .filter(Boolean).join(' ')
 
   return `<!doctype html>
-<html lang="en">
+<html lang="en" data-base="${BASE}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
