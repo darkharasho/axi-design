@@ -1,6 +1,6 @@
 import { byLayer } from '../manifest/index.mjs'
 import { knobsFor } from '../manifest/knobs.mjs'
-import { highlight } from './highlight.mjs'
+import { highlight, escapeHtml } from './highlight.mjs'
 import { url, sidebar, page, LAYER_NAMES } from './shell.mjs'
 import { renderMarkdown } from './markdown.mjs'
 
@@ -21,18 +21,23 @@ export function codeBlock(source, id) {
 // looking at. That single-sourcing is the reason the manifest exists at all.
 export function example(ex, index, entryId) {
   const codeId = `code-${entryId}-${index}`
-  const note = ex.note ? `<span class="docs-ex__note">${ex.note}</span>` : ''
+  const note = ex.note ? `<span class="docs-ex__note">${escapeHtml(ex.note)}</span>` : ''
   return `<section class="docs-ex" id="ex-${index}">
-  <div class="docs-ex__h"><h2>${ex.title}</h2>${note}</div>
+  <div class="docs-ex__h"><h2>${escapeHtml(ex.title)}</h2>${note}</div>
   <div class="docs-demo">${ex.html}</div>
   ${codeBlock(ex.html, codeId)}
 </section>`
 }
 
+// Escape first, then substitute: the backtick form is the one piece of
+// markup a knob string is allowed to produce, so it has to be applied to text
+// that is already safe rather than survive an escape pass afterwards.
+const code = (text) => escapeHtml(text).replace(/`([^`]+)`/g, '<code>$1</code>')
+
 function knobTable(names) {
   const knobs = knobsFor(names)
   if (!knobs.length) return ''
-  const rows = knobs.map((k) => `<tr><td><code>${k.name}</code></td><td>${k.sets.replace(/`([^`]+)`/g, '<code>$1</code>')}</td><td>${k.fallback.replace(/`([^`]+)`/g, '<code>$1</code>')}</td></tr>`).join('\n')
+  const rows = knobs.map((k) => `<tr><td><code>${k.name}</code></td><td>${code(k.sets)}</td><td>${code(k.fallback)}</td></tr>`).join('\n')
   return `<h2 class="docs-h2" id="knobs">Knobs</h2>
 <table class="docs-knobs"><tr><th>Property</th><th>Sets</th><th>Fallback</th></tr>
 ${rows}
@@ -43,7 +48,7 @@ function ruleNotices(numbers, ruleTitles) {
   if (!numbers.length) return ''
   const items = numbers.map((n) => `<a class="axi-notice" href="${url(`rules/#rule-${n}`)}">
   <span class="axi-notice__icon" aria-hidden="true">${n}</span>
-  <div><strong>${ruleTitles.get(n) ?? `Rule ${n}`}</strong></div>
+  <div><strong>${escapeHtml(ruleTitles.get(n) ?? `Rule ${n}`)}</strong></div>
 </a>`).join('\n')
   return `<h2 class="docs-h2" id="rules">Rules this answers</h2>
 <div class="docs-rules">${items}</div>`
@@ -55,14 +60,14 @@ export function componentPage(entry, ruleTitles) {
   const examples = entry.examples.map((ex, i) => example(ex, i, entry.id)).join('\n')
 
   const toc = [
-    ...entry.examples.map((ex, i) => `<a href="#ex-${i}">${ex.title}</a>`),
+    ...entry.examples.map((ex, i) => `<a href="#ex-${i}">${escapeHtml(ex.title)}</a>`),
     entry.knobs.length ? '<a href="#knobs">Knobs</a>' : '',
     entry.rules.length ? '<a href="#rules">Rules this answers</a>' : '',
   ].filter(Boolean).join('')
 
   const body = `<p class="axi-eyebrow">${LAYER_NAMES[entry.layer]}</p>
 <h1 class="docs-title">${entry.name}</h1>
-<p class="docs-lede">${entry.summary}</p>
+<p class="docs-lede">${escapeHtml(entry.summary)}</p>
 <div class="docs-classrow">
       ${chips}
 </div>
@@ -85,7 +90,7 @@ export function componentsIndex() {
   const groups = byLayer().map(({ layer, items }) => {
     const tiles = items.map((e) => `<a class="axi-card docs-tile" href="${url(`components/${e.id}/`)}">
   <div class="axi-card__head"><h3 class="axi-card__title">${e.name}</h3></div>
-  <p class="axi-card__meta">${e.summary}</p>
+  <p class="axi-card__meta">${escapeHtml(e.summary)}</p>
   <div class="docs-tile__demo">${e.examples[0].html}</div>
 </a>`).join('\n')
     return `<h2 class="docs-h2" id="${layer}">${LAYER_NAMES[layer]}</h2>

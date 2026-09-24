@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { byLayer } from '../manifest/index.mjs'
+import { escapeHtml } from './highlight.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
@@ -65,6 +66,11 @@ function accentSelect() {
     <select class="axi-select" id="accent">${options}</select>`
 }
 
+// `description` is plain text, escaped here (R-30). It is a manifest summary on
+// a component page, and a summary also lands in search.json and llms.txt, where
+// it is text and nothing else - a field that were HTML in the page and text in
+// the index would be exactly the drift this generator exists to remove. The
+// unescaped version truncated pill's description at its first embedded quote.
 export function page({ title, nav, body, toc = '', sidebar: side = '', description = '', scripts = [] }) {
   const tabs = NAV.map(([href, label]) => {
     const current = href === `${nav}/` || href === nav ? ' aria-current="page"' : ''
@@ -83,7 +89,7 @@ export function page({ title, nav, body, toc = '', sidebar: side = '', descripti
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title} · axi-design</title>
-${description ? `<meta name="description" content="${description}">` : ''}
+${description ? `<meta name="description" content="${escapeHtml(description)}">` : ''}
 <link rel="stylesheet" href="${url('axi.css')}">
 <link rel="stylesheet" href="${url('accents.css')}">
 <link rel="stylesheet" href="${url('docs.css')}">

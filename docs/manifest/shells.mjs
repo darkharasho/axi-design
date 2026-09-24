@@ -348,7 +348,7 @@ scrolling row.`,
     name: 'Brand',
     layer: 'shells',
     classes: ['.axi-brand', '.axi-brand__name'],
-    summary: 'The sigil and the wordmark, as one link home. A nested `<small>` becomes the second line without a class of its own.',
+    summary: 'The sigil and the wordmark, as one link home. A nested <small> becomes the second line without a class of its own.',
     rules: [],
     knobs: [],
     notes: `Tight negative tracking on the name and uppercase micro type on the

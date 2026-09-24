@@ -76,6 +76,76 @@ describe('emitted links', () => {
   })
 })
 
+// R-30: every short prose field in the manifest is plain text, escaped at the
+// render boundary. These three entries were the ones visibly broken by
+// interpolating it raw, and they are asserted against the built page rather
+// than against escapeHtml(), which would only prove the escaper escapes.
+describe('manifest prose reaches the page as text', () => {
+  it('keeps a summary with an embedded quote whole in the meta description', () => {
+    const summary = findEntry('pill').summary
+    expect(summary).toContain('"selected"')
+    const m = read('components/pill/index.html').match(/<meta name="description" content="([^"]*)">/)
+    expect(m[1]).toBe(summary.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'))
+  })
+
+  it('shows a tag name in a lede instead of rendering the tag', () => {
+    const html = read('components/brand/index.html')
+    expect(html).toContain('<p class="docs-lede">The sigil and the wordmark, as one link home. A nested &lt;small&gt; becomes')
+    expect(html).not.toContain('A nested <small> becomes')
+  })
+
+  it('keeps a tag name in an example note', () => {
+    const html = read('components/tooltip/index.html')
+    const note = html.match(/<span class="docs-ex__note">([^<]*)/)[1]
+    expect(note).toContain('&lt;body&gt;')
+  })
+})
+
+// The reviewer found the gallery's nested <main> and its duplicate id="q" by
+// scanning all 44 emitted pages by hand. These make that scan permanent, and
+// they run over every page rather than the handful someone remembered.
+describe('every emitted page', () => {
+  const pages = () => written.filter((p) => p.endsWith('.html'))
+
+  it('has exactly one <main>', () => {
+    for (const path of pages()) {
+      const count = [...read(path).matchAll(/<main[\s>]/g)].length
+      expect(count, `${path} has ${count} <main> elements`).toBe(1)
+    }
+  })
+
+  it('uses every id at most once', () => {
+    for (const path of pages()) {
+      const ids = [...read(path).matchAll(/ id="([^"]*)"/g)].map((m) => m[1])
+      const seen = new Set()
+      const dupes = [...new Set(ids.filter((id) => seen.has(id) || !seen.add(id)))]
+      expect(dupes, `${path} repeats an id`).toEqual([])
+    }
+  })
+
+  // Scoped to the page title rather than to `<h1` in general: the prose
+  // component's example deliberately renders an h1 inside its demo, on its own
+  // page and in its index tile, and that markup belongs to the manifest. What
+  // must hold is that every page has one page title and that it comes first -
+  // which is what /start/, /theming/ and /gallery/ were missing entirely.
+  it('has exactly one page-title h1, ahead of any demo h1', () => {
+    for (const path of pages()) {
+      const html = read(path)
+      const titles = [...html.matchAll(/<h1 class="docs-title">/g)]
+      expect(titles.length, `${path} has ${titles.length} page titles`).toBe(1)
+      expect(html.indexOf('<h1'), `${path} opens with an h1 that is not its title`).toBe(titles[0].index)
+    }
+  })
+
+  it('carries a non-empty meta description', () => {
+    for (const path of pages()) {
+      const m = read(path).match(/<meta name="description" content="([^"]*)">/)
+      expect(m, `${path} has no meta description`).not.toBeNull()
+      expect(m[1].trim().length, `${path} has an empty meta description`).toBeGreaterThan(20)
+    }
+  })
+})
+
 describe('narrative pages', () => {
   it('writes start, theming and rules', () => {
     expect(written).toContain('start/index.html')

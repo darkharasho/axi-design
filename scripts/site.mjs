@@ -39,25 +39,59 @@ export function build(outDir) {
   }
   write('components/index.html', componentsIndex())
 
-  const guide = (rel, source, title, nav, opts = {}) => {
-    const { html, toc } = renderMarkdown(readFileSync(resolve(ROOT, source), 'utf8'), opts)
+  // The guides open at `##` because their Markdown is also read as Markdown
+  // (RULES.md ships in the package). The page title is therefore the shell's
+  // job, not the source's: eyebrow + h1, exactly as componentPage() emits it,
+  // so every page type on the site has one and only one h1. The h1 carries no
+  // id, so it cannot collide with the stable rule-<n> anchors, and the toc is
+  // built from the Markdown's h2s alone, so it cannot list the title twice.
+  const guide = (rel, source, { title, nav, eyebrow, description, ...opts }) => {
+    let { html, toc } = renderMarkdown(readFileSync(resolve(ROOT, source), 'utf8'), opts)
+    // RULES.md opens with its own `# ...` because it is also read as Markdown
+    // in the package; start.md and theming.md open at `##`. Either way the
+    // page ends up with exactly one h1: a source h1 is lifted out of the prose
+    // and re-emitted as the page title rather than sitting beside a second one.
+    const own = html.match(/^\s*<h1>([\s\S]*?)<\/h1>\s*/)
+    if (own) html = html.slice(own[0].length)
     write(rel, page({
       title,
       nav,
-      body: `<div class="axi-prose">${html}</div>`,
+      description,
+      body: `<p class="axi-eyebrow">${eyebrow}</p>
+<h1 class="docs-title">${own ? own[1] : title}</h1>
+<div class="axi-prose">${html}</div>`,
       toc: toc.map((h) => `<a href="#${h.id}">${h.text}</a>`).join(''),
     }))
   }
 
-  guide('start/index.html', 'docs/pages/start.md', 'Start', 'start/')
-  guide('theming/index.html', 'docs/pages/theming.md', 'Theming', 'theming/')
-  guide('rules/index.html', 'docs/RULES.md', 'Rules', 'rules/', { stableRuleIds: true })
+  guide('start/index.html', 'docs/pages/start.md', {
+    title: 'Start',
+    nav: 'start/',
+    eyebrow: 'Guide',
+    description: 'Install axi-design, link the one stylesheet, and assemble a first screen from primitives that already agree with each other.',
+  })
+  guide('theming/index.html', 'docs/pages/theming.md', {
+    title: 'Theming',
+    nav: 'theming/',
+    eyebrow: 'Guide',
+    description: 'How far you can move axi-design without writing new CSS: the tokens, the eleven accents, and the per-instance knobs each component exposes.',
+  })
+  guide('rules/index.html', 'docs/RULES.md', {
+    title: 'Rules',
+    nav: 'rules/',
+    eyebrow: 'Reference',
+    description: 'The written constraints every axi component obeys, and what each one buys you - the part of this language that is not a matter of taste.',
+    stableRuleIds: true,
+  })
 
   write('index.html', landing())
   write('gallery/index.html', page({
     title: 'Gallery',
     nav: 'gallery/',
-    body: readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8'),
+    description: 'Every token, accent, primitive and shell rendered on one page - the whole language at a glance, in the arrangements it was designed for.',
+    body: `<p class="axi-eyebrow">Reference</p>
+<h1 class="docs-title">Gallery</h1>
+${readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8')}`,
     scripts: ['gallery.js'],
   }))
   copy('gallery.js', 'gallery.js')

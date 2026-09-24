@@ -63,5 +63,13 @@ ${codeBlock(INSTALL, 'code-install')}
 dark ground, and a small, closed set of primitives instead of an escape hatch for every app that wants
 one. What is and is not allowed is not a matter of taste - it is written down, in <a href="${url('rules/')}">the rules</a>.</p>`
 
-  return page({ title: 'axi-design', nav: '', body })
+  // page() appends `· axi-design` to whatever it is given, so passing
+  // 'axi-design' here produced `axi-design · axi-design`. The title slot wants
+  // the thing this page is, not the site it is on.
+  return page({
+    title: 'A design language for the axi suite',
+    nav: '',
+    description: 'A flat, outlined, dark CSS design language: 38 components over a fixed ground, eleven accents, no build step, and a written set of rules instead of a per-app escape hatch.',
+    body,
+  })
 }
