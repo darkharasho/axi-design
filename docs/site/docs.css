@@ -1,0 +1,111 @@
+/* axi-design documentation site — chrome only.
+   Not part of the design language. Never concatenated into dist/axi.css,
+   never published to npm. Anything in here that turns out to be generally
+   useful is a candidate for promotion into src/, having earned its way in by
+   being needed rather than by being on some other framework's feature list. */
+
+body { margin: 0; }
+
+.docs-shell {
+  display: grid;
+  grid-template-columns: 250px minmax(0, 1fr) 200px;
+  gap: 34px;
+  max-width: var(--axi-page-wide);
+  margin: 0 auto;
+  padding: 26px var(--axi-gutter) 80px;
+}
+.docs-shell--notoc { grid-template-columns: 250px minmax(0, 1fr); }
+.docs-shell--plain { grid-template-columns: minmax(0, 1fr); max-width: var(--axi-page); }
+
+.docs-side { position: sticky; top: 20px; align-self: start; max-height: calc(100vh - 40px); overflow: auto; }
+.docs-side h3 {
+  font: var(--axi-t-eyebrow); letter-spacing: var(--axi-ls-eyebrow);
+  text-transform: uppercase; color: var(--axi-text-faint); margin: 22px 0 8px;
+}
+.docs-side h3:first-child { margin-top: 0; }
+.docs-side a {
+  display: block; padding: 5px 10px; text-decoration: none;
+  font: var(--axi-t-small); color: var(--axi-text-dim);
+  border-left: var(--axi-border-control) solid transparent;
+}
+.docs-side a:hover { color: var(--axi-text); background: var(--axi-surface); }
+.docs-side a[aria-current] { color: var(--axi-accent-ink); background: var(--axi-accent); font-weight: 800; }
+
+.docs-toc { position: sticky; top: 20px; align-self: start; }
+.docs-toc h3 {
+  font: var(--axi-t-micro); letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase; color: var(--axi-text-faint); margin: 0 0 10px;
+}
+.docs-toc a { display: block; padding: 4px 0; text-decoration: none; font: var(--axi-t-small); color: var(--axi-text-dim); }
+.docs-toc a:hover { color: var(--axi-accent); }
+
+.docs-title { font: var(--axi-t-display); letter-spacing: var(--axi-ls-display); margin: 2px 0 10px; }
+.docs-lede { font: 400 17px/1.5 var(--axi-sans); color: var(--axi-text-dim); max-width: 60ch; margin: 0 0 18px; }
+.docs-h2 { font: var(--axi-t-h2); letter-spacing: var(--axi-ls-h2); margin: 38px 0 14px; }
+.docs-classrow { display: flex; flex-wrap: wrap; gap: 7px; margin: 0 0 30px; }
+
+.docs-ex { margin: 0 0 34px; }
+.docs-ex__h { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; margin: 0 0 12px; }
+.docs-ex__h h2 { font: var(--axi-t-h3); letter-spacing: var(--axi-ls-h3); margin: 0; }
+.docs-ex__note { font: var(--axi-t-small); color: var(--axi-text-faint); }
+
+.docs-demo {
+  background: var(--axi-surface);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  padding: 28px;
+}
+
+/* Tucked against the demo's own offset so the pair reads as one object rather
+   than two stacked panels. */
+.docs-code {
+  position: relative;
+  margin-top: calc(var(--axi-offset-panel) + 12px);
+  background: var(--axi-ink-line);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+}
+.docs-code pre { margin: 0; padding: 16px 18px; overflow: auto; font: 13px/1.65 var(--axi-mono); color: var(--axi-text-dim); }
+.docs-code__copy { position: absolute; top: 8px; right: 8px; }
+
+.t-tag { color: var(--axi-meta); }
+.t-attr { color: var(--axi-accent); }
+.t-str { color: var(--axi-ok); }
+.t-punc { color: var(--axi-text-faint); }
+
+.docs-knobs { width: 100%; border-collapse: collapse; margin: 0 0 30px; }
+.docs-knobs th {
+  text-align: left; font: var(--axi-t-micro); letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase; color: var(--axi-text-faint); padding: 0 14px 9px 0;
+}
+.docs-knobs td {
+  padding: 9px 14px 9px 0; vertical-align: top;
+  border-top: var(--axi-border-hairline) solid var(--axi-rule);
+  font: var(--axi-t-small); color: var(--axi-text-dim);
+}
+.docs-knobs code { font: 12.5px/1.5 var(--axi-mono); color: var(--axi-accent); }
+
+.docs-rules { display: flex; flex-direction: column; gap: 10px; }
+.docs-rules a { text-decoration: none; }
+
+.docs-tile__demo { margin-top: 14px; pointer-events: none; }
+.docs-section { margin: 0 0 56px; }
+
+/* Search results, anchored under the mast's input. */
+.docs-results {
+  position: absolute; top: 100%; z-index: 20; width: 320px;
+  background: var(--axi-surface-raised);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+}
+.docs-results a {
+  display: flex; justify-content: space-between; align-items: baseline; gap: 10px;
+  padding: 9px 12px; text-decoration: none; color: var(--axi-text); font: var(--axi-t-small);
+}
+.docs-results a:hover { background: var(--axi-accent); color: var(--axi-accent-ink); }
+.docs-results small { color: var(--axi-text-faint); font: var(--axi-t-micro); letter-spacing: var(--axi-ls-micro); text-transform: uppercase; }
+
+@media (max-width: 1100px) {
+  .docs-shell, .docs-shell--notoc { grid-template-columns: minmax(0, 1fr); }
+  .docs-toc { display: none; }
+  .docs-side { position: static; max-height: none; overflow: visible; }
+}
