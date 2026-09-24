@@ -95,7 +95,13 @@ body { margin: 0; }
 .docs-tile__link {
   display: flex; align-items: baseline; gap: 12px;
   color: inherit; text-decoration: none;
+  cursor: pointer;
 }
+
+/* .axi-card carries cursor: pointer for the whole card, which was right when
+   the whole card was an <a>. After R-3 only the title row is clickable, so the
+   card would otherwise advertise a click target it does not have. */
+.docs-tile { cursor: default; }
 .docs-tile__demo { margin-top: 14px; }
 
 /* Gallery chrome only. Nothing here is part of the design language; it is
