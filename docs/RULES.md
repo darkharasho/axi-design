@@ -37,10 +37,21 @@ Two weight steps, and only two:
 A third step is how a system stops looking like one system.
 
 There is one weight outside the table, and it is deliberately not a step:
-`--axi-border-hairline` (2px), used only inside `.axi-prose` — for inline
-code, table rules and the list bullet — where either form step reads as too
-heavy for a line of running text. It is a prose rule weight, never an outline
-on a raised thing.
+`--axi-border-hairline` (2px). It is a **rule** weight — a line drawn inside
+content to separate parts of it, where either form step would turn a list of
+numbers into a grid of boxes. That covers inline code and the list bullet in
+`.axi-prose`, the rules between table rows, and the gridlines inside a plot.
+It is never an outline on a raised thing: the two steps in the table above are
+what raise a surface, and reaching for the hairline instead is how a panel
+stops looking raised.
+
+There is exactly one element drawn in the line ink rather than on a surface,
+and it is named here so it stays an exception rather than becoming a habit:
+`.axi-tooltip` is filled with `--axi-ink-line` itself. A thing cannot be
+outlined in the colour it is already made of, and a block in that same ink
+under a box already made of it reads as the box being thicker rather than
+raised — so the tooltip takes a hairline in `--axi-rule` to hold its edge
+against the page, and carries no block. Nothing else may use that reasoning.
 
 **What is mechanically enforced.** `tests/tokens.test.mjs` enforces both
 columns:
@@ -173,8 +184,12 @@ than framing it down the left edge. A full-height stripe runs the height of the
 box, so it reads as the box's border: five cards in a row become five coloured
 frames, and the colour stops saying anything about any one number. A cap sits
 directly over the reading it is a verdict on, identifies it once, and then gets
-out of the way. Under rule 3 the cap is drawn at the panel weight; the card
-itself keeps its plain ink outline at the control weight.
+out of the way. Under rule 3 both the cap's edge and the card's own outline are
+drawn at the panel weight, because the card is a raised surface and rule 3
+pairs the panel border with the panel offset the card already carries. A card
+outlined at the control weight would pair a 3px border with a 6px offset —
+a third step in everything but name — and would put a thin frame around a
+heavier bar.
 
 A switch is the same rule in a slot. Its track fills to assert the setting's
 status and is empty otherwise; the slug that moves is `--axi-ink-line` in both
