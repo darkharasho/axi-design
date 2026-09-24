@@ -98,15 +98,14 @@ rather than the field.`,
     layer: 'primitives',
     classes: ['.axi-select'],
     summary: 'A native select with its closed box redrawn, caret included, so it sits beside the other controls instead of announcing the operating system.',
-    rules: [1, 4],
+    rules: [1],
     knobs: [],
     notes: `The caret is two \`linear-gradient\`s meeting to make a triangle - one
 of the two gradients rule 1 sanctions, because it draws a shape and contains
 no soft transition anywhere. No image, no icon font. The popup list stays OS
 chrome until a browser lets us style it; where one does (Chromium's
 \`base-select\`) the list picks up the panel outline and block, so both
-dropdown kinds read as one family. Hovering the closed box lifts it the way
-any control does.`,
+dropdown kinds read as one family.`,
     examples: [
       {
         title: 'A sort control',
