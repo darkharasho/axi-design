@@ -56,6 +56,18 @@ describe('packaging', () => {
     expect(paths).toContain('dist/accents.css')
     expect(paths).toContain('dist/axi.css')
   })
+
+  it('ships RULES.md and nothing else from docs/', () => {
+    const [pack] = JSON.parse(execSync('npm pack --dry-run --json', { encoding: 'utf8' }))
+    const docs = pack.files.map((f) => f.path).filter((p) => p.startsWith('docs/'))
+    expect(docs).toEqual(['docs/RULES.md'])
+  })
+
+  it('declares no runtime dependencies', () => {
+    const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+    expect(pkg.dependencies ?? {}).toEqual({})
+    expect(Object.keys(pkg.devDependencies)).toContain('marked')
+  })
 })
 
 describe('the accent switcher', () => {

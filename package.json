@@ -29,17 +29,18 @@
   "sideEffects": [
     "*.css"
   ],
-  "//files": "dist/ is the artifact; src/ and docs/ ride along because RULES.md is the reason any of it is shaped the way it is, and a consumer reading a component wants it next to them. No tests, no gallery. LICENSE and README are included by npm regardless of this list.",
+  "//files": "dist/ is the artifact; src/ rides along because a consumer reading a component wants the source next to them; docs/RULES.md rides along because it is the reason any of it is shaped the way it is. The rest of docs/ - the manifest, the generator and the guides - builds the site and is no use to a consumer. No tests, no gallery. LICENSE and README are included by npm regardless of this list.",
   "files": [
     "dist",
     "src",
-    "docs",
+    "docs/RULES.md",
     "accents.json",
     "README.md"
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
     "docs": "node scripts/site.mjs",
+    "serve": "node scripts/serve.mjs",
     "test": "vitest run"
   },
   "devDependencies": {

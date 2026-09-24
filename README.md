@@ -48,9 +48,9 @@ Either way, set your accent:
 :root { --axi-accent: #b06bff; }
 ```
 
-That is the whole theming surface. See [the pattern
-gallery](https://darkharasho.github.io/axi-design/) for every component, with a
-live accent switcher.
+That is the whole theming surface. See [the documentation
+site](https://darkharasho.github.io/axi-design/) for every component, with a
+live accent switcher. `/gallery/` still holds the everything-at-once view.
 
 ## Per-instance knobs
 
@@ -108,9 +108,9 @@ version I built against" — and a bundling app should always prefer the second.
 
 ```bash
 npm install
-npm run build          # src/*.css -> dist/axi.css
-npx vitest run --pool=forks --poolOptions.forks.maxForks=2
-python3 -m http.server # then open the gallery at /
+npm run build   # src/*.css -> dist/axi.css
+npm test
+npm run serve   # builds the docs site and serves it at http://localhost:4173
 ```
 
 `dist/axi.css` is committed, because the release workflow publishes that exact

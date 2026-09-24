@@ -31,10 +31,9 @@ jobs:
       # a version that is not re-staged here silently disappears - and the
       # promise that v1/ keeps serving forever is the one thing consumers are
       # relying on.
-      - name: Stage the gallery and every published version
+      - name: Build the site and stage every published version
         run: |
-          mkdir -p _site
-          cp -r index.html gallery.js dist _site/
+          npm run docs
           for tag in $(git tag -l 'v*' | sort -V); do
             major="${tag%%.*}"
             mkdir -p "_site/$major"
