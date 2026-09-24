@@ -39,6 +39,7 @@
   ],
   "scripts": {
     "build": "node scripts/build.mjs",
+    "docs": "node scripts/site.mjs",
     "test": "vitest run"
   },
   "devDependencies": {
