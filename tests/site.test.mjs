@@ -76,6 +76,34 @@ describe('emitted links', () => {
   })
 })
 
+// R-3/R-31. A tile renders a real component live, so whatever wraps it is
+// wrapping arbitrary interactive markup. Nothing noticed that the index shipped
+// the one shape R-3 forbade, so this asserts the tree, not the styling.
+describe('the components index', () => {
+  let html
+  beforeAll(() => { html = read('components/index.html') })
+
+  it('never nests an anchor inside an anchor', () => {
+    const offenders = [...html.matchAll(/<a\b[^>]*>((?:(?!<\/a>)[\s\S])*?)<a\b/g)].map((m) => m[0].slice(0, 90))
+    expect(offenders, 'an <a> start tag inside an open <a> closes it early').toEqual([])
+  })
+
+  it('makes the tile a div and the title the only link', () => {
+    expect(html).not.toMatch(/<a[^>]*class="axi-card docs-tile"/)
+    for (const e of entries()) {
+      expect(html).toContain(`<div class="axi-card docs-tile">`)
+      expect(html).toMatch(new RegExp(`<a class="docs-tile__link" href="[^"]*components/${e.id}/">`))
+    }
+  })
+
+  // The demo is decorative: it must not be a tab stop that does nothing.
+  it('marks every tile demo inert rather than hiding the symptom with CSS', () => {
+    const demos = [...html.matchAll(/<div class="docs-tile__demo"([^>]*)>/g)].map((m) => m[1])
+    expect(demos.length).toBe(entries().length)
+    for (const attrs of demos) expect(attrs).toContain('inert')
+  })
+})
+
 // R-30: every short prose field in the manifest is plain text, escaped at the
 // render boundary. These three entries were the ones visibly broken by
 // interpolating it raw, and they are asserted against the built page rather

@@ -86,13 +86,20 @@ ${ruleNotices(entry.rules, ruleTitles)}`
   })
 }
 
+// R-3: the tile is a <div>, the only <a> is in the title, and the demo is a
+// sibling outside it. A tile is a real component rendered live, so 19 of 38 of
+// them hold something focusable and 8 hold another <a href> - and a nested <a>
+// start tag makes the parser close the outer link early, so those tiles were
+// not one link at all. The demo is decorative here, and `inert` says so
+// properly: out of the tab order and out of the accessibility tree, which is
+// the thing `pointer-events: none` only appeared to do.
 export function componentsIndex() {
   const groups = byLayer().map(({ layer, items }) => {
-    const tiles = items.map((e) => `<a class="axi-card docs-tile" href="${url(`components/${e.id}/`)}">
-  <div class="axi-card__head"><h3 class="axi-card__title">${e.name}</h3></div>
+    const tiles = items.map((e) => `<div class="axi-card docs-tile">
+  <div class="axi-card__head"><h3 class="axi-card__title"><a class="docs-tile__link" href="${url(`components/${e.id}/`)}">${e.name}<span class="axi-card__go">Docs &rarr;</span></a></h3></div>
   <p class="axi-card__meta">${escapeHtml(e.summary)}</p>
-  <div class="docs-tile__demo">${e.examples[0].html}</div>
-</a>`).join('\n')
+  <div class="docs-tile__demo" inert>${e.examples[0].html}</div>
+</div>`).join('\n')
     return `<h2 class="docs-h2" id="${layer}">${LAYER_NAMES[layer]}</h2>
 <div class="axi-grid">${tiles}</div>`
   }).join('\n')
