@@ -3,6 +3,7 @@ import { readFileSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { execSync } from 'node:child_process'
 import { buildAccentsCss, ACCENTS } from '../scripts/build.mjs'
+import { page } from '../docs/site/shell.mjs'
 
 // dist/accents.css is committed for the same reason dist/axi.css is: the
 // Pages workflow and npm both publish the artifact, and nothing in-repo
@@ -57,12 +58,12 @@ describe('packaging', () => {
   })
 })
 
-describe('gallery accent switcher', () => {
+describe('the accent switcher', () => {
   it('offers exactly the official accents, in order', () => {
-    const html = readFileSync(resolve('index.html'), 'utf8')
+    const html = page({ title: 'x', nav: '', body: '' })
     const select = html.match(/<select[^>]*id="accent"[\s\S]*?<\/select>/)[0]
-    const options = [...select.matchAll(/<option value="(#[0-9a-f]{6})">([^<]+)<\/option>/g)]
-      .map((m) => ({ hex: m[1], label: m[2] }))
-    expect(options).toEqual(ACCENTS.map((a) => ({ hex: a.hex, label: a.label })))
+    const options = [...select.matchAll(/<option value="([a-z-]+)">([^<]+)<\/option>/g)]
+      .map((m) => ({ id: m[1], label: m[2] }))
+    expect(options).toEqual(ACCENTS.map((a) => ({ id: a.id, label: a.label })))
   })
 })

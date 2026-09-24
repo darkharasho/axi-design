@@ -100,4 +100,22 @@ describe('narrative pages', () => {
   })
 })
 
+describe('landing and gallery', () => {
+  it('writes the landing page at the site root', () => {
+    expect(written).toContain('index.html')
+  })
+
+  it('shows the install snippet and routes onward', () => {
+    const html = read('index.html')
+    expect(html).toContain('@axiapps/axi-design')
+    expect(html).toContain(`href="${'/axi-design/start/'}"`)
+    expect(html).toContain(`href="${'/axi-design/components/'}"`)
+  })
+
+  it('writes the gallery and its script', () => {
+    expect(written).toContain('gallery/index.html')
+    expect(written).toContain('gallery.js')
+  })
+})
+
 afterAll(() => rmSync(out, { recursive: true, force: true }))

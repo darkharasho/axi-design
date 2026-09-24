@@ -4,6 +4,17 @@ import { highlight } from './highlight.mjs'
 import { url, sidebar, page, LAYER_NAMES } from './shell.mjs'
 import { renderMarkdown } from './markdown.mjs'
 
+// The highlighted, copyable half of an example: a code block with its own
+// copy button. Shared by example(), which pairs it with a live demo of the
+// same string, and by landing(), which wants the block on its own - the
+// install snippet must never be rendered live (see task-9-report.md).
+export function codeBlock(source, id) {
+  return `<div class="docs-code">
+    <button class="axi-btn axi-btn--ghost docs-code__copy" type="button" data-copy="${id}">Copy</button>
+    <pre><code id="${id}">${highlight(source)}</code></pre>
+  </div>`
+}
+
 // An example is one string, rendered twice: raw into the demo, escaped and
 // highlighted into the code block. There is no second copy of the markup, and
 // so no way for the code someone copies to disagree with the thing they are
@@ -14,10 +25,7 @@ export function example(ex, index, entryId) {
   return `<section class="docs-ex" id="ex-${index}">
   <div class="docs-ex__h"><h2>${ex.title}</h2>${note}</div>
   <div class="docs-demo">${ex.html}</div>
-  <div class="docs-code">
-    <button class="axi-btn axi-btn--ghost docs-code__copy" type="button" data-copy="${codeId}">Copy</button>
-    <pre><code id="${codeId}">${highlight(ex.html)}</code></pre>
-  </div>
+  ${codeBlock(ex.html, codeId)}
 </section>`
 }
 

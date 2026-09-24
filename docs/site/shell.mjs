@@ -65,7 +65,7 @@ function accentSelect() {
     <select class="axi-select" id="accent">${options}</select>`
 }
 
-export function page({ title, nav, body, toc = '', sidebar: side = '', description = '' }) {
+export function page({ title, nav, body, toc = '', sidebar: side = '', description = '', scripts = [] }) {
   const tabs = NAV.map(([href, label]) => {
     const current = href === `${nav}/` || href === nav ? ' aria-current="page"' : ''
     return `<a href="${url(href)}"${current}>${label}</a>`
@@ -108,6 +108,7 @@ ${description ? `<meta name="description" content="${description}">` : ''}
 <script type="module" src="${url('accent.js')}"></script>
 <script type="module" src="${url('copy.js')}"></script>
 <script type="module" src="${url('search.js')}"></script>
+${scripts.map((src) => `<script type="module" src="${url(src)}"></script>`).join('\n')}
 </body>
 </html>
 `

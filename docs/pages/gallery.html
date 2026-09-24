@@ -1,64 +1,12 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>axi design language — pattern gallery</title>
-<link rel="stylesheet" href="dist/axi.css">
-<style>
-  /* Gallery chrome only. Nothing here is part of the design language; it is
-     the scaffolding that displays it, kept in the page so the gallery cannot
-     accidentally become an unversioned seventh source file. */
-  .g-section { margin: 46px 0; }
-  .g-section > h2 { font: var(--axi-t-h2); letter-spacing: var(--axi-ls-h2); margin: 0 0 6px; }
-  .g-section > p { color: var(--axi-text-faint); margin: 0 0 20px; font: var(--axi-t-small); }
-  .g-demo { display: flex; flex-wrap: wrap; gap: 12px; align-items: flex-start; margin-bottom: 16px; }
-  .g-swatches { display: flex; gap: 8px; flex-wrap: wrap; }
-  .g-swatch { width: 44px; height: 44px; border: var(--axi-border-control) solid var(--axi-ink-line); border-radius: 8px; }
-  .g-display { margin: 0; color: var(--axi-text); font: var(--axi-t-display); letter-spacing: var(--axi-ls-display); }
-</style>
-</head>
-<body>
-
-<header class="axi-mast">
-  <div class="axi-mast__in">
-    <a class="axi-brand" href="#">
-      <span class="axi-sigil" aria-hidden="true">A</span>
-      <span class="axi-brand__name">axi-design<small>Pattern gallery</small></span>
-    </a>
-    <nav class="axi-tabs">
-      <a href="#" aria-current="page">Gallery</a>
-      <a href="#primitives">Primitives</a>
-      <a href="#shells">Shells</a>
-      <a href="#data">Data</a>
-      <a href="#prose">Prose</a>
-    </nav>
-    <label class="axi-sr-only" for="accent">Accent colour</label>
-    <select class="axi-select" id="accent">
-      <option value="#ffc53d">Axi Gold</option>
-      <option value="#3b82f6">Electric Blue</option>
-      <option value="#5eadd5">Refined Cyan</option>
-      <option value="#f59e0b">Amber Warm</option>
-      <option value="#34d399">Emerald Mint</option>
-      <option value="#f43f5e">Rose Pink</option>
-      <option value="#8b5cf6">Violet Purple</option>
-      <option value="#ef4444">Crimson Red</option>
-      <option value="#94a3b8">Slate Silver</option>
-      <option value="#14b8a6">Teal Ocean</option>
-      <option value="#d4a017">Gold Bronze</option>
-    </select>
-  </div>
-</header>
-
 <main class="axi-page">
 
-  <section class="g-section">
+  <section class="docs-section">
     <h2>Display</h2>
     <p>The top of the type scale — <code>--axi-t-display</code> with its paired tracking. At most one per page: it is a poster, not a heading.</p>
-    <div class="g-display">axi</div>
+    <div class="docs-gallery-display">axi</div>
   </section>
 
-  <section class="g-section">
+  <section class="docs-section">
     <h2>Accent</h2>
     <p>The whole per-app override surface. Change the accent above; everything below follows.</p>
     <div class="axi-notice">
@@ -67,34 +15,34 @@
     </div>
   </section>
 
-  <section class="g-section">
+  <section class="docs-section">
     <h2>Palette</h2>
     <p>Status inks are fixed; only the accent moves.</p>
-    <div class="g-swatches">
-      <span class="g-swatch" style="background: var(--axi-accent)" title="accent"></span>
-      <span class="g-swatch" style="background: var(--axi-meta)" title="meta"></span>
-      <span class="g-swatch" style="background: var(--axi-ok)" title="ok"></span>
-      <span class="g-swatch" style="background: var(--axi-warn)" title="warn"></span>
-      <span class="g-swatch" style="background: var(--axi-danger)" title="danger"></span>
-      <span class="g-swatch" style="background: var(--axi-surface)" title="surface"></span>
-      <span class="g-swatch" style="background: var(--axi-surface-raised)" title="surface-raised"></span>
-      <span class="g-swatch" style="background: var(--axi-ground)" title="ground"></span>
+    <div class="docs-gallery-swatches">
+      <span class="docs-gallery-swatch" style="background: var(--axi-accent)" title="accent"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-meta)" title="meta"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-ok)" title="ok"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-warn)" title="warn"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-danger)" title="danger"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-surface)" title="surface"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-surface-raised)" title="surface-raised"></span>
+      <span class="docs-gallery-swatch" style="background: var(--axi-ground)" title="ground"></span>
     </div>
   </section>
 
-  <section class="g-section" id="primitives">
+  <section class="docs-section" id="primitives">
     <h2>Primitives</h2>
     <p>Buttons, pills, chips, inputs, the select, badges and the diamond.</p>
 
     <div class="axi-stack" style="--axi-stack-gap: 20px; margin-bottom: 16px">
-      <div class="g-demo" style="margin-bottom: 0">
+      <div class="docs-gallery-row" style="margin-bottom: 0">
         <a class="axi-btn axi-btn--primary" href="#">Primary</a>
         <a class="axi-btn" href="#">Default</a>
         <a class="axi-btn axi-btn--ghost" href="#">Ghost</a>
         <a class="axi-btn axi-btn--dashed" href="#">Dashed</a>
       </div>
 
-      <div class="g-demo" style="margin-bottom: 0">
+      <div class="docs-gallery-row" style="margin-bottom: 0">
         <button class="axi-pill" aria-pressed="false" type="button">Unpressed</button>
         <button class="axi-pill" aria-pressed="true" type="button">Pressed</button>
         <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-ok)">Low</button>
@@ -102,7 +50,7 @@
         <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-danger)">High</button>
       </div>
 
-      <div class="g-demo" style="margin-bottom: 0">
+      <div class="docs-gallery-row" style="margin-bottom: 0">
         <button class="axi-switch" type="button" role="switch" aria-checked="false" aria-label="Auto-start">
           <span class="axi-switch__knob"></span>
         </button>
@@ -119,7 +67,7 @@
         </button>
       </div>
 
-      <div class="g-demo" style="margin-bottom: 0">
+      <div class="docs-gallery-row" style="margin-bottom: 0">
         <span class="axi-chip">Neutral</span>
         <span class="axi-chip axi-chip--accent">Accent</span>
         <span class="axi-chip axi-chip--ok">Stable</span>
@@ -128,7 +76,7 @@
         <span class="axi-chip axi-chip--meta">Annotation</span>
       </div>
 
-      <div class="g-demo" style="margin-bottom: 0">
+      <div class="docs-gallery-row" style="margin-bottom: 0">
         <span class="axi-diamond"></span>
         <span class="axi-diamond axi-diamond--accent"></span>
         <span class="axi-diamond axi-diamond--ok"></span>
@@ -165,7 +113,7 @@
     </div>
   </section>
 
-  <section class="g-section" id="shells">
+  <section class="docs-section" id="shells">
     <h2>Shells</h2>
     <p>Cards in a grid, with and without a meaning-carrying strip. Wrapped at the wide measure: a dense catalog spends its width on columns, not margins.</p>
     <div class="axi-page axi-page--wide" style="--axi-page-pad: 0">
@@ -227,7 +175,7 @@
       </div>
     </div>
 
-    <div class="g-demo" style="margin-top: 20px">
+    <div class="docs-gallery-row" style="margin-top: 20px">
       <button class="axi-btn" type="button" id="open-drawer">Open the drawer</button>
       <button class="axi-btn" type="button" data-axi-tooltip="Launching (inferred)">Hover for a tooltip</button>
     </div>
@@ -238,7 +186,7 @@
     </blockquote>
   </section>
 
-  <section class="g-section" id="data">
+  <section class="docs-section" id="data">
     <h2>Data</h2>
     <p>Rules 8, 9 and 10. Everything here is panel interior: a table, a meter and a plot all sit inside a <code>.axi-panel</code>, so none of them carries a block of its own.</p>
 
@@ -349,7 +297,7 @@
     </div>
   </section>
 
-  <section class="g-section" id="prose">
+  <section class="docs-section" id="prose">
     <h2>Prose</h2>
     <p>One class on the container; nothing inside carries a class.</p>
     <div class="axi-panel">
@@ -412,7 +360,3 @@ axilog parse ./logs/20260920-wvw.zevtc --summary</code></pre>
     </div>
   </div>
 </aside>
-
-<script type="module" src="gallery.js"></script>
-</body>
-</html>

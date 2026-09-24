@@ -7,11 +7,9 @@
 // an exercise: a disclosure that only Escape-less mouse users can close, or a
 // drawer the screen reader announces as a sidebar, is the kind of gap that
 // propagates into every app that copies this file.
-
-const accent = document.getElementById('accent')
-accent.addEventListener('change', () => {
-  document.documentElement.style.setProperty('--axi-accent', accent.value)
-})
+//
+// The accent switcher itself is not here - docs/site/accent.js owns it on
+// every page now, this one included.
 
 /* ---------- menu disclosure ---------- */
 // The trigger carries aria-expanded and aria-controls; the popover is toggled

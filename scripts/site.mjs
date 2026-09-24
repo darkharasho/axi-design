@@ -5,6 +5,7 @@ import { entries } from '../docs/manifest/index.mjs'
 import { componentPage, componentsIndex } from '../docs/site/render.mjs'
 import { renderMarkdown } from '../docs/site/markdown.mjs'
 import { page } from '../docs/site/shell.mjs'
+import { landing } from '../docs/site/landing.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -50,6 +51,15 @@ export function build(outDir) {
   guide('start/index.html', 'docs/pages/start.md', 'Start', 'start/')
   guide('theming/index.html', 'docs/pages/theming.md', 'Theming', 'theming/')
   guide('rules/index.html', 'docs/RULES.md', 'Rules', 'rules/', { stableRuleIds: true })
+
+  write('index.html', landing())
+  write('gallery/index.html', page({
+    title: 'Gallery',
+    nav: 'gallery/',
+    body: readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8'),
+    scripts: ['gallery.js'],
+  }))
+  copy('gallery.js', 'gallery.js')
 
   copy('dist/axi.css', 'axi.css')
   copy('dist/accents.css', 'accents.css')
