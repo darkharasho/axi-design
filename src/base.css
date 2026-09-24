@@ -59,6 +59,8 @@ a { color: inherit; }
   .axi-pill:hover,
   .axi-pill[aria-pressed="true"]:hover,
   .axi-select:hover,
+  .axi-picker__btn:hover,
+  .axi-picker__btn[aria-expanded="true"],
   .axi-card:hover,
   .axi-drawer__close:hover {
     transform: none !important;

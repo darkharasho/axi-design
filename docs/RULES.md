@@ -111,6 +111,17 @@ read `--axi-radius`, everything control-sized reads `--axi-radius-sm`, and
 `tests/tokens.test.mjs` fails on a literal radius in a component file the same
 way it fails on a literal border weight.
 
+**A box the OS draws is a box that breaks this.** A native `<select>` popup is
+a raised list the language cannot reach: no ink outline, no offset block, and
+its own selection colour where the accent belongs. `.axi-select` styles the
+closed box and hands the list to `appearance: base-select` where the browser
+has it — but most do not yet, and an Electron app is pinned to whatever
+Chromium its version shipped. `.axi-picker` is the way out: the same closed
+box on a button, and the list drawn as a popover that takes the panel weight
+like any other raised surface. Reach for the native select first, because it
+brings keyboard handling and a popup that can leave the window; reach for the
+picker when the popup it opens is not one this rule can touch.
+
 ## 4. Hover lifts
 
 The lift is per form step, not one universal number: a control has no resting

@@ -157,6 +157,8 @@ a { color: inherit; }
   .axi-pill:hover,
   .axi-pill[aria-pressed="true"]:hover,
   .axi-select:hover,
+  .axi-picker__btn:hover,
+  .axi-picker__btn[aria-expanded="true"],
   .axi-card:hover,
   .axi-drawer__close:hover {
     transform: none !important;
@@ -400,8 +402,11 @@ a { color: inherit; }
 /* ---------- select ---------- */
 /* The closed box is ours everywhere: strip the native control and draw the
    caret, so a select sits alongside the other controls as just another
-   outlined chip instead of announcing the OS. */
-.axi-select {
+   outlined chip instead of announcing the OS. .axi-picker__btn is the same
+   box worn by a button instead of a <select>; the two share every
+   declaration here so a dropdown reads the same whichever half opens it. */
+.axi-select,
+.axi-picker__btn {
   appearance: none;
   padding: 10px 30px 10px 9px;
   border: var(--axi-border-control) solid var(--axi-ink-line);
@@ -422,7 +427,13 @@ a { color: inherit; }
   background-repeat: no-repeat;
   transition: transform .1s, box-shadow .1s;
 }
-.axi-select:hover {
+/* The open trigger keeps the lift. Rule 4 gives the raise to a pointer, but a
+   disclosure that drops back flat the moment the pointer moves into the list
+   it opened severs the two: the lift is what says this box and that popover
+   are one control. */
+.axi-select:hover,
+.axi-picker__btn:hover,
+.axi-picker__btn[aria-expanded='true'] {
   color: var(--axi-text);
   box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
   transform: translate(-2px, -2px);
@@ -431,7 +442,9 @@ a { color: inherit; }
 /* The popup stays OS chrome until a browser lets us style it. Where one does
    (Chromium's base-select), the list is drawn with the same outline and offset
    block as our own popovers, so both dropdown kinds read as one family; where
-   it does not, the closed box above is still ours and the list is native. */
+   it does not, the closed box above is still ours and the list is native -
+   and if that native list is not good enough, .axi-picker below draws the
+   whole thing. */
 @supports (appearance: base-select) {
   /* base-select draws its own ::picker-icon, so the hand-drawn caret above
      would be a second arrow. */
@@ -465,6 +478,101 @@ a { color: inherit; }
   .axi-select option:checked { color: var(--axi-text); }
   .axi-select option::checkmark { content: "\2713"; color: var(--axi-accent); font-weight: 900; }
 }
+
+/* ---------- picker ---------- */
+/* The select's other half. Above, the native popup is left as OS chrome
+   wherever `appearance: base-select` is missing - and that is most places
+   today, including every Electron built on a Chromium older than the
+   property. What lands there is a raised list the language cannot reach: no
+   ink outline, no offset block, its own selection colour instead of the
+   accent. That is rule 3 broken by a box we do not own, so the fix is to stop
+   asking the OS to draw it. .axi-picker is a button and a popover wearing the
+   closed box and the list styling from the @supports branch above, so the two
+   kinds are the same dropdown and a consumer picks by what the platform has.
+
+   Prefer the native <select> where it works: it comes with keyboard handling,
+   typeahead, and a popup that can escape the window. This is what you use
+   when it does not.
+
+   Markup contract - the listbox pattern, and the popover carries the panel
+   weight because it is a raised surface, not a control:
+
+     <div class="axi-picker">
+       <button class="axi-picker__btn" aria-haspopup="listbox"
+               aria-expanded="false" aria-controls="months">Jul 2026</button>
+       <div class="axi-picker__pop" id="months" role="listbox" hidden>
+         <button class="axi-picker__opt" role="option" aria-selected="true">
+           Jul 2026
+         </button>
+       </div>
+     </div>
+
+   Like the menu and the tooltip, the language ships no script: `hidden`,
+   `aria-expanded` and `aria-selected` are the whole state, and the consumer
+   toggles them. gallery.js is the reference wiring, arrow keys and Escape
+   included. */
+.axi-picker { position: relative; display: inline-flex; }
+.axi-picker__btn {
+  display: inline-flex; align-items: center;
+  width: 100%;
+  text-align: left;
+}
+.axi-picker__pop {
+  /* Above .axi-mast's z-index: 40, for the same reason .axi-menu__pop is. */
+  position: absolute; top: calc(100% + 9px); left: 0; z-index: 41;
+  /* Never narrower than the box it came out of, and no wider than its
+     longest row needs. A list that shrinks to the text is a list that has
+     moved, and the eye has to find the column again. */
+  min-width: 100%;
+  max-height: 340px; overflow-y: auto;
+  padding: 6px;
+  background: var(--axi-surface-raised);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+  /* The block falls outside the popover's own box. An ancestor that clips -
+     a scrolling pane, a panel with overflow: hidden - eats it, and the only
+     shadow on the screen is the one that goes missing. */
+  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+}
+.axi-picker__pop[hidden] { display: none; }
+/* A popover cannot always live beside its trigger. Inside a pane that scrolls
+   or a panel that clips, `position: absolute` puts the list where the
+   overflow can eat it - and the offset block falls outside the popover's box,
+   so the block is the first thing to go. The way out is the tooltip's
+   contract: append the popover to <body> and set left/top from script, having
+   measured the trigger. The box is unchanged; only who positions it moves. */
+.axi-picker__pop--fixed { position: fixed; }
+.axi-picker__opt {
+  display: flex; align-items: center; gap: 9px;
+  width: 100%;
+  padding: 8px 9px;
+  border: 0;
+  border-radius: var(--axi-radius-sm);
+  background: transparent;
+  color: var(--axi-text-dim);
+  font: var(--axi-t-label);
+  font-size: 12.5px;
+  letter-spacing: var(--axi-ls-label);
+  text-transform: uppercase;
+  text-align: left;
+  cursor: pointer;
+}
+/* The tick is in every row, inked only in the chosen one. Give it to the
+   selected row alone and every label shifts by its width as the choice moves,
+   which turns picking an option into the list twitching. */
+.axi-picker__opt::before {
+  content: "\2713";
+  color: transparent;
+  font-weight: 900;
+}
+.axi-picker__opt:hover, .axi-picker__opt:focus {
+  background: var(--axi-ground); color: var(--axi-text);
+}
+/* The page-wide focus ring sits 2px outside its element; inside a popover
+   this tight that is 2px into the neighbouring row, so pull it back in. */
+.axi-picker__opt:focus-visible { outline-offset: -3px; }
+.axi-picker__opt[aria-selected='true'] { color: var(--axi-text); }
+.axi-picker__opt[aria-selected='true']::before { color: var(--axi-accent); }
 
 /* --- layout.css --- */
 /* axi design language - layout.
