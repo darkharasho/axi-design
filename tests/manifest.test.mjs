@@ -1,6 +1,9 @@
 import { describe, it, expect } from 'vitest'
 import { entries, LAYERS, RESERVED_IDS } from '../docs/manifest/index.mjs'
-import { definedClasses, ruleNumbers } from '../docs/manifest/introspect.mjs'
+import { definedClasses, ruleNumbers, fallbackKnobs } from '../docs/manifest/introspect.mjs'
+import { KNOBS, knobsFor } from '../docs/manifest/knobs.mjs'
+import { buildKnobTable } from '../scripts/build.mjs'
+import { readFileSync } from 'node:fs'
 
 const ALL = entries()
 
@@ -108,5 +111,50 @@ describe('coverage', () => {
     const claimed = new Set(ALL.flatMap((e) => e.classes))
     const undocumented = definedClasses().filter((cls) => !claimed.has(cls))
     expect(undocumented, `undocumented: ${undocumented.join(' ')}`).toEqual([])
+  })
+})
+
+describe('knobs', () => {
+  it('documents every custom property src/ reads with a fallback', () => {
+    const named = new Set(KNOBS.map((k) => k.name))
+    const undocumented = fallbackKnobs().filter((n) => !named.has(n))
+    expect(undocumented, `undocumented knobs: ${undocumented.join(' ')}`).toEqual([])
+  })
+
+  it('documents no knob src/ never reads', () => {
+    const read = new Set(fallbackKnobs())
+    const phantom = KNOBS.map((k) => k.name).filter((n) => !read.has(n))
+    expect(phantom, `documented but never read: ${phantom.join(' ')}`).toEqual([])
+  })
+
+  it('gives every knob a description, a fallback and an example', () => {
+    for (const k of KNOBS) {
+      expect(k.sets.length).toBeGreaterThan(0)
+      expect(k.fallback.length).toBeGreaterThan(0)
+      expect(k.example).toContain(k.name)
+    }
+  })
+
+  it('only lets an entry cite a knob that exists', () => {
+    const named = new Set(KNOBS.map((k) => k.name))
+    for (const e of ALL) {
+      for (const n of e.knobs) expect(named.has(n), `${e.id} cites unknown knob ${n}`).toBe(true)
+    }
+  })
+
+  it('returns the requested subset in canonical order', () => {
+    const picked = knobsFor([KNOBS[2].name, KNOBS[0].name])
+    expect(picked.map((k) => k.name)).toEqual([KNOBS[0].name, KNOBS[2].name])
+  })
+})
+
+// The README table was hand-maintained and could drift from src/ with no
+// symptom. It is generated now, and this is what makes "generated" true.
+describe('README knob table', () => {
+  it('matches the table generated from knobs.mjs', () => {
+    const readme = readFileSync('README.md', 'utf8')
+    const section = readme.match(/<!-- axi:knobs -->\n([\s\S]*?)\n<!-- \/axi:knobs -->/)
+    expect(section, 'README is missing the axi:knobs markers').not.toBeNull()
+    expect(section[1]).toBe(buildKnobTable())
   })
 })

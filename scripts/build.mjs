@@ -39,6 +39,24 @@ export function buildAccentsCss(accents = ACCENTS) {
   return `${BANNER}\n${rules}\n`
 }
 
+// The knob table is generated into README.md between markers. It is the one
+// table in this repo describing src/ that a human used to maintain by hand,
+// and the one that could therefore go stale with no symptom at all - nothing
+// imports a README.
+import { KNOBS } from '../docs/manifest/knobs.mjs'
+
+export function buildKnobTable(knobs = KNOBS) {
+  const rows = knobs.map((k) => `| \`${k.name}\` | ${k.sets} | ${k.fallback} | \`${k.example}\` |`)
+  return ['| Knob | Sets | Fallback | Example |', '|---|---|---|---|', ...rows].join('\n')
+}
+
+export function writeKnobTable(readme) {
+  return readme.replace(
+    /(<!-- axi:knobs -->\n)[\s\S]*?(\n<!-- \/axi:knobs -->)/,
+    (_, open, close) => `${open}${buildKnobTable()}${close}`,
+  )
+}
+
 // Only write when run directly, so importing this from a test never has the
 // side effect of rewriting the artifact the test is about to check.
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
@@ -47,4 +65,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.log(`built dist/axi.css from ${ORDER.length} source(s)`)
   writeFileSync(resolve(ROOT, 'dist/accents.css'), buildAccentsCss())
   console.log(`built dist/accents.css from ${ACCENTS.length} accent(s)`)
+
+  const readmePath = resolve(ROOT, 'README.md')
+  writeFileSync(readmePath, writeKnobTable(readFileSync(readmePath, 'utf8')))
+  console.log(`wrote the knob table into README.md (${KNOBS.length} knobs)`)
 }

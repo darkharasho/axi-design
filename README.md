@@ -61,11 +61,14 @@ meaningless for most of them, because they answer "how wide is *this* grid",
 not "what does the system look like". Everything else is
 [`docs/RULES.md`](docs/RULES.md) territory.
 
+<!-- axi:knobs -->
 | Knob | Sets | Fallback | Example |
 |---|---|---|---|
 | `--axi-pill-fill` | the fill a pressed `.axi-pill` takes | `var(--axi-accent)` | `<button class="axi-pill" aria-pressed="true" style="--axi-pill-fill: var(--axi-danger)">` |
 | `--axi-switch-fill` | the fill an on `.axi-switch` takes | `var(--axi-accent)` | `<button class="axi-switch" aria-checked="true" style="--axi-switch-fill: var(--axi-danger)">` |
-| `--axi-switch-w` / `--axi-switch-h` / `--axi-switch-knob` | a `.axi-switch`'s track and slug size | `46px` / `26px` / `16px` | `<button class="axi-switch" style="--axi-switch-w: 32px; --axi-switch-h: 18px; --axi-switch-knob: 11px">` |
+| `--axi-switch-w` | a `.axi-switch`'s track width | `46px` | `<button class="axi-switch" style="--axi-switch-w: 32px">` |
+| `--axi-switch-h` | a `.axi-switch`'s track height | `26px` | `<button class="axi-switch" style="--axi-switch-h: 18px">` |
+| `--axi-switch-knob` | a `.axi-switch`'s slug (knob) size | `16px` | `<button class="axi-switch" style="--axi-switch-knob: 11px">` |
 | `--axi-card-strip` | the colour of `.axi-card--strip`'s top strip | `var(--axi-accent)` | `<a class="axi-card axi-card--strip" style="--axi-card-strip: var(--axi-ok)">` |
 | `--axi-grid-min` | minimum column width in `.axi-grid` | `300px` | `<div class="axi-grid" style="--axi-grid-min: 240px">` |
 | `--axi-row-gap` | gap between `.axi-row` children | `10px` | `<div class="axi-row" style="--axi-row-gap: 6px">` |
@@ -77,12 +80,14 @@ not "what does the system look like". Everything else is
 | `--axi-series` | the ink a meter fill, bar, plot line or `.axi-diamond--series` is drawn in | `var(--axi-accent)` | `<span class="axi-meter__fill" style="--axi-series: var(--axi-ok)">` |
 | `--axi-meter-v` | how full one `.axi-meter__fill` is | `0%` | `<span class="axi-meter__fill" style="--axi-meter-v: 62%">` |
 | `--axi-meter-h` | height of a `.axi-meter` | `12px` | `<div class="axi-meter" style="--axi-meter-h: 18px">` |
-| `--axi-meter-label` / `--axi-meter-value` | the outer column widths of `.axi-meter-list` | `132px` / `62px` | `<div class="axi-meter-list" style="--axi-meter-label: 180px">` |
+| `--axi-meter-label` | the label column width of `.axi-meter-list` | `132px` | `<div class="axi-meter-list" style="--axi-meter-label: 180px">` |
+| `--axi-meter-value` | the value column width of `.axi-meter-list` | `62px` | `<div class="axi-meter-list" style="--axi-meter-value: 80px">` |
 | `--axi-bar-v` | height of one `.axi-bars__col` | `0%` | `<div class="axi-bars__col" style="--axi-bar-v: 78%">` |
 | `--axi-bar-part` | height of one `.axi-bars__part` within its column | `0%` | `<span class="axi-bars__part" style="--axi-bar-part: 40%">` |
 | `--axi-bars-gap` | gap between columns in `.axi-bars` | `6px` | `<div class="axi-bars" style="--axi-bars-gap: 2px">` |
 | `--axi-plot-h` | height of a `.axi-plot` or `.axi-bars` | `180px` | `<div class="axi-plot" style="--axi-plot-h: 240px">` |
 | `--axi-plot-rows` | how many horizontal rules a `.axi-plot` draws | `4` | `<div class="axi-plot" style="--axi-plot-rows: 6">` |
+<!-- /axi:knobs -->
 
 `--axi-page-pad: 0` is the one to know about: it is how a measure nested
 inside another measure avoids paying the gutter twice.
