@@ -2,9 +2,7 @@ import { byLayer } from '../manifest/index.mjs'
 import { knobsFor } from '../manifest/knobs.mjs'
 import { highlight } from './highlight.mjs'
 import { url, sidebar, page, LAYER_NAMES } from './shell.mjs'
-
-// Task 8 replaces this stub with the real markdown renderer.
-const renderMarkdown = (md) => ({ html: `<p>${md}</p>` })
+import { renderMarkdown } from './markdown.mjs'
 
 // An example is one string, rendered twice: raw into the demo, escaped and
 // highlighted into the code block. There is no second copy of the markup, and

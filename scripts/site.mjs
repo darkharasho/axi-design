@@ -3,6 +3,8 @@ import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { entries } from '../docs/manifest/index.mjs'
 import { componentPage, componentsIndex } from '../docs/site/render.mjs'
+import { renderMarkdown } from '../docs/site/markdown.mjs'
+import { page } from '../docs/site/shell.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -34,6 +36,20 @@ export function build(outDir) {
     write(`components/${entry.id}/index.html`, componentPage(entry, titles))
   }
   write('components/index.html', componentsIndex())
+
+  const guide = (rel, source, title, nav, opts = {}) => {
+    const { html, toc } = renderMarkdown(readFileSync(resolve(ROOT, source), 'utf8'), opts)
+    write(rel, page({
+      title,
+      nav,
+      body: `<div class="axi-prose">${html}</div>`,
+      toc: toc.map((h) => `<a href="#${h.id}">${h.text}</a>`).join(''),
+    }))
+  }
+
+  guide('start/index.html', 'docs/pages/start.md', 'Start', 'start/')
+  guide('theming/index.html', 'docs/pages/theming.md', 'Theming', 'theming/')
+  guide('rules/index.html', 'docs/RULES.md', 'Rules', 'rules/', { stableRuleIds: true })
 
   copy('dist/axi.css', 'axi.css')
   copy('dist/accents.css', 'accents.css')

@@ -75,4 +75,29 @@ describe('emitted links', () => {
   })
 })
 
+describe('narrative pages', () => {
+  it('writes start, theming and rules', () => {
+    expect(written).toContain('start/index.html')
+    expect(written).toContain('theming/index.html')
+    expect(written).toContain('rules/index.html')
+  })
+
+  it('renders RULES.md with the anchors components link to', () => {
+    const html = read('rules/index.html')
+    for (const n of [1, 2, 3, 9]) expect(html).toContain(`id="rule-${n}"`)
+  })
+
+  // Every "Rules this answers" link on every component page must resolve to a
+  // real anchor on /rules/. Nothing else would report a dead fragment.
+  it('resolves every rule deep-link a component page emits', () => {
+    const rules = read('rules/index.html')
+    for (const e of entries()) {
+      const html = read(`components/${e.id}/index.html`)
+      for (const m of html.matchAll(/rules\/#(rule-\d+)/g)) {
+        expect(rules, `${e.id} links #${m[1]}, absent from /rules/`).toContain(`id="${m[1]}"`)
+      }
+    }
+  })
+})
+
 afterAll(() => rmSync(out, { recursive: true, force: true }))

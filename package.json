@@ -43,6 +43,7 @@
     "test": "vitest run"
   },
   "devDependencies": {
+    "marked": "^18.0.14",
     "vitest": "^2.1.0"
   }
 }
