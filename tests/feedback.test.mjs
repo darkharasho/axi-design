@@ -8,10 +8,13 @@ const css = readFileSync(resolve(ROOT, "src/feedback.css"), "utf8")
 
 describe('the busy meter under reduced motion', () => {
   // Review Focus 1. base.css forces `animation-duration: .01ms` and
-  // `animation-iteration-count: 1` under prefers-reduced-motion, which parks
-  // an animation at its END state. The busy meter's end state is the fill
-  // translated clean off the track - so a reader who turns motion off would
-  // be shown a progress bar that displays nothing at all.
+  // `animation-iteration-count: 1` under prefers-reduced-motion, but never
+  // touches `animation-fill-mode`. The `animation` shorthand in this file
+  // resets fill-mode to `none`, so once the .01ms run finishes the fill
+  // reverts to its specified style - `transform: none` and `width: 25%` -
+  // rather than holding wherever the keyframe run left it. That reverted
+  // quarter-width bar is already correct to show at rest; this rule states
+  // `transform: none` explicitly rather than relying on the revert alone.
   it('parks the fill somewhere visible', () => {
     const block = css.slice(css.indexOf('@media (prefers-reduced-motion: reduce)'))
     expect(block).toMatch(/\.axi-meter--busy/)

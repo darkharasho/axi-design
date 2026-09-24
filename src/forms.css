@@ -53,13 +53,18 @@
 .axi-check:checked { background: var(--axi-check-fill, var(--axi-accent)); }
 .axi-check:checked::after { opacity: 1; }
 /* The radio's mark is the diamond itself, so it is drawn in the fill rather
-   than on it - there is no filled box underneath it to sit on. */
+   than on it - there is no filled box underneath it to sit on. It takes the
+   hairline outline rule 7's diamond wears at this scale (see the prose
+   bullet, src/prose.css, the other place a diamond this small is drawn) -
+   the mark is revealed with opacity, so the hairline is hidden along with
+   the fill in the unchecked state and never leaks out on its own. */
 .axi-radio::after {
   content: "";
   width: 46%;
   height: 46%;
   opacity: 0;
   background: var(--axi-check-fill, var(--axi-accent));
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
   transform: rotate(45deg);
 }
 .axi-radio:checked::after { opacity: 1; }

@@ -252,8 +252,10 @@ opens, and the open/close wiring is the consumer's.
 
 Its \`z-index: 41\` is one above \`.axi-mast\`, deliberately: both sit in the
 root stacking context, so a toolbar scrolled under the sticky masthead would
-otherwise open its menu behind it. Labels and checkboxes inside it need no
-classes of their own.`,
+otherwise open its menu behind it. Labels inside it need no class of their
+own; a checkbox does, now that \`.axi-check\` exists as the styled path for
+one - a bare \`<input type="checkbox">\` renders as unstyled OS chrome inside
+the popover.`,
     examples: [
       {
         title: 'An open filter menu',
@@ -263,11 +265,11 @@ classes of their own.`,
     Filters <span class="axi-badge-count">3</span>
   </button>
   <div class="axi-menu__pop" id="menu-demo-pop" style="--axi-menu-width: 340px">
-    <label><input type="checkbox" checked> Injects into the client</label>
-    <label><input type="checkbox" checked> Simulates input</label>
-    <label><input type="checkbox" checked> Reads process memory</label>
-    <label><input type="checkbox"> Archived upstream</label>
-    <label><input type="checkbox"> No release artifacts</label>
+    <label><input type="checkbox" class="axi-check" checked> Injects into the client</label>
+    <label><input type="checkbox" class="axi-check" checked> Simulates input</label>
+    <label><input type="checkbox" class="axi-check" checked> Reads process memory</label>
+    <label><input type="checkbox" class="axi-check"> Archived upstream</label>
+    <label><input type="checkbox" class="axi-check"> No release artifacts</label>
   </div>
 </div>`,
       },
@@ -438,9 +440,9 @@ on - so it takes the full text ink and the label weight instead.`,
         title: 'A three-level path',
         html: `<nav class="axi-crumbs" aria-label="Breadcrumb">
   <a href="#">Raids</a>
-  <i class="axi-crumbs__sep"></i>
+  <i class="axi-crumbs__sep" aria-hidden="true"></i>
   <a href="#">Wing 4</a>
-  <i class="axi-crumbs__sep"></i>
+  <i class="axi-crumbs__sep" aria-hidden="true"></i>
   <span aria-current="page">Deimos</span>
 </nav>`,
       },
@@ -448,7 +450,7 @@ on - so it takes the full text ink and the label weight instead.`,
         title: 'One level up',
         html: `<nav class="axi-crumbs" aria-label="Breadcrumb">
   <a href="#">Logs</a>
-  <i class="axi-crumbs__sep"></i>
+  <i class="axi-crumbs__sep" aria-hidden="true"></i>
   <span aria-current="page">2026-09-24</span>
 </nav>`,
       },
@@ -505,20 +507,33 @@ Only \`showModal()\` promotes the dialog to the top layer, makes the rest of the
 page inert and draws the backdrop; the bare attribute renders it inline with
 none of that, which is what the examples below do so they can sit in the page.
 
+The examples' \`style="position: static; margin: 0"\` exists only so the demo
+sits inline in the page - remove it when you open the dialog with
+\`showModal()\`. The UA's \`dialog:modal\` rule sets \`position: fixed\` and the
+base \`dialog\` rule sets \`margin: auto\` to centre it, and both are UA-origin
+styles that lose to an inline author declaration; leave the inline style in
+place and a dialog you open with \`showModal()\` still gets the top layer and
+the backdrop, but is laid out in normal flow instead of centred over it -
+typically pinned to the bottom-left of the document. \`.axi-drawer\` documents
+the identical override for the same reason.
+
 A \`<dialog>\` brings its own \`::backdrop\`, so the modal styles that rather than
 reusing \`.axi-scrim\`. They look identical and are not the same element - the
 alternative was giving up \`<dialog>\` and hand-rolling a focus trap.
 
 The head and foot are divided from the body by rules rather than outlines:
-they are parts of one raised thing.`,
+they are parts of one raised thing.
+
+Give the heading an \`id\` and point the dialog's \`aria-labelledby\` at it, or
+the dialog announces with no name at all.`,
     examples: [
       {
         title: 'A confirmation',
-        note: 'Shown inline with the open attribute so it sits in the page; a real one is opened with showModal() and draws a backdrop over everything',
-        html: `<dialog class="axi-modal" open style="position: static; margin: 0">
+        note: 'Shown inline with the open attribute so it sits in the page; a real one is opened with showModal() and draws a backdrop over everything. Remove position: static and margin: 0 when you do - they exist only to hold the demo in the page',
+        html: `<dialog class="axi-modal" open aria-labelledby="modal-confirm-title" style="position: static; margin: 0">
   <div class="axi-modal__head">
     <span class="axi-diamond axi-diamond--danger"></span>
-    <h2>Delete this log?</h2>
+    <h2 id="modal-confirm-title">Delete this log?</h2>
   </div>
   <div class="axi-modal__body">This removes the parsed encounter and its shareable link. The file on disk is untouched.</div>
   <div class="axi-modal__foot">
@@ -529,9 +544,9 @@ they are parts of one raised thing.`,
       },
       {
         title: 'A wider one, with a form in it',
-        note: 'The width knob is clamped against the viewport, so a wide modal still fits a narrow window',
-        html: `<dialog class="axi-modal" open style="position: static; margin: 0; --axi-modal-width: 680px">
-  <div class="axi-modal__head"><h2>Upload settings</h2></div>
+        note: 'The width knob is clamped against the viewport, so a wide modal still fits a narrow window. Remove position: static and margin: 0 when opening it with showModal() - they exist only to hold the demo in the page',
+        html: `<dialog class="axi-modal" open aria-labelledby="modal-upload-title" style="position: static; margin: 0; --axi-modal-width: 680px">
+  <div class="axi-modal__head"><h2 id="modal-upload-title">Upload settings</h2></div>
   <div class="axi-modal__body">
     <label class="axi-row"><input type="checkbox" class="axi-check" checked> Parse on upload</label>
     <label class="axi-row"><input type="checkbox" class="axi-check"> Make the link public</label>
@@ -551,8 +566,11 @@ they are parts of one raised thing.`,
     knobs: [],
     aliases: ['collapse', 'disclosure', 'expander'],
     notes: `The native marker is removed and replaced with the family diamond,
-which turns a quarter on \`[open]\`. The turn is a \`transform\`, so it sits inside
-rule 4's rationing of motion.
+which turns from \`45deg\` to \`180deg\` on \`[open]\` - a 135° turn, not the
+quarter the diamond's own 45° rest angle might suggest. A literal quarter
+turn on a square lands back on the same silhouette and would erase the
+open/closed cue, so the turn is bigger than "a quarter" on purpose. It is a
+\`transform\`, so it sits inside rule 4's rationing of motion.
 
 Stacked accordions are spaced by the block's own depth plus a gap, or each
 one's block lands on the next one's outline.`,
@@ -591,9 +609,17 @@ one's block lands on the next one's outline.`,
 There is no timer here and no animation: that is the same contract \`.axi-menu\`
 publishes for its open state, not a new kind of promise.
 
-The region is \`pointer-events: none\` and each toast takes its events back. The
-region is fixed and full-height, so without that an empty one would sit
-invisibly over the page and swallow every click aimed underneath it.
+The region is \`pointer-events: none\` and each toast takes its events back;
+the flex gaps between stacked toasts would otherwise eat clicks aimed at the
+corner beneath them.
+
+\`role="status" aria-live="polite"\` belongs on \`.axi-toasts\` itself, not on
+each toast - that is the half of this contract the CSS cannot enforce. A live
+region announces content inserted into it; a node with no live semantics
+produces no announcement at all, and a toast is typically removed again
+before a screen reader user could even navigate to find it. Skip the
+attribute and every toast this markup ships is invisible to anyone not
+looking at the screen.
 
 A toast is control weight, not panel: four panels stacked over the page is a
 wall.
@@ -604,15 +630,15 @@ layer stack in the rules.`,
       {
         title: 'A stack of three',
         note: 'Shown in flow rather than fixed to the corner, so the demo can hold it',
-        html: `<div class="axi-toasts" style="position: static">
-  <div class="axi-toast"><i class="axi-toast__dot"></i> Link copied to clipboard</div>
-  <div class="axi-toast axi-toast--ok"><i class="axi-toast__dot"></i> Upload finished — 3 logs parsed</div>
-  <div class="axi-toast axi-toast--danger"><i class="axi-toast__dot"></i> Could not reach the server</div>
+        html: `<div class="axi-toasts" role="status" aria-live="polite" style="position: static">
+  <div class="axi-toast"><i class="axi-toast__dot" aria-hidden="true"></i> Link copied to clipboard</div>
+  <div class="axi-toast axi-toast--ok"><i class="axi-toast__dot" aria-hidden="true"></i> Upload finished — 3 logs parsed</div>
+  <div class="axi-toast axi-toast--danger"><i class="axi-toast__dot" aria-hidden="true"></i> Could not reach the server</div>
 </div>`,
       },
       {
         title: 'One with a name on it',
-        html: `<div class="axi-toasts" style="position: static">
+        html: `<div class="axi-toasts" role="status" aria-live="polite" style="position: static">
   <div class="axi-toast axi-toast--warn">
     <span class="axi-avatar" style="--axi-avatar-size: 24px">KJ</span>
     Kay left the squad

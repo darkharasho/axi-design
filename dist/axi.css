@@ -658,13 +658,18 @@ a { color: inherit; }
 .axi-check:checked { background: var(--axi-check-fill, var(--axi-accent)); }
 .axi-check:checked::after { opacity: 1; }
 /* The radio's mark is the diamond itself, so it is drawn in the fill rather
-   than on it - there is no filled box underneath it to sit on. */
+   than on it - there is no filled box underneath it to sit on. It takes the
+   hairline outline rule 7's diamond wears at this scale (see the prose
+   bullet, src/prose.css, the other place a diamond this small is drawn) -
+   the mark is revealed with opacity, so the hairline is hidden along with
+   the fill in the unchecked state and never leaks out on its own. */
 .axi-radio::after {
   content: "";
   width: 46%;
   height: 46%;
   opacity: 0;
   background: var(--axi-check-fill, var(--axi-accent));
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
   transform: rotate(45deg);
 }
 .axi-radio:checked::after { opacity: 1; }
@@ -858,7 +863,7 @@ textarea.axi-input {
   font-size: 13px; font-weight: 600; color: var(--axi-text-dim); cursor: pointer;
 }
 .axi-menu__pop label:hover { background: var(--axi-ground); color: var(--axi-text); }
-.axi-menu__pop input { margin: 3px 0 0; accent-color: var(--axi-accent); }
+.axi-menu__pop input { margin: 3px 0 0; }
 
 /* ---------- tooltip ---------- */
 /* One line of ink on the darkest surface in the language, so it reads over
@@ -1069,9 +1074,16 @@ textarea.axi-input {
 }
 .axi-crumbs a { color: var(--axi-text-dim); text-decoration: none; }
 .axi-crumbs a:hover { color: var(--axi-accent); }
+/* 7px, matching the prose bullet (src/prose.css) exactly, with the same
+   --axi-border-hairline outline: rule 7 calls the motif "a 45deg-rotated
+   outlined square", and a bare fill with no border does not match it. The
+   hairline, not one of the two form steps, is the established weight for a
+   diamond this small - at 6px a 2px border on each side would leave only a
+   2px fill, too tight to read as a diamond at all. */
 .axi-crumbs__sep {
-  width: 6px; height: 6px; flex: none;
+  width: 7px; height: 7px; flex: none;
   background: var(--axi-rule);
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
   transform: rotate(45deg);
 }
 .axi-crumbs [aria-current="page"] { color: var(--axi-text); font-weight: 800; }
@@ -1185,9 +1197,13 @@ textarea.axi-input {
   content: "";
   width: 8px; height: 8px; flex: none;
   background: var(--axi-accent);
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
   transform: rotate(45deg);
   transition: transform .12s;
 }
+/* A 135deg turn, not the quarter turn "45deg to 180deg" might suggest by the
+   numbers alone: a literal quarter turn on a square lands back on the same
+   silhouette and would erase the open/closed cue. */
 .axi-accordion[open] .axi-accordion__head::before { transform: rotate(180deg); }
 .axi-accordion__body {
   padding: 0 18px 16px 38px;
@@ -1197,10 +1213,12 @@ textarea.axi-input {
 
 /* ---------- toasts ---------- */
 /* Layer 60, between the drawer and the tooltip.
-   The region is a layout box and nothing else: it is fixed and full-height,
-   so without pointer-events: none an empty one would sit invisibly over the
-   page and swallow every click aimed at what is underneath. The toasts
-   themselves take their events back.
+   The region is a layout box and nothing else, sized only by its content -
+   it sets no width or height of its own, so an empty one is zero-area and
+   pointer-events: none is not there to stop it covering the page. It is
+   there because the flex gaps between stacked toasts would otherwise eat
+   clicks aimed at the corner beneath them. The toasts themselves take their
+   events back.
    This language ships no script, so appearing, stacking and leaving on a
    timer are the consumer's: insert a .axi-toast into the region and remove it
    when it is done. That is the same contract .axi-menu already publishes for
@@ -1232,6 +1250,7 @@ textarea.axi-input {
 .axi-toast__dot {
   width: 10px; height: 10px; flex: none;
   background: var(--axi-accent);
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
   transform: rotate(45deg);
 }
 .axi-toast--ok .axi-toast__dot { background: var(--axi-ok); }
@@ -1534,8 +1553,10 @@ textarea.axi-input {
    loop runs 45deg -> 405deg: one full turn that begins and ends on the
    motif rather than on a square.
    That start and end also make it correct under reduced motion for free.
-   base.css collapses every animation to one .01ms iteration, which parks it
-   at 405deg - visually identical to the 45deg it started at. */
+   base.css only shortens the animation to one .01ms iteration; it never sets
+   animation-fill-mode, so once that instant run finishes the element reverts
+   to its specified transform: rotate(45deg) - the motif at rest, and visually
+   identical to where the loop begins. */
 @keyframes axi-spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
 .axi-spinner {
   display: inline-block;
@@ -1561,13 +1582,17 @@ textarea.axi-input {
   width: 25%;
   animation: axi-meter-busy 1.3s ease-in-out infinite;
 }
-/* Unlike the spinner, this one's end state is not its start state: base.css
-   would park the fill clean off the right-hand end of the track, and a reader
-   who turns motion off would be shown an empty bar. So it is parked
-   deliberately, at rest and in view - a bar that says "working, and not
-   telling you how far" without moving. */
+/* base.css only ever sets animation-duration and animation-iteration-count
+   under reduced motion; it never touches animation-fill-mode. The shorthand
+   above resets animation-fill-mode to its default, none, so once the .01ms
+   run finishes the element reverts to its specified style rather than
+   holding the keyframe it ended on - here that is transform: none and the
+   fill's own width: 25%, a left-anchored quarter-width bar. That is already
+   the right thing to show: visible, and unmistakably not finished. This rule
+   states transform: none explicitly rather than relying on the revert, so
+   the "at rest" case is not accidental. */
 @media (prefers-reduced-motion: reduce) {
-  .axi-meter--busy .axi-meter__fill { transform: none; width: 100%; }
+  .axi-meter--busy .axi-meter__fill { transform: none; }
 }
 
 /* ---------- notice status ---------- */

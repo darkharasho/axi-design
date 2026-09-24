@@ -217,7 +217,7 @@ It sits at the same measure as the input, so give the wrapper the width.`,
     layer: 'primitives',
     classes: ['.axi-notice', '.axi-notice__icon', '.axi-notice--ok', '.axi-notice--warn', '.axi-notice--danger'],
     summary: 'One paragraph the reader is not allowed to miss, raised at the panel weight with a filled glyph tile at its head.',
-    rules: [3],
+    rules: [3, 5],
     knobs: [],
     aliases: ['alert', 'banner'],
     notes: `Both of rule 3's weight steps appear in one component, which is the
@@ -238,15 +238,15 @@ marked without a class.`,
         title: 'The three statuses',
         note: 'Rule 5: the icon is the part that asserts, so the status lives there and the paragraph stays in the reading ink',
         html: `<div class="axi-notice axi-notice--ok">
-  <div class="axi-notice__icon">✓</div>
+  <span class="axi-notice__icon" aria-hidden="true">✓</span>
   <p><b>Parsed.</b> All 14 encounters matched a known boss.</p>
 </div>
 <div class="axi-notice axi-notice--warn">
-  <div class="axi-notice__icon">!</div>
+  <span class="axi-notice__icon" aria-hidden="true">!</span>
   <p><b>Partial.</b> Two encounters had no boss agent and were skipped.</p>
 </div>
 <div class="axi-notice axi-notice--danger">
-  <div class="axi-notice__icon">!</div>
+  <span class="axi-notice__icon" aria-hidden="true">!</span>
   <p><b>Failed.</b> The archive is missing its header.</p>
 </div>`,
       },
@@ -423,7 +423,8 @@ silently blank.`,
       },
       {
         title: 'A picture',
-        html: `<span class="axi-avatar"><img class="axi-avatar__img" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2740%27%3E%3Crect width=%2740%27 height=%2740%27 fill=%27%23ffc53d%27/%3E%3C/svg%3E" alt="Avatar"></span>`,
+        note: 'The flat grey fill is placeholder image content standing in for a real photograph, not a styling choice - do not read it as a token',
+        html: `<span class="axi-avatar"><img class="axi-avatar__img" src="data:image/svg+xml,%3Csvg xmlns=%27http://www.w3.org/2000/svg%27 width=%2740%27 height=%2740%27%3E%3Crect width=%2740%27 height=%2740%27 fill=%27%23808080%27/%3E%3C/svg%3E" alt="Avatar"></span>`,
       },
       {
         title: 'In a row, at two sizes',

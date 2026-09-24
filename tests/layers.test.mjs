@@ -34,7 +34,7 @@ describe('the layer stack', () => {
   })
 
   it('declares no layer the stack does not name', () => {
-    expect(documentedLayers().size).toBeGreaterThan(0)
+    expect([...documentedLayers()].filter((z) => !declaredLayers().has(z))).toEqual([])
   })
 
   // Both polarities: the parser must actually find numbers, or the gate

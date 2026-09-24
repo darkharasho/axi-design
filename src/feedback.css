@@ -12,8 +12,10 @@
    loop runs 45deg -> 405deg: one full turn that begins and ends on the
    motif rather than on a square.
    That start and end also make it correct under reduced motion for free.
-   base.css collapses every animation to one .01ms iteration, which parks it
-   at 405deg - visually identical to the 45deg it started at. */
+   base.css only shortens the animation to one .01ms iteration; it never sets
+   animation-fill-mode, so once that instant run finishes the element reverts
+   to its specified transform: rotate(45deg) - the motif at rest, and visually
+   identical to where the loop begins. */
 @keyframes axi-spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
 .axi-spinner {
   display: inline-block;
@@ -39,13 +41,17 @@
   width: 25%;
   animation: axi-meter-busy 1.3s ease-in-out infinite;
 }
-/* Unlike the spinner, this one's end state is not its start state: base.css
-   would park the fill clean off the right-hand end of the track, and a reader
-   who turns motion off would be shown an empty bar. So it is parked
-   deliberately, at rest and in view - a bar that says "working, and not
-   telling you how far" without moving. */
+/* base.css only ever sets animation-duration and animation-iteration-count
+   under reduced motion; it never touches animation-fill-mode. The shorthand
+   above resets animation-fill-mode to its default, none, so once the .01ms
+   run finishes the element reverts to its specified style rather than
+   holding the keyframe it ended on - here that is transform: none and the
+   fill's own width: 25%, a left-anchored quarter-width bar. That is already
+   the right thing to show: visible, and unmistakably not finished. This rule
+   states transform: none explicitly rather than relying on the revert, so
+   the "at rest" case is not accidental. */
 @media (prefers-reduced-motion: reduce) {
-  .axi-meter--busy .axi-meter__fill { transform: none; width: 100%; }
+  .axi-meter--busy .axi-meter__fill { transform: none; }
 }
 
 /* ---------- notice status ---------- */

@@ -15,8 +15,16 @@ hardest.
 
 The loop runs \`45deg\` to \`405deg\` - one full turn that starts and ends on the
 motif. That also makes it correct under \`prefers-reduced-motion\` for free:
-\`base.css\` collapses the animation to a single instant iteration, parking it at
-405deg, which looks exactly like the 45deg it started at.`,
+\`base.css\` collapses the animation to a single instant iteration but never
+sets \`animation-fill-mode\`, so once that instant run finishes the element
+reverts to its specified \`transform: rotate(45deg)\` - the motif at rest,
+which looks exactly like where the loop begins.
+
+A spinner alone only ever conveys "busy" to a sighted reader; it carries no
+text and no state anyone else can query, so pair it with \`role="status"\` on
+the region reporting the work, or with an \`.axi-sr-only\` label naming what is
+happening - the same class this project already reaches for whenever
+something needs to be read but not seen.`,
     examples: [
       {
         title: 'Beside a label',
@@ -41,9 +49,16 @@ motif. That also makes it correct under \`prefers-reduced-motion\` for free:
 express, which is what indeterminate means - use a plain \`.axi-meter\` the moment
 you know the proportion.
 
-Under \`prefers-reduced-motion\` the fill parks full and still. Without that it
-would park where the animation ends, which is clean off the right-hand end of
-the track: a reader who turns motion off would be shown an empty bar.`,
+\`base.css\` never sets \`animation-fill-mode\` under \`prefers-reduced-motion\`,
+only \`animation-duration\` and \`animation-iteration-count\` - so the
+\`animation\` shorthand here, which resets fill-mode to \`none\`, means the fill
+reverts to its specified style once the .01ms run finishes: \`transform: none\`
+and the fill's own \`width: 25%\`, a left-anchored quarter-width bar. That is
+already the right thing to show - visible, and unmistakably not finished -
+so the override only states \`transform: none\` explicitly rather than
+relying on the revert. It deliberately does not force the fill to full width:
+a full bar reads as done, and this component is reporting work that is not
+telling you how far along it is.`,
     examples: [
       {
         title: 'Working, with no idea how far',

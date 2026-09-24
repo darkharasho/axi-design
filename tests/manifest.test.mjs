@@ -189,9 +189,10 @@ describe('the toast region', () => {
   const shells = readFileSync('src/shells.css', 'utf8')
   const region = shells.slice(shells.indexOf('.axi-toasts {'), shells.indexOf('.axi-toast {'))
 
-  // Review Focus 4. The region is fixed and full-height, so an empty one
-  // would sit invisibly over the page and eat every click aimed at what is
-  // underneath it. The region is a layout box, not a surface.
+  // Review Focus 4. The region sets no width or height of its own, so an
+  // empty one is zero-area; pointer-events: none exists because the flex
+  // gaps between stacked toasts would otherwise eat clicks aimed at the
+  // corner beneath them. The region is a layout box, not a surface.
   it('lets clicks through when it is empty', () => {
     expect(region).toMatch(/pointer-events:\s*none/)
   })
