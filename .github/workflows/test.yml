@@ -12,4 +12,4 @@ jobs:
       - run: npm ci
       # Catches the stale-artifact case in CI too: if dist/ was not rebuilt,
       # the build test fails here before anything can be tagged and published.
-      - run: npx vitest run --maxWorkers=2
+      - run: npm test

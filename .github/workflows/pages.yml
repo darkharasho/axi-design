@@ -23,7 +23,7 @@ jobs:
       - uses: actions/setup-node@v4
         with: { node-version: '22' }
       - run: npm ci
-      - run: npx vitest run --maxWorkers=2
+      - run: npm test
 
       # Every published major version is rebuilt from its own tag on every
       # deploy, rather than carried forward from whatever the last deploy

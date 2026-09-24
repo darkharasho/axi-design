@@ -1,6 +1,10 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
+// The knob data lives in the manifest, not here: build.mjs is not in the npm
+// `files` list, so this import cannot leak docs/ to a consumer. Kept at the
+// top per R-2, with the other imports, rather than beside its one user.
+import { KNOBS } from '../docs/manifest/knobs.mjs'
 
 // The shipped artifact is one file, but the sources are split by
 // responsibility so they stay readable. Order matters and is declared here
@@ -43,8 +47,6 @@ export function buildAccentsCss(accents = ACCENTS) {
 // table in this repo describing src/ that a human used to maintain by hand,
 // and the one that could therefore go stale with no symptom at all - nothing
 // imports a README.
-import { KNOBS } from '../docs/manifest/knobs.mjs'
-
 export function buildKnobTable(knobs = KNOBS) {
   const rows = knobs.map((k) => `| \`${k.name}\` | ${k.sets} | ${k.fallback} | \`${k.example}\` |`)
   return ['| Knob | Sets | Fallback | Example |', '|---|---|---|---|', ...rows].join('\n')
