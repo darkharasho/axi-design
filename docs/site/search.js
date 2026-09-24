@@ -8,10 +8,17 @@ export function matches(query, index) {
   for (const entry of index) {
     const name = entry.name.toLowerCase()
     const cls = entry.classes.join(' ').toLowerCase()
+    // An alias is a synonym a reader arrives with from another framework -
+    // "alert" for the notice, "progress" for the meter. It scores below every
+    // class match and above a summary match: a synonym is a better signal
+    // than a word that happens to appear in a sentence, and a worse one than
+    // the component's actual name.
+    const alias = (entry.aliases ?? []).join(' ').toLowerCase()
     let score = 0
     if (name.startsWith(q)) score = 3
     else if (name.includes(q)) score = 2
     else if (cls.includes(q)) score = 1.5
+    else if (alias.split(' ').includes(q)) score = 1.25
     else if (entry.summary.toLowerCase().includes(q)) score = 1
     if (score) scored.push({ entry, score })
   }

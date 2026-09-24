@@ -243,6 +243,7 @@ the drawer; that wiring is the consumer's.`,
     summary: 'A disclosure hanging off a trigger: a panel-weight popover of checkboxes or links, not a permanent row of controls.',
     rules: [3],
     knobs: ['--axi-menu-width'],
+    aliases: ['dropdown'],
     notes: `The popover is drawn at rule 3's panel weight on the raised surface,
 because it floats above everything else on the page and the heavier step is
 what says so. The trigger is an ordinary \`.axi-btn\` carrying

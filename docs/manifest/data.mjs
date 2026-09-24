@@ -89,6 +89,7 @@ number stays outlined.`,
     summary: 'A horizontal bar showing one value against its full extent. Drawn in the series ink, filled to a hard edge.',
     rules: [2, 9],
     knobs: ['--axi-meter-v', '--axi-meter-h', '--axi-series', '--axi-meter-label', '--axi-meter-value'],
+    aliases: ['progress', 'progressbar', 'bar'],
     notes: `A meter says *how much*, and a quantity in this language is drawn as
 length. Reach for \`--axi-series\` to change which ink a bar is drawn in; never
 fade the accent to make a bar quieter.`,

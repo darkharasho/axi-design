@@ -103,12 +103,12 @@ ${readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8')}`,
   copy('docs/site/copy.js', 'copy.js')
   copy('docs/site/search.js', 'search.js')
 
-  // Six fields, not the five the brief's search client shows: layerName is
+  // Seven fields, not the six the brief's search client shows: layerName is
   // the projected display name, since search.js is a browser module and
   // cannot import LAYER_NAMES from shell.mjs (which reads process.env at
   // load) - every other surface on the site shows "Data", never "data".
-  write('search.json', JSON.stringify(entries().map(({ id, name, layer, summary, classes }) =>
-    ({ id, name, layer, layerName: LAYER_NAMES[layer], summary, classes }))))
+  write('search.json', JSON.stringify(entries().map(({ id, name, layer, summary, classes, aliases }) =>
+    ({ id, name, layer, layerName: LAYER_NAMES[layer], summary, classes, aliases: aliases ?? [] }))))
   write('llms.txt', llmsTxt())
 
   return written

@@ -7,6 +7,7 @@ export default [
     summary: 'The control everything else is measured against: an outlined box at the control weight that gains its block under the cursor. One button per view is the primary.',
     rules: [3, 4],
     knobs: [],
+    aliases: ['button'],
     notes: `A default button rests flat and draws its 3px block for the first time
 on hover, which is why the lift reads as a lift. \`--primary\` is the one
 button that rests with a block already under it, so its hover deepens that
@@ -79,6 +80,7 @@ maintainer's note from a measurement before reading either word.`,
     summary: 'A single-line text field, drawn on the ground rather than on a surface so it reads as a well cut into the panel it sits in.',
     rules: [],
     knobs: ['--axi-textarea-h'],
+    aliases: ['textarea', 'field', 'textbox'],
     notes: `It takes the control outline weight and no block: a block would make
 it look pressable, and the thing you press is the button next to it. The
 placeholder is the faint ink, so an empty field never reads as a filled one.

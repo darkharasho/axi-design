@@ -201,3 +201,16 @@ describe('the toast region', () => {
     expect(toast).toMatch(/pointer-events:\s*auto/)
   })
 })
+
+describe('aliases', () => {
+  it('never shadows a real entry id', () => {
+    const ids = new Set(entries().map((e) => e.id))
+    const shadowing = entries().flatMap((e) => (e.aliases ?? []).filter((a) => ids.has(a)))
+    expect(shadowing).toEqual([])
+  })
+
+  it('uses only lower-case single words', () => {
+    const bad = entries().flatMap((e) => (e.aliases ?? []).filter((a) => !/^[a-z]+$/.test(a)))
+    expect(bad).toEqual([])
+  })
+})

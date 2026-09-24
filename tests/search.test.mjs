@@ -30,3 +30,28 @@ describe('matches', () => {
     expect(matches('   ', index)).toEqual([])
   })
 })
+
+describe('aliases', () => {
+  const index = [{
+    id: 'notice', name: 'Notice', layer: 'shells', layerName: 'Shells',
+    summary: 'A box with an icon.', classes: ['.axi-notice'], aliases: ['alert', 'banner'],
+  }]
+
+  it('finds an entry by a name it does not have', () => {
+    expect(matches('alert', index).map((e) => e.id)).toEqual(['notice'])
+  })
+
+  // An alias is a synonym, not a name. It must never outrank a real name
+  // match, or typing "progress" would surface the spinner above the meter.
+  it('ranks an alias below a name match', () => {
+    const two = [
+      { ...index[0], id: 'spinner', name: 'Spinner', aliases: ['progress'] },
+      { ...index[0], id: 'meter', name: 'Progress meter', aliases: [] },
+    ]
+    expect(matches('progress', two).map((e) => e.id)).toEqual(['meter', 'spinner'])
+  })
+
+  it('survives an entry with no aliases field', () => {
+    expect(matches('notice', [{ ...index[0], aliases: undefined }]).map((e) => e.id)).toEqual(['notice'])
+  })
+})
