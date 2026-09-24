@@ -36,7 +36,7 @@ motif. That also makes it correct under \`prefers-reduced-motion\` for free:
     summary: 'The meter that does not know how far along it is. The fill keeps a fixed width and travels, because rule 11 forbids animating width.',
     rules: [9, 11],
     knobs: [],
-    aliases: ['progress', 'progressbar', 'indeterminate', 'loading'],
+    aliases: ['indeterminate', 'loading'],
     notes: `\`--axi-meter-v\` is ignored in this mode. There is no value to
 express, which is what indeterminate means - use a plain \`.axi-meter\` the moment
 you know the proportion.
