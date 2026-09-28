@@ -74,7 +74,10 @@ absent, no error, no fallback. In that case do one of two things: inline
 `dist/icons/sprite.svg` into the document once (a hidden `<svg>` before
 `</body>`, which is what this project's own docs site does) and reference bare
 fragments like `#axi-search`, or use the standalone `dist/icons/<name>.svg`
-files. Serving the renderer over `http://localhost` also works.
+files. Serving the renderer over `http://localhost` also works. Note that
+alias names resolve only through the sprite — there is no
+`dist/icons/triangle-alert.svg` — so the standalone-file route wants the
+canonical name.
 
 One sprite holds the set; `dist/icons/<name>.svg` is the same drawing on its own,
 and `dist/icons/icons.json` is the catalogue — name, categories, aliases and

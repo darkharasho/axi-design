@@ -4,9 +4,11 @@ import { escapeHtml } from './highlight.mjs'
 
 // One tile per icon: the glyph, its name, and the terms someone might reach
 // for instead of the name. data-keywords carries the aliases into the page so
-// the site search finds "magnifier" and lands on `search`.
+// the site search finds "magnifier" and lands on `search` - and the lucide
+// names too, so an app porting off lucide-react types the name it already has
+// and finds the drawing rather than "Nothing in the set answers to that".
 function tile(entry) {
-  const terms = [...entry.aliases, ...entry.keywords].join(' ')
+  const terms = [...entry.aliases, ...(entry.lucide ?? []), ...entry.keywords].join(' ')
   return `<li class="docs-icon" data-name="${escapeHtml(entry.name)}" data-keywords="${escapeHtml(terms)}">
   <svg class="axi-icon" style="--axi-icon-size: 2rem" aria-hidden="true"><use href="#axi-${entry.name}"/></svg>
   <code>${escapeHtml(entry.name)}</code>
@@ -54,10 +56,10 @@ ${ICON_ENTRIES.map(tile).join('\n')}
 </ul>
 <div class="axi-prose">
   <h2 id="substitutions">When the set does not have it</h2>
-  <p>The suite imports 165 distinct Lucide names. This set draws 57 of them and will
-  realistically reach sixty or seventy &mdash; so an app importing from
-  <code>lucide-react</code> <em>and</em> from here is the expected arrangement, not a
-  failure of the migration. The vocabulary was always borrowed; only the drawings are
+  <p>The suite imports 165 distinct Lucide names.
+  This set is 57 drawings and answers 47 of them; it will realistically reach sixty or
+  seventy &mdash; so an app importing from <code>lucide-react</code> <em>and</em> from
+  here is the expected arrangement, not a failure of the migration. The vocabulary was always borrowed; only the drawings are
   ours. Port what this set answers, leave the rest on Lucide, and do not re-decide it
   app by app.</p>
   <p>Some names this set answers under a different one. Those resolve in the sprite, so

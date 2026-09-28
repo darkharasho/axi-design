@@ -82,6 +82,82 @@ function segments(d) {
   return out
 }
 
+// Where the ink actually lands, which is not where the coordinates are. The
+// live-area inset of 1.5 is exactly half the stroke, so it holds a stroke
+// *square on* to the edge - and nothing else. A mitered vertex reaches further
+// along its bisector: 1.5/sin(theta/2), which is 2.12 at a right angle and 3.92
+// at the 45deg corner this grammar makes constantly. Five drawings passed every
+// coordinate check in this file with ink outside the canvas, where the viewBox
+// clips it: a diamond with its point sliced flat, a funnel with its shoulders
+// cut off. The coordinates were legal and the glyph was wrong.
+const HALF_STROKE = 1.5
+
+const vsub = (a, b) => [a[0] - b[0], a[1] - b[1]]
+const vunit = (v) => { const l = Math.hypot(v[0], v[1]); return [v[0] / l, v[1] / l] }
+const vperp = (u) => [-u[1], u[0]]
+
+// The subpaths of a d, as {points, closed}. Reuses nothing from segments()
+// because that one flattens everything into segments and loses which vertex
+// joins which - and the join is the whole question here.
+function subpaths(d) {
+  const chunks = d.match(/[A-Za-z][^A-Za-z]*/g) || []
+  const out = []
+  let cur = null
+  for (const chunk of chunks) {
+    const cmd = chunk[0].toUpperCase()
+    const rel = chunk[0] === chunk[0].toLowerCase() && cmd !== 'Z'
+    const nums = (chunk.slice(1).trim().match(/-?\d*\.?\d+/g) || []).map(Number)
+    const last = () => cur.points.at(-1)
+    if (cmd === 'M') {
+      for (let i = 0; i < nums.length; i += 2) {
+        const p = rel && cur ? [last()[0] + nums[i], last()[1] + nums[i + 1]] : [nums[i], nums[i + 1]]
+        if (i === 0) { cur = { points: [p], closed: false }; out.push(cur) } else cur.points.push(p)
+      }
+    } else if (cmd === 'L') {
+      for (let i = 0; i < nums.length; i += 2)
+        cur.points.push(rel ? [last()[0] + nums[i], last()[1] + nums[i + 1]] : [nums[i], nums[i + 1]])
+    } else if (cmd === 'H') {
+      for (const n of nums) cur.points.push([rel ? last()[0] + n : n, last()[1]])
+    } else if (cmd === 'V') {
+      for (const n of nums) cur.points.push([last()[0], rel ? last()[1] + n : n])
+    } else if (cmd === 'Z') {
+      cur.closed = true
+    }
+  }
+  return out
+}
+
+// Every point the stroked outline reaches: the miter tip on both sides of each
+// join, and the two corners of each butt cap. Both sides, because which one is
+// the outside depends on the turn and getting it wrong checks the wrong corner.
+function strokeExtremes(d) {
+  const out = []
+  for (const { points, closed } of subpaths(d)) {
+    const pts = closed && String(points[0]) !== String(points.at(-1)) ? [...points, points[0]] : points
+    const dirs = []
+    for (let i = 0; i < pts.length - 1; i++) dirs.push(vunit(vsub(pts[i + 1], pts[i])))
+    const join = (p, inc, outg) => {
+      const a = vperp(inc)
+      const b = vperp(outg)
+      const f = 1 + (a[0] * b[0] + a[1] * b[1])
+      // A doubling-back join (f = 0) has no miter tip at all; the stroke simply
+      // reverses, and the cap corners below already bound it.
+      if (f < 1e-9) return
+      const m = [((a[0] + b[0]) / f) * HALF_STROKE, ((a[1] + b[1]) / f) * HALF_STROKE]
+      out.push([p[0] + m[0], p[1] + m[1]], [p[0] - m[0], p[1] - m[1]])
+    }
+    for (let i = 1; i < pts.length - 1; i++) join(pts[i], dirs[i - 1], dirs[i])
+    if (closed) join(pts[0], dirs.at(-1), dirs[0])
+    else
+      for (const [p, dir] of [[pts[0], dirs[0]], [pts.at(-1), dirs.at(-1)]]) {
+        const a = vperp(dir)
+        out.push([p[0] + a[0] * HALF_STROKE, p[1] + a[1] * HALF_STROKE],
+          [p[0] - a[0] * HALF_STROKE, p[1] - a[1] * HALF_STROKE])
+      }
+  }
+  return out
+}
+
 const onGrid = (n) => Number.isInteger(Math.round(n * 2 * 1e6) / 1e6)
 const oddHalf = (n) => Math.abs(n % 1) === 0.5
 
@@ -181,6 +257,11 @@ function checkIcon(name, source) {
       if (vertical || horizontal) {
         const c = vertical ? from[0] : from[1]
         if (!(oddHalf(c) || c === 12)) bad.push(`${name}: axis-aligned stroke at ${c}`)
+      }
+    }
+    for (const [x, y] of strokeExtremes(d)) {
+      if (x < -1e-6 || x > 24 + 1e-6 || y < -1e-6 || y > 24 + 1e-6) {
+        bad.push(`${name}: stroke reaches ${x.toFixed(2)},${y.toFixed(2)} - outside the canvas, so it is clipped`)
       }
     }
   }
@@ -295,11 +376,32 @@ describe('the icon manifest', () => {
   // drawing renders an empty box, and a name that collides with a real icon
   // or with another entry's claim produces a duplicate id, where the first
   // symbol wins and the second is unreachable with no error anywhere.
-  it('points every lucide name at a drawing that exists', () => {
+  // A lucide name that pointed at no drawing would render an empty box, and
+  // that cannot happen here by construction: the sprite emits `canonical =
+  // e.name`, and the drift test above already asserts every `e.name` is a file
+  // on disk. What can happen is a collision - a lucide name that is also a
+  // real icon name, which is a duplicate id in one document, where the first
+  // symbol wins and the second is unreachable with no error anywhere.
+  it('never lets a lucide name collide with an icon name', () => {
     const names = new Set(ICON_ENTRIES.map((e) => e.name))
     for (const e of ICON_ENTRIES) {
       for (const l of e.lucide ?? []) {
         expect(names.has(l), `${e.name} claims the lucide name "${l}", which is a real icon`).toBe(false)
+      }
+    }
+  })
+
+  // The search word and the sprite id have to agree about which drawing a
+  // name means. If one entry's lucide name were another's search word, the
+  // page's filter would land you on one glyph and `<use>` would draw the other.
+  it('never lets a lucide name collide with another entry\'s search word', () => {
+    const words = new Map()
+    for (const e of ICON_ENTRIES) for (const a of e.aliases) words.set(a, e.name)
+    for (const e of ICON_ENTRIES) {
+      for (const l of e.lucide ?? []) {
+        const owner = words.get(l)
+        expect(owner === undefined || owner === e.name,
+          `"${l}" is ${e.name}'s lucide name and ${owner}'s search word`).toBe(true)
       }
     }
   })

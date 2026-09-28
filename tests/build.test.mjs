@@ -200,6 +200,17 @@ describe('the documented consumer pattern', () => {
     expect(section).toMatch(/inline|dist\/icons\/&lt;name&gt;\.svg|dist\/icons\/<name>\.svg/)
   })
 
+  // The README's file:// workaround offers the standalone dist/icons/<name>.svg
+  // files - which do not exist for an alias, deliberately. An Electron app on
+  // loadFile() that took the rename at face value would get a 404 and a
+  // missing glyph, having been promised a mechanical port.
+  it('says an alias resolves only through the sprite', () => {
+    const section = readFileSync(resolve('README.md'), 'utf8')
+    expect(section.slice(section.indexOf('### An icon set of its own'))).toMatch(
+      /alias(es)? (name[s]? )?resolve[s]? only (through|in) the sprite/i,
+    )
+  })
+
   // The one number in the README that no test read, in a file nothing imports.
   it('states the real size of the set', () => {
     const words = ['Forty-seven', 'Forty-eight', 'Forty-nine', 'Fifty', 'Fifty-one', 'Fifty-two',
