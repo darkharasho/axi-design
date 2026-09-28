@@ -45,6 +45,18 @@ jobs:
               rm -f "_site/$major/accents.css"
               echo "no accents.css in $tag (predates the accent list)"
             fi
+            # Listed from the tag rather than from themes/ in the working tree:
+            # a theme added later must not be looked for in a version that
+            # predates it, and one retired later must still be served by the
+            # versions that shipped it. A tag with no themes stages none, and
+            # leaves no empty directory behind to imply otherwise.
+            if themes=$(git ls-tree --name-only "$tag:dist/themes" 2>/dev/null); then
+              for file in $themes; do
+                mkdir -p "_site/$major/themes"
+                git show "$tag:dist/themes/$file" > "_site/$major/themes/$file"
+                echo "staged $tag -> /$major/themes/$file"
+              done
+            fi
           done
           ls -R _site
 
