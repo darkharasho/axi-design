@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { buildCss, ORDER } from '../scripts/build.mjs'
+import { buildCss, ORDER, ICONS, buildIconSprite } from '../scripts/build.mjs'
 
 // dist/axi.css is committed, because the release workflow publishes that exact
 // file and consumers link it by URL. A committed artifact can go stale the
@@ -98,5 +98,47 @@ describe('licensing', () => {
     // language cannot be installed by the apps that need it.
     expect(pkg.name.startsWith('@')).toBe(true)
     expect(pkg.publishConfig?.access).toBe('public')
+  })
+})
+
+// dist/ is committed and published, same as dist/axi.css: an icon added to
+// icons/ and never built is an icon the docs page lists and the consumer
+// cannot render.
+describe('dist/icons', () => {
+  it('reads every file in icons/', () => {
+    const onDisk = readdirSync(resolve('icons'))
+      .filter((f) => f.endsWith('.svg') && !f.startsWith('.'))
+      .map((f) => f.replace(/\.svg$/, ''))
+      .sort()
+    expect(ICONS.map((i) => i.name)).toEqual(onDisk)
+  })
+
+  it('gives every icon a symbol carrying the canvas', () => {
+    const sprite = buildIconSprite()
+    for (const icon of ICONS) {
+      expect(sprite).toContain(`<symbol id="axi-${icon.name}" viewBox="0 0 24 24"`)
+    }
+    expect(sprite.match(/<symbol /g).length).toBe(ICONS.length)
+  })
+
+  // The stroke attributes live on the symbol, not on the sprite root: a
+  // <use> instantiates the symbol, and an attribute on the root would not
+  // travel with it.
+  it('carries the stroke attributes on each symbol', () => {
+    const sprite = buildIconSprite()
+    const symbol = sprite.split('<symbol ')[1]
+    expect(symbol).toContain('stroke="currentColor"')
+    expect(symbol).toContain('stroke-width="3"')
+    expect(symbol).toContain('fill="none"')
+  })
+
+  it('matches the committed sprite', () => {
+    expect(readFileSync(resolve('dist/icons/sprite.svg'), 'utf8')).toBe(buildIconSprite())
+  })
+
+  it('writes an individual file per icon', () => {
+    for (const icon of ICONS) {
+      expect(existsSync(resolve(`dist/icons/${icon.name}.svg`))).toBe(true)
+    }
   })
 })
