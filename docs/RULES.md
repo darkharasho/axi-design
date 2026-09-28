@@ -396,12 +396,30 @@ glyphs built around a centre line, symmetry wins. The exemption is one
 coordinate wide — `12` — so it cannot spread into a general licence to sit on
 whole integers.
 
-**What is mechanically enforced.** `tests/icons.test.mjs` parses every path in
-`icons/` and fails on a curve command, an angle that is neither axis-aligned
-nor 45°, a coordinate off the 0.5 grid or outside the live area, an
-axis-aligned stroke off its permitted centerlines, a stroke width that is not
-3, and a colour literal. The rule above is therefore a check rather than a
-promise — the same treatment rule 3's weights get in `tests/tokens.test.mjs`.
+**What is mechanically enforced.** `tests/icons.test.mjs` reads every file in
+`icons/` and works from an **allowlist**, not a list of prohibitions. A drawing
+may contain one root `<svg>` and `<path>` elements, and nothing else — a
+`<circle>`, a `<rect>` or a `<polygon>` is rejected for being unlisted rather
+than for being round. The root declares exactly the six attributes in the
+contract above, at exactly those values; a `<path>` may carry `d`, and `fill`
+or `stroke` only at `none` or `currentColor`. Everything else — a
+`transform`, an `rx`, a `stroke-linecap`, a per-element `stroke-width="2"`, a
+colour of any spelling — is an unlisted attribute and fails on that ground.
+A file containing no `<path>` at all fails too, because a drawing with nothing
+in it satisfies every geometric check by having nothing to check.
+
+Each `d` is then parsed — tracking the current point through relative
+commands, and reading the extra coordinate pairs of an `M` as the implicit
+linetos they are — and fails on a curve command, an angle that is neither
+axis-aligned nor 45°, a coordinate off the 0.5 grid or outside the live
+area, or an axis-aligned stroke off its permitted centerlines. Both ends of
+every segment are checked, including the moveto point that starts a subpath and
+may never appear as any segment's endpoint.
+
+The checker is itself tested: `tests/icons.test.mjs` feeds it a set of drawings
+that must be rejected, one per prohibition. The rule above is therefore a check
+rather than a promise — the same treatment rule 3's weights get in
+`tests/tokens.test.mjs`.
 
 ## Tokens
 

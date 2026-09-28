@@ -7,7 +7,7 @@ import { escapeHtml } from './highlight.mjs'
 // the site search finds "magnifier" and lands on `search`.
 function tile(entry) {
   const terms = [...entry.aliases, ...entry.keywords].join(' ')
-  return `<li class="docs-icon" data-keywords="${escapeHtml(terms)}">
+  return `<li class="docs-icon" data-name="${escapeHtml(entry.name)}" data-keywords="${escapeHtml(terms)}">
   <svg class="axi-icon" style="--axi-icon-size: 2rem" aria-hidden="true"><use href="#axi-${entry.name}"/></svg>
   <code>${escapeHtml(entry.name)}</code>
 </li>`
@@ -31,9 +31,24 @@ export function iconsPage() {
   every drawing is this language's own.</p>
   <p>Point a <code>&lt;use&gt;</code> at the sprite and the glyph inherits the ink around it:</p>
   <pre><code>&lt;svg class="axi-icon"&gt;&lt;use href="node_modules/@axiapps/axi-design/dist/icons/sprite.svg#axi-search"/&gt;&lt;/svg&gt;</code></pre>
-  <p>This site inlines <a href="${url('icons/sprite.svg')}">the sprite</a> into every page instead,
-  which is why the markup below says <code>#axi-search</code> with no file part.</p>
+  <p>That is a cross-document reference, so it is <strong>same-origin</strong>: over
+  <code>http(s)</code> it works and the glyph inherits the ink around it, but under
+  <code>file://</code> &mdash; an Electron window opened with <code>loadFile()</code> &mdash; it
+  resolves to nothing and the icon is silently absent. There, inline
+  <a href="${url('icons/sprite.svg')}">the sprite</a> into the document once and reference bare
+  fragments (<code>#axi-search</code>), or use the standalone
+  <code>dist/icons/&lt;name&gt;.svg</code> files.</p>
+  <p>This site takes the inlining route on every page, which is why the markup below says
+  <code>#axi-search</code> with no file part.</p>
 </div>
+<div class="docs-icons__filter">
+  <label class="axi-sr-only" for="icon-q">Filter icons</label>
+  <div class="axi-search">
+    <span class="axi-search__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-search"/></svg></span>
+    <input class="axi-input" id="icon-q" type="search" data-icon-filter placeholder="Filter by name, alias or keyword&hellip;" autocomplete="off">
+  </div>
+</div>
+<p class="docs-icons__empty" data-icon-empty hidden>Nothing in the set answers to that. If the metaphor you want is missing, the section below says what to do about it.</p>
 <ul class="docs-icons">
 ${ICON_ENTRIES.map(tile).join('\n')}
 </ul>
@@ -59,5 +74,6 @@ ${ICON_ENTRIES.map(tile).join('\n')}
   set has so far refused, because a star drawn at 45&deg; has an inner radius it cannot go below
   and comes out an octagon. Open an issue describing what the shape needed instead.</p>
 </div>`,
+    scripts: ['icon-search.js'],
   })
 }

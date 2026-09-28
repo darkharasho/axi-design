@@ -174,3 +174,13 @@ body { margin: 0; }
   text-align: center;
   overflow-wrap: anywhere;
 }
+
+.docs-icons__filter {
+  margin: var(--axi-gutter) 0 0;
+  max-width: 340px;
+}
+
+.docs-icons__empty {
+  margin: var(--axi-gutter) 0 0;
+  color: var(--axi-text-dim);
+}

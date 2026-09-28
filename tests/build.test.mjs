@@ -150,3 +150,24 @@ describe('dist/icons', () => {
     }
   })
 })
+
+// An external <use> is a cross-document reference, and cross-document means
+// same-origin: under file:// - which is exactly how an Electron app loading
+// with loadFile() runs, and Electron is half of what this language is for -
+// the reference resolves to nothing and the glyph is silently absent. The
+// pattern the README hands a consumer cannot be the one that fails on the
+// platform the spec promises. This lives in build.test.mjs because the README
+// is where a consumer meets the sprite.
+describe('the documented consumer pattern', () => {
+  const readme = readFileSync(resolve('README.md'), 'utf8')
+  const section = readme.slice(readme.indexOf('### An icon set of its own'))
+
+  it('warns that an external sprite is same-origin only', () => {
+    expect(section).toMatch(/file:\/\//)
+    expect(section).toMatch(/same-origin|same origin/i)
+  })
+
+  it('names what to do instead', () => {
+    expect(section).toMatch(/inline|dist\/icons\/&lt;name&gt;\.svg|dist\/icons\/<name>\.svg/)
+  })
+})

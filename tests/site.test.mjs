@@ -347,8 +347,17 @@ describe('the icons page', () => {
     for (const e of ICON_ENTRIES) expect(html).toContain(`#axi-${e.name}`)
   })
 
-  it("carries each icon's aliases so the search finds them", () => {
-    expect(read('icons/index.html')).toContain('magnifier')
+  // Asserting the word appears in the HTML would pass on a data- attribute
+  // nothing reads, which is what this page shipped first. The filter field,
+  // the script that binds it and the per-tile name are the three things that
+  // have to be present for typing "magnifier" to actually find `search`.
+  it("carries each icon's aliases somewhere a filter can reach them", () => {
+    const html = read('icons/index.html')
+    expect(html).toContain('data-keywords="magnifier')
+    expect(html).toContain('data-name="search"')
+    expect(html).toContain('data-icon-filter')
+    expect(html).toContain('icon-search.js')
+    expect(written).toContain('icon-search.js')
   })
 
   it('names the Lucide derivation', () => {

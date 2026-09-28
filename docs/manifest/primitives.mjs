@@ -424,7 +424,10 @@ alone loses to \`flex-shrink\` there - the glyph arrives squashed.
 The examples below reference \`#axi-<name>\` with no file part, because this site
 inlines the sprite into every page. In your own app, point at the file:
 \`<use href="node_modules/@axiapps/axi-design/dist/icons/sprite.svg#axi-search">\`,
-which inherits \`currentColor\` the same way.`,
+which inherits \`currentColor\` the same way over \`http(s)\`. A reference into a
+separate file is same-origin, so under \`file://\` - an Electron window opened
+with \`loadFile()\` - it resolves to nothing instead; inline the sprite once and
+use bare fragments there, as this site does.`,
     examples: [
       {
         title: 'On its own, and at a size',

@@ -101,6 +101,7 @@ ${readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8')}`,
   // Copied so a reader can fetch the sprite as a file; the pages themselves
   // reference bare fragments, because the shell inlines it into each one.
   copy('dist/icons/sprite.svg', 'icons/sprite.svg')
+  copy('docs/site/icon-search.js', 'icon-search.js')
 
   copy('dist/axi.css', 'axi.css')
   copy('dist/accents.css', 'accents.css')

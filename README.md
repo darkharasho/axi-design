@@ -65,6 +65,17 @@ switch with no extra rule.
 <svg class="axi-icon"><use href="node_modules/@axiapps/axi-design/dist/icons/sprite.svg#axi-search"/></svg>
 ```
 
+**One caveat, and it matters for Electron.** A `<use>` pointing into a separate
+file is a cross-document reference, and those are same-origin: over `http(s)`
+from your own origin it works and the glyph inherits `currentColor` (measured in
+Chromium 150). Under `file://` — which is how an Electron window opened with
+`loadFile()` runs — the reference resolves to nothing and the icon is silently
+absent, no error, no fallback. In that case do one of two things: inline
+`dist/icons/sprite.svg` into the document once (a hidden `<svg>` before
+`</body>`, which is what this project's own docs site does) and reference bare
+fragments like `#axi-search`, or use the standalone `dist/icons/<name>.svg`
+files. Serving the renderer over `http://localhost` also works.
+
 One sprite holds the set; `dist/icons/<name>.svg` is the same drawing on its own,
 and `dist/icons/icons.json` is the catalogue — name, categories, aliases and
 keywords — for an app that wants to build a picker. Size a glyph with

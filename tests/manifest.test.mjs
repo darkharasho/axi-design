@@ -221,6 +221,8 @@ describe('aliases', () => {
 // it. A renumbering or a reword that dropped it would leave those citations
 // deep-linking to a #rule-12 anchor that no longer exists.
 describe('rule 12', () => {
+  const md = () => readFileSync(resolve('docs/RULES.md'), 'utf8')
+
   it('is present in RULES.md and names the icon contract', () => {
     const md = readFileSync(resolve('docs/RULES.md'), 'utf8')
     const titles = new Map([...md.matchAll(/^## (\d+)\. (.+)$/gm)].map((m) => [Number(m[1]), m[2]]))
@@ -233,6 +235,18 @@ describe('rule 12', () => {
     expect(body).toContain('--axi-border-control')
     expect(body).toContain('45')
     expect(body).toMatch(/no curve|curves/i)
+  })
+
+  // The enforcement paragraph is a claim about another file, and a claim like
+  // that rots silently. It used to say the check catches "a stroke width that
+  // is not 3" when stroke-width was only scanned file-wide; it now describes
+  // the allowlist that actually runs.
+  it('describes the check as an allowlist, which is what it is', () => {
+    const body = md().split(/^## 12\. /m)[1].split(/^## /m)[0]
+    const enforced = body.split('**What is mechanically enforced.**')[1]
+    expect(enforced).toBeDefined()
+    expect(enforced).toMatch(/allow-?list/i)
+    expect(enforced).toMatch(/<path>/)
   })
 })
 
