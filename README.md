@@ -53,6 +53,25 @@ site](https://darkharasho.github.io/axi-design/) for every component, with live
 accent and theme switchers in the masthead. `/gallery/` still holds the
 everything-at-once view.
 
+### An icon set of its own
+
+Forty-seven glyphs drawn to [rule 12](docs/RULES.md) — a 24 canvas, a 3px
+stroke, mitered joins, square corners, and no angle that is not 0°, 45° or 90°.
+They take their ink from whatever they sit in, so a glyph inside an accent
+button turns accent-ink with the label and follows every accent and theme
+switch with no extra rule.
+
+```html
+<svg class="axi-icon"><use href="node_modules/@axiapps/axi-design/dist/icons/sprite.svg#axi-search"/></svg>
+```
+
+One sprite holds the set; `dist/icons/<name>.svg` is the same drawing on its own,
+and `dist/icons/icons.json` is the catalogue — name, categories, aliases and
+keywords — for an app that wants to build a picker. Size a glyph with
+`--axi-icon-size`. The vocabulary derives from [Lucide](https://lucide.dev)
+under the ISC licence (`icons/LICENSE-LUCIDE`); none of the path data does.
+Browse the set at [`/icons/`](https://darkharasho.github.io/axi-design/icons/).
+
 ### A different look, without carrying one
 
 If the flat dark ground is not what your app wants, import a theme beside the

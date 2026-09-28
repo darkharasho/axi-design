@@ -358,4 +358,11 @@ describe('the icons page', () => {
   it('reserves the route against a component taking it', () => {
     expect(RESERVED_IDS).toContain('icons')
   })
+
+  it('tells a newcomer how to draw the next one', () => {
+    const html = read('icons/index.html')
+    expect(html).toMatch(/Drawing a new icon/)
+    expect(html).toContain('icons.test.mjs')
+    expect(html).toContain('docs/manifest/icons.mjs')
+  })
 })
