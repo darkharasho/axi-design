@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
-import { buildCss, ORDER, ICONS, buildIconSprite, buildIconsJson } from '../scripts/build.mjs'
+import { buildCss, ORDER, ICONS, buildIconSprite, buildIconsJson, staleIconFiles } from '../scripts/build.mjs'
 
 // dist/axi.css is committed, because the release workflow publishes that exact
 // file and consumers link it by URL. A committed artifact can go stale the
@@ -169,5 +170,37 @@ describe('the documented consumer pattern', () => {
 
   it('names what to do instead', () => {
     expect(section).toMatch(/inline|dist\/icons\/&lt;name&gt;\.svg|dist\/icons\/<name>\.svg/)
+  })
+})
+
+// The drift test above only runs one way: it asserts every icon in icons/ has
+// a file in dist/icons/. Nothing asserted the reverse, and the build never
+// cleaned the directory - so renaming `folder-open.svg` leaves the old
+// `folder-open.svg` in dist/, committed and published, a glyph the catalogue
+// does not list and no test would ever mention again. A generated directory
+// that only ever grows is not generated, it is accumulated.
+describe('dist/icons is generated, not accumulated', () => {
+  it('names the files that no longer belong', () => {
+    const present = ['sprite.svg', 'icons.json', 'search.svg', 'folder-open.svg']
+    const icons = [{ name: 'search' }]
+    expect(staleIconFiles(present, icons)).toEqual(['folder-open.svg'])
+  })
+
+  it('keeps the sprite and the catalogue', () => {
+    expect(staleIconFiles(['sprite.svg', 'icons.json'], [])).toEqual([])
+  })
+
+  it('leaves nothing in the committed directory that the set does not claim', () => {
+    const expected = new Set(['sprite.svg', 'icons.json', ...ICONS.map((i) => `${i.name}.svg`)])
+    const extra = readdirSync(resolve('dist/icons')).filter((f) => !expected.has(f))
+    expect(extra).toEqual([])
+  })
+
+  // The helper is only worth anything if the build actually calls it.
+  it('removes a stale file on the next build', () => {
+    const stale = resolve('dist/icons/zz-not-an-icon.svg')
+    writeFileSync(stale, '<svg/>\n')
+    execFileSync('node', ['scripts/build.mjs'], { stdio: 'pipe' })
+    expect(existsSync(stale)).toBe(false)
   })
 })

@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync, rmSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 // The knob data lives in the manifest, not here: build.mjs is not in the npm
@@ -131,6 +131,17 @@ ${symbols}
 
 // The manifest, as data a consumer can read: an icon picker in an app should
 // not have to import from docs/.
+// dist/icons/ is generated, so the build owns every file in it - including the
+// ones that should no longer be there. Renaming an icon otherwise leaves the
+// old drawing behind, committed and published: a glyph the catalogue does not
+// list, that no drift test mentions, because every check ran icons/ -> dist/
+// and never the other way. Named rather than inlined so the reverse direction
+// is testable without a build.
+export function staleIconFiles(present, icons = ICONS) {
+  const claimed = new Set(['sprite.svg', 'icons.json', ...icons.map((i) => `${i.name}.svg`)])
+  return present.filter((f) => !claimed.has(f))
+}
+
 export function buildIconsJson(entries = ICON_ENTRIES) {
   return `${JSON.stringify([...entries].sort((a, b) => (a.name < b.name ? -1 : 1)), null, 2)}\n`
 }
@@ -175,6 +186,10 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     )
   }
   writeFileSync(resolve(ROOT, 'dist/icons/icons.json'), buildIconsJson())
+  for (const stale of staleIconFiles(readdirSync(resolve(ROOT, 'dist/icons')))) {
+    rmSync(resolve(ROOT, `dist/icons/${stale}`), { recursive: true })
+    console.log(`removed stale dist/icons/${stale}`)
+  }
   console.log(`built dist/icons/ from ${ICONS.length} icon(s)`)
 
   const readmePath = resolve(ROOT, 'README.md')
