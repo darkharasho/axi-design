@@ -12,6 +12,20 @@
 :root {
   /* --- surface & text --- */
   --axi-ground: #15181d;          /* the page itself */
+  /* An image layer painted over the ground colour, on the page and nowhere
+     else. The second toll the Themes section describes, and it exists for the
+     same reason --axi-surface-filter does: a glass theme wants the page lit
+     from a few directions, and it does not get to introduce a gradient any
+     more than it got to introduce a blur. Declared here inert (`none`), read
+     unconditionally by body, and restated by the theme.
+
+     Why a second token rather than letting a theme put the gradient in
+     --axi-ground itself: --axi-ground is read as `background-color` by the
+     plot and the select, where an image value is invalid and drops out, and
+     as the flat fill of the masthead, the tooltip row and a dozen inset
+     shapes, where a page-positioned radial would render as an arbitrary
+     wedge of colour. The ground stays a colour. This is the page's light. */
+  --axi-ground-image: none;
   --axi-surface: #222731;         /* a panel raised off the page */
   --axi-surface-raised: #2b313d;  /* a chip or popover raised off a panel */
   --axi-ink-line: #0c0e12;        /* the outline every raised element is drawn with */

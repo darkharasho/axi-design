@@ -11,7 +11,13 @@ html { color-scheme: dark; }
 
 body {
   margin: 0;
-  background: var(--axi-ground);
+  /* Longhands rather than the shorthand: the ground is a colour and the light
+     over it is an image, and `background:` would make setting either one
+     reset the other. Fixed so a theme's light stays put as the page scrolls
+     instead of stretching to the document's height. */
+  background-color: var(--axi-ground);
+  background-image: var(--axi-ground-image);
+  background-attachment: fixed;
   color: var(--axi-text);
   font: var(--axi-t-body);
   -webkit-font-smoothing: antialiased;
