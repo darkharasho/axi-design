@@ -140,7 +140,7 @@
      argument with one. */
   z-index: 70;
   padding: 5px 8px;
-  background: var(--axi-ink-line);
+  background: var(--axi-ground-deep);
   color: var(--axi-text);
   border: var(--axi-border-hairline) solid var(--axi-rule);
   border-radius: var(--axi-radius-sm);
@@ -289,7 +289,7 @@
   flex: none;
   display: flex; align-items: center; gap: 12px;
   height: 38px; padding-left: 14px;
-  background: var(--axi-ink-line);
+  background: var(--axi-ground-deep);
   border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);

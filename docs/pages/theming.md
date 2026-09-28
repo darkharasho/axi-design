@@ -4,8 +4,8 @@ Three layers, in `src/tokens.css` — the only file permitted to contain a colou
 literal.
 
 - **Surface & text** — `--axi-ground`, `--axi-surface`, `--axi-surface-raised`,
-  `--axi-ink-line`, `--axi-rule`, `--axi-text`, `--axi-text-dim`,
-  `--axi-text-faint`, `--axi-scrim`
+  `--axi-ink-line`, `--axi-ground-deep`, `--axi-rule`, `--axi-text`,
+  `--axi-text-dim`, `--axi-text-faint`, `--axi-scrim`
 - **Accent & status** — `--axi-accent`, `--axi-accent-ink`, `--axi-meta`,
   `--axi-ok`, `--axi-warn`, `--axi-danger`. **This is the per-app override
   surface.** An app that sets `--axi-accent` and nothing else is correctly

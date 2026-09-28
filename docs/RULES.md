@@ -62,11 +62,20 @@ stops looking raised.
 
 There is exactly one element drawn in the line ink rather than on a surface,
 and it is named here so it stays an exception rather than becoming a habit:
-`.axi-tooltip` is filled with `--axi-ink-line` itself. A thing cannot be
-outlined in the colour it is already made of, and a block in that same ink
-under a box already made of it reads as the box being thicker rather than
-raised — so the tooltip takes a hairline in `--axi-rule` to hold its edge
-against the page, and carries no block. Nothing else may use that reasoning.
+`.axi-tooltip` is filled with the line ink itself. A thing cannot be outlined
+in the colour it is already made of, and a block in that same ink under a box
+already made of it reads as the box being thicker rather than raised — so the
+tooltip takes a hairline in `--axi-rule` to hold its edge against the page, and
+carries no block. Nothing else may use that reasoning.
+
+It spells that fill `--axi-ground-deep`, not `--axi-ink-line`, and so do the
+two smaller shapes made of the same tone — the titlebar strip and the switch's
+slug. The token holds the line ink today and is a different decision from it:
+one is the colour a shape's edge is drawn in, the other the colour a shape is
+filled with. A theme that outlines in a light colour so its page can go
+near-black relights the first and leaves the second, and the tooltip stays a
+dark box with light words on it instead of becoming a pale box with pale ones.
+Anything else that comes to be made of this tone reads the same token.
 
 **What is mechanically enforced.** `tests/tokens.test.mjs` enforces both
 columns:
@@ -180,7 +189,7 @@ element becomes the containing block for any `position: fixed` descendant.
 An overlay positioned in viewport coordinates — `.axi-tooltip` is the one
 this language ships — must therefore live as a child of `<body>`, never
 inside the component it annotates, or the first hover lift re-anchors it.
-The class draws only the box (ink-line ground, hairline rule border, micro
+The class draws only the box (`--axi-ground-deep` ground, hairline rule border, micro
 type); measuring the trigger and setting `left`/`top` is the consumer's
 half, and `gallery.js` is the reference wiring.
 
@@ -213,7 +222,7 @@ a third step in everything but name — and would put a thin frame around a
 heavier bar.
 
 A switch is the same rule in a slot. Its track fills to assert the setting's
-status and is empty otherwise; the slug that moves is `--axi-ink-line` in both
+status and is empty otherwise; the slug that moves is `--axi-ground-deep` in both
 states, so on and off differ in what colour is *in* the slot and never in how
 bright the moving part is. It carries no block — a block belongs to things you
 press, and a switch is a slot with something sitting in it — but it keeps a
@@ -347,8 +356,8 @@ Three layers, in `src/tokens.css` — the only file permitted to contain a colou
 literal.
 
 - **Surface & text** — `--axi-ground`, `--axi-surface`, `--axi-surface-raised`,
-  `--axi-ink-line`, `--axi-rule`, `--axi-text`, `--axi-text-dim`,
-  `--axi-text-faint`, `--axi-scrim`
+  `--axi-ink-line`, `--axi-ground-deep`, `--axi-rule`, `--axi-text`,
+  `--axi-text-dim`, `--axi-text-faint`, `--axi-scrim`
 - **Accent & status** — `--axi-accent`, `--axi-accent-ink`, `--axi-meta`,
   `--axi-ok`, `--axi-warn`, `--axi-danger`. **This is the per-app override
   surface.** An app that sets `--axi-accent` and nothing else is correctly

@@ -19,6 +19,15 @@
   --axi-surface: #222731;         /* a panel raised off the page */
   --axi-surface-raised: #2b313d;  /* a chip or popover raised off a panel */
   --axi-ink-line: #0c0e12;        /* the outline every raised element is drawn with */
+  /* The tone a shape is made of when it is made of the line ink rather than
+     outlined in it - the tooltip, the titlebar strip, the switch's slug. Holds
+     --axi-ink-line today, which is why it reads as the same decision and is
+     not: one is the colour a shape's EDGE is drawn in, the other the colour a
+     shape is FILLED with. They only have to diverge once - a theme that
+     outlines in a light colour so its page can go near-black - for the
+     conflated spelling to turn the tooltip into a pale box. Same split as
+     --axi-ink-on-fill below, on the other side of the same token. */
+  --axi-ground-deep: var(--axi-ink-line);
   --axi-rule: #3a4250;            /* internal rules, inside an outlined panel */
   --axi-text: #f4f6f9;
   --axi-text-dim: #a7b0be;
@@ -342,7 +351,7 @@ a { color: inherit; }
   top: 2px; bottom: 2px; left: 2px;
   width: var(--axi-switch-knob, 16px);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ink-line);
+  background: var(--axi-ground-deep);
   transition: transform .1s;
 }
 /* The travel is the track's inner width less the slug and its two insets.
@@ -922,7 +931,7 @@ textarea.axi-input {
      argument with one. */
   z-index: 70;
   padding: 5px 8px;
-  background: var(--axi-ink-line);
+  background: var(--axi-ground-deep);
   color: var(--axi-text);
   border: var(--axi-border-hairline) solid var(--axi-rule);
   border-radius: var(--axi-radius-sm);
@@ -1071,7 +1080,7 @@ textarea.axi-input {
   flex: none;
   display: flex; align-items: center; gap: 12px;
   height: 38px; padding-left: 14px;
-  background: var(--axi-ink-line);
+  background: var(--axi-ground-deep);
   border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);

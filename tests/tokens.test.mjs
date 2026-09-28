@@ -159,6 +159,19 @@ const isLiteralRadius = (text) =>
   RADIUS_PROPERTY.test(text) && RADIUS_LENGTH.test(valueOf(text))
 
 // ---------------------------------------------------------------------------
+// Rule 3, the one exception: a shape made of the line ink names it as a fill.
+// ---------------------------------------------------------------------------
+
+// Every property that paints an area rather than an edge. `fill` is in here
+// for the SVG the language does not ship today and would paint the same way
+// if it did; `border-color` deliberately is NOT - an edge in the line ink is
+// the rule, not the exception to it.
+const FILL_PROPERTY = /^(background(-color|-image)?|fill)\s*:/i
+
+const isInkLineFill = (text) =>
+  FILL_PROPERTY.test(text) && /var\(\s*--axi-ink-line\b/.test(valueOf(text))
+
+// ---------------------------------------------------------------------------
 // Rule 3, column 2: every raised block is hard, never a blur.
 // ---------------------------------------------------------------------------
 
@@ -440,6 +453,28 @@ describe('token contract', () => {
     expect(offenders).toEqual([])
   })
 
+  it('fills with --axi-ground-deep, never with the line ink itself', () => {
+    // The line ink is the colour a shape's EDGE is drawn in. Three shapes are
+    // MADE of that tone - the tooltip, the titlebar strip, the switch's slug -
+    // and they name it --axi-ground-deep, which holds the line ink today and
+    // is a separate decision from it. The split only pays off once: a theme
+    // that relights the outline so its page can go near-black leaves the fill
+    // dark, and the tooltip stays dark box + light words instead of turning
+    // pale on pale. A fourth shape spelled `background: var(--axi-ink-line)`
+    // would read correctly right now and silently opt out of that, which is
+    // exactly the failure --axi-ink-on-fill was split out to prevent on the
+    // other side of the same token.
+    const offenders = []
+    for (const name of COMPONENT_FILES()) {
+      for (const { text, line } of declarations(read(name))) {
+        if (isInkLineFill(text)) {
+          offenders.push(`${name}:${line}: ${text.trim().replace(/\s+/g, ' ')}`)
+        }
+      }
+    }
+    expect(offenders).toEqual([])
+  })
+
   it('never smuggles a blur through filter or text-shadow', () => {
     const offenders = []
     for (const name of COMPONENT_FILES()) {
@@ -564,6 +599,22 @@ describe('form-token and weight escape hatches', () => {
     const css = `.axi-hero { --axi-shadow-panel: 0 0 40px var(--axi-ink-line); }`
     const offenders = declarations(css).filter(({ text }) => FORM_TOKEN_DECLARATION.test(text))
     expect(offenders.length).toBeGreaterThan(0)
+  })
+
+  it('catches a fill in the line ink, in every spelling that paints an area', () => {
+    const offenders = declarations(`.a { background: var(--axi-ink-line); }
+      .b { background-color: var(--axi-ink-line); }
+      .c { background-image: linear-gradient(var(--axi-ink-line), #000); }
+      .d { fill: var(--axi-ink-line); }`).filter(({ text }) => isInkLineFill(text))
+    expect(offenders).toHaveLength(4)
+  })
+
+  it('leaves an edge in the line ink, and a fill in the deep ground, alone', () => {
+    const offenders = declarations(`.a { border: var(--axi-border-panel) solid var(--axi-ink-line); }
+      .b { border-color: var(--axi-ink-line); }
+      .c { background: var(--axi-ground-deep); }
+      .d { box-shadow: var(--axi-shadow-panel); }`).filter(({ text }) => isInkLineFill(text))
+    expect(offenders).toEqual([])
   })
 
   it('catches filter: drop-shadow() and text-shadow', () => {
