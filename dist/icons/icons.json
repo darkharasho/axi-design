@@ -239,6 +239,22 @@
     ]
   },
   {
+    "name": "crown",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "king",
+      "best"
+    ],
+    "keywords": [
+      "rank",
+      "premium",
+      "featured",
+      "top"
+    ]
+  },
+  {
     "name": "download",
     "categories": [
       "files"
@@ -379,6 +395,25 @@
     ]
   },
   {
+    "name": "loader-circle",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "spinner",
+      "loading"
+    ],
+    "lucide": [
+      "loader-2"
+    ],
+    "keywords": [
+      "busy",
+      "pending",
+      "wait",
+      "progress"
+    ]
+  },
+  {
     "name": "lock",
     "categories": [
       "objects"
@@ -394,6 +429,21 @@
     ]
   },
   {
+    "name": "maximize-2",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "expand",
+      "fullscreen"
+    ],
+    "keywords": [
+      "enlarge",
+      "grow",
+      "open"
+    ]
+  },
+  {
     "name": "menu",
     "categories": [
       "navigation"
@@ -405,6 +455,22 @@
       "nav",
       "list",
       "more"
+    ]
+  },
+  {
+    "name": "message-square",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "comment",
+      "chat"
+    ],
+    "keywords": [
+      "speech",
+      "reply",
+      "thread",
+      "note"
     ]
   },
   {
@@ -538,6 +604,22 @@
       "options",
       "config",
       "tune"
+    ]
+  },
+  {
+    "name": "shield",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "secure",
+      "protected"
+    ],
+    "keywords": [
+      "guard",
+      "safety",
+      "defence",
+      "trust"
     ]
   },
   {
