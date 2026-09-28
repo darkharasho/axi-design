@@ -445,3 +445,18 @@
 /* object-fit rather than a background-image, so the <img>'s alt text survives
    and a broken source is visible rather than silently blank. */
 .axi-avatar__img { width: 100%; height: 100%; object-fit: cover; display: block; }
+
+/* ---------- icon ---------- */
+
+/* Rule 12's glyphs, sized and positioned - and nothing else. The drawing
+   brings its own stroke and its 24 canvas; the ink is inherited, because an
+   icon is whatever colour the thing it sits in is written in. `flex: none`
+   is load-bearing rather than defensive: the commonest placement in the set
+   is beside a label inside a button, which is a flex container, and an em
+   width alone gets shrunk there. */
+.axi-icon {
+  width: var(--axi-icon-size, 1.25em);
+  height: var(--axi-icon-size, 1.25em);
+  flex: none;
+  vertical-align: -0.2em;
+}

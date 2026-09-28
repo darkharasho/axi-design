@@ -8,6 +8,18 @@ import { escapeHtml } from './highlight.mjs'
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 export const VERSION = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8')).version
+
+// Every <use> on this site is a bare fragment - href="#axi-search" - so it
+// resolves whatever depth the route sits at and needs no path arithmetic per
+// page. That only works if the symbols are in the document, so the shell puts
+// them there: roughly 6KB uncompressed, in exchange for one fewer request and
+// glyphs that are present before first paint rather than after a second round
+// trip. Hidden rather than removed from flow, because display:none on the
+// sprite root still lets a <use> instantiate its symbols.
+const SPRITE = readFileSync(resolve(ROOT, 'dist/icons/sprite.svg'), 'utf8').replace(
+  '<svg xmlns="http://www.w3.org/2000/svg">',
+  '<svg xmlns="http://www.w3.org/2000/svg" style="display:none" aria-hidden="true">',
+)
 export const ACCENTS = JSON.parse(readFileSync(resolve(ROOT, 'accents.json'), 'utf8'))
 export { THEMES }
 
@@ -122,7 +134,7 @@ ${themeLinks()}
 <link rel="stylesheet" href="${url('docs.css')}">
 </head>
 <body>
-<header class="axi-mast"><div class="axi-mast__in">
+${SPRITE}<header class="axi-mast"><div class="axi-mast__in">
   <a class="axi-brand" href="${url()}">
     <span class="axi-sigil" aria-hidden="true">A</span>
     <span class="axi-brand__name">axi-design<small>v${VERSION}</small></span>

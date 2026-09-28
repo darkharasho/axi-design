@@ -400,6 +400,60 @@ having measured the trigger: the box is unchanged, only who positions it moves.`
     ],
   },
   {
+    id: 'icon',
+    name: 'Icon',
+    layer: 'primitives',
+    classes: ['.axi-icon'],
+    summary: "A glyph from the axi icon set. The class sizes the box; the drawing brings its own stroke and takes its ink from whatever it sits in.",
+    rules: [12],
+    knobs: ['--axi-icon-size'],
+    aliases: ['glyph', 'symbol', 'pictogram'],
+    notes: `The set is drawn to rule 12 - a 24 canvas, a 3px stroke, mitered
+joins, square corners, and no angle that is not 0, 45 or 90 degrees. Browse the
+whole of it on the [icons page](../../icons/).
+
+The class sets four things and deliberately nothing else: the two dimensions,
+\`flex: none\` and the baseline offset. It sets no \`color\`, \`stroke\` or
+\`fill\`, because an icon is whatever ink the thing containing it is written
+in: put it inside a \`.axi-btn--primary\` and it turns accent-ink with the label.
+
+\`flex: none\` is the load-bearing one. The commonest placement in the whole set
+is beside a label inside a button, which is a flex container, and \`width: 1.25em\`
+alone loses to \`flex-shrink\` there - the glyph arrives squashed.
+
+The examples below reference \`#axi-<name>\` with no file part, because this site
+inlines the sprite into every page. In your own app, point at the file:
+\`<use href="node_modules/@axiapps/axi-design/dist/icons/sprite.svg#axi-search">\`,
+which inherits \`currentColor\` the same way.`,
+    examples: [
+      {
+        title: 'On its own, and at a size',
+        html: `<span class="axi-row">
+  <svg class="axi-icon" aria-hidden="true"><use href="#axi-search"/></svg>
+  <svg class="axi-icon" style="--axi-icon-size: 2rem" aria-hidden="true"><use href="#axi-check"/></svg>
+</span>`,
+      },
+      {
+        title: 'Beside a label',
+        html: `<button class="axi-btn axi-btn--primary" type="button">
+  <svg class="axi-icon" aria-hidden="true"><use href="#axi-search"/></svg>
+  Search
+</button>
+<button class="axi-btn" type="button">
+  <svg class="axi-icon" aria-hidden="true"><use href="#axi-x"/></svg>
+  Dismiss
+</button>`,
+      },
+      {
+        title: 'Alone in a button, where the label is the accessible name',
+        note: 'An icon-only control still needs a name - the glyph is aria-hidden and the button carries an aria-label',
+        html: `<button class="axi-btn" type="button" aria-label="Close">
+  <svg class="axi-icon" aria-hidden="true"><use href="#axi-x"/></svg>
+</button>`,
+      },
+    ],
+  },
+  {
     id: 'avatar',
     name: 'Avatar',
     layer: 'primitives',

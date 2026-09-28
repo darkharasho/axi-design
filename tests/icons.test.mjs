@@ -178,3 +178,34 @@ describe('the path parser', () => {
     expect(() => segments('M3 3 C 4 4 5 5 6 6')).toThrow(/illegal path command/)
   })
 })
+
+// The commonest placement in the whole set is an icon beside text inside a
+// button - which is a flex container. `width: 1.25em` alone loses to
+// flex-shrink there, and the glyph arrives squashed into an ellipse-shaped
+// nothing. These two declarations are the ones that keep that from happening.
+describe('.axi-icon', () => {
+  const css = readFileSync(resolve('src/primitives.css'), 'utf8')
+  const rule = css.split('.axi-icon {')[1]?.split('}')[0] ?? ''
+
+  it('exists', () => {
+    expect(css).toContain('.axi-icon {')
+  })
+
+  it('sizes itself from a knob with a fallback', () => {
+    expect(rule).toMatch(/var\(--axi-icon-size,\s*1\.25em\)/)
+  })
+
+  it('refuses to be squashed by a flex parent', () => {
+    expect(rule).toContain('flex: none')
+  })
+
+  it('sits on the text baseline', () => {
+    expect(rule).toMatch(/vertical-align/)
+  })
+
+  it('sets no colour, stroke or fill of its own', () => {
+    expect(rule).not.toMatch(/(^|\s)color:/)
+    expect(rule).not.toMatch(/stroke/)
+    expect(rule).not.toMatch(/fill/)
+  })
+})
