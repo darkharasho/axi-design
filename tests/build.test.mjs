@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { resolve } from 'node:path'
-import { buildCss, ORDER, ICONS, buildIconSprite } from '../scripts/build.mjs'
+import { buildCss, ORDER, ICONS, buildIconSprite, buildIconsJson } from '../scripts/build.mjs'
 
 // dist/axi.css is committed, because the release workflow publishes that exact
 // file and consumers link it by URL. A committed artifact can go stale the
@@ -134,6 +134,14 @@ describe('dist/icons', () => {
 
   it('matches the committed sprite', () => {
     expect(readFileSync(resolve('dist/icons/sprite.svg'), 'utf8')).toBe(buildIconSprite())
+  })
+
+  // icons.json is committed and published beside the sprite, and nothing in
+  // this repo imports it - so an entry added to docs/manifest/icons.mjs and
+  // never rebuilt ships a catalogue that disagrees with the drawings, with a
+  // green run to say so. Same guarantee dist/axi.css gets.
+  it('matches the committed icons.json', () => {
+    expect(readFileSync(resolve('dist/icons/icons.json'), 'utf8')).toBe(buildIconsJson())
   })
 
   it('writes an individual file per icon', () => {

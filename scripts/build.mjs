@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 // `files` list, so this import cannot leak docs/ to a consumer. Kept at the
 // top per R-2, with the other imports, rather than beside its one user.
 import { KNOBS } from '../docs/manifest/knobs.mjs'
+import { ICON_ENTRIES } from '../docs/manifest/icons.mjs'
 
 // The shipped artifact is one file, but the sources are split by
 // responsibility so they stay readable. Order matters and is declared here
@@ -124,6 +125,12 @@ ${symbols}
 `
 }
 
+// The manifest, as data a consumer can read: an icon picker in an app should
+// not have to import from docs/.
+export function buildIconsJson(entries = ICON_ENTRIES) {
+  return `${JSON.stringify([...entries].sort((a, b) => a.name.localeCompare(b.name)), null, 2)}\n`
+}
+
 // The knob table is generated into README.md between markers. It is the one
 // table in this repo describing src/ that a human used to maintain by hand,
 // and the one that could therefore go stale with no symptom at all - nothing
@@ -163,6 +170,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
       `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">\n${icon.body}\n</svg>\n`,
     )
   }
+  writeFileSync(resolve(ROOT, 'dist/icons/icons.json'), buildIconsJson())
   console.log(`built dist/icons/ from ${ICONS.length} icon(s)`)
 
   const readmePath = resolve(ROOT, 'README.md')

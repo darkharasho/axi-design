@@ -25,6 +25,7 @@
     "./themes/*.css": "./dist/themes/*.css",
     "./icons/sprite.svg": "./dist/icons/sprite.svg",
     "./icons/*.svg": "./dist/icons/*.svg",
+    "./icons.json": "./dist/icons/icons.json",
     "./accents.json": "./accents.json",
     "./package.json": "./package.json"
   },

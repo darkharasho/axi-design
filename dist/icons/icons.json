@@ -1,0 +1,147 @@
+[
+  {
+    "name": "check",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "tick",
+      "done"
+    ],
+    "keywords": [
+      "confirm",
+      "success",
+      "ok"
+    ]
+  },
+  {
+    "name": "chevron-down",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "caret-down"
+    ],
+    "keywords": [
+      "expand",
+      "open",
+      "more"
+    ]
+  },
+  {
+    "name": "chevron-right",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "caret-right"
+    ],
+    "keywords": [
+      "next",
+      "forward",
+      "breadcrumb"
+    ]
+  },
+  {
+    "name": "circle-alert",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "alert",
+      "warning",
+      "exclamation"
+    ],
+    "keywords": [
+      "danger",
+      "error",
+      "caution"
+    ]
+  },
+  {
+    "name": "folder",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "directory"
+    ],
+    "keywords": [
+      "file",
+      "group"
+    ]
+  },
+  {
+    "name": "info",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "about"
+    ],
+    "keywords": [
+      "note",
+      "meta",
+      "help"
+    ]
+  },
+  {
+    "name": "plus",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "add",
+      "new"
+    ],
+    "keywords": [
+      "create",
+      "insert"
+    ]
+  },
+  {
+    "name": "search",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "magnifier",
+      "find"
+    ],
+    "keywords": [
+      "filter",
+      "lookup",
+      "query"
+    ]
+  },
+  {
+    "name": "trash-2",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "delete",
+      "bin",
+      "remove"
+    ],
+    "keywords": [
+      "destroy",
+      "discard"
+    ]
+  },
+  {
+    "name": "x",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "close",
+      "dismiss",
+      "cancel"
+    ],
+    "keywords": [
+      "exit",
+      "clear"
+    ]
+  }
+]

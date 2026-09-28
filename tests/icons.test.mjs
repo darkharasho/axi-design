@@ -1,6 +1,7 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { resolve, basename } from 'node:path'
+import { ICON_ENTRIES } from '../docs/manifest/icons.mjs'
 
 // Rule 12 as a check rather than a promise. The grammar is narrow enough to
 // parse with a tokenizer this small precisely because it forbids curves: the
@@ -207,5 +208,32 @@ describe('.axi-icon', () => {
     expect(rule).not.toMatch(/(^|\s)color:/)
     expect(rule).not.toMatch(/stroke/)
     expect(rule).not.toMatch(/fill/)
+  })
+})
+
+// The drift check, in both directions. A set rots when a file exists that
+// nothing lists, or an entry names a drawing nobody made - and both fail
+// silently, which is why they are asserted rather than trusted.
+describe('the icon manifest', () => {
+  const drawn = iconFiles().map((i) => i.name).sort()
+
+  it('describes exactly the drawings on disk', () => {
+    expect(ICON_ENTRIES.map((e) => e.name).sort()).toEqual(drawn)
+  })
+
+  it('gives every icon at least one category and one keyword', () => {
+    for (const e of ICON_ENTRIES) {
+      expect(e.categories.length, `${e.name} has no category`).toBeGreaterThan(0)
+      expect(e.keywords.length, `${e.name} has no keyword`).toBeGreaterThan(0)
+    }
+  })
+
+  it('never lets an alias collide with a real icon name', () => {
+    const names = new Set(ICON_ENTRIES.map((e) => e.name))
+    for (const e of ICON_ENTRIES) {
+      for (const alias of e.aliases) {
+        expect(names.has(alias), `${e.name} aliases the real icon "${alias}"`).toBe(false)
+      }
+    }
   })
 })
