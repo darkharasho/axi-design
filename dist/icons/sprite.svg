@@ -43,18 +43,18 @@
     <path d="M5.5 15 L12 8.5 L18.5 15"/>
   </symbol>
   <symbol id="axi-circle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
-    <path d="M12 2.5 L21.5 12 L12 21.5 L2.5 12 Z"/>
-    <path d="M12 7.5 L12 13.5"/>
+    <path d="M8.5 1.5 L15.5 1.5 L22.5 8.5 L22.5 15.5 L15.5 22.5 L8.5 22.5 L1.5 15.5 L1.5 8.5 Z"/>
+    <path d="M12 6.5 L12 13.5"/>
     <path d="M12 16.5 L12 18"/>
   </symbol>
   <symbol id="axi-circle-check" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
-    <path d="M12 2.5 L21.5 12 L12 21.5 L2.5 12 Z"/>
-    <path d="M7.5 12 L10.5 15 L16.5 9"/>
+    <path d="M8.5 1.5 L15.5 1.5 L22.5 8.5 L22.5 15.5 L15.5 22.5 L8.5 22.5 L1.5 15.5 L1.5 8.5 Z"/>
+    <path d="M7 12 L10.5 15.5 L17 9"/>
   </symbol>
   <symbol id="axi-circle-x" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
-    <path d="M12 2.5 L21.5 12 L12 21.5 L2.5 12 Z"/>
-    <path d="M8.5 8.5 L15.5 15.5"/>
-    <path d="M15.5 8.5 L8.5 15.5"/>
+    <path d="M8.5 1.5 L15.5 1.5 L22.5 8.5 L22.5 15.5 L15.5 22.5 L8.5 22.5 L1.5 15.5 L1.5 8.5 Z"/>
+    <path d="M8 8 L16 16"/>
+    <path d="M16 8 L8 16"/>
   </symbol>
   <symbol id="axi-clock" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
     <path d="M3.5 3.5 L20.5 3.5 L20.5 20.5 L3.5 20.5 Z"/>
@@ -121,15 +121,15 @@
     <path d="M3.5 12 L20.5 12"/>
   </symbol>
   <symbol id="axi-pause" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
-    <path d="M8.5 4.5 L8.5 19.5"/>
-    <path d="M15.5 4.5 L15.5 19.5"/>
+    <path d="M8.5 5.5 L8.5 18.5"/>
+    <path d="M15.5 5.5 L15.5 18.5"/>
   </symbol>
   <symbol id="axi-pencil" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
     <path d="M3.5 20.5 L3.5 16.5 L15.5 4.5 L19.5 8.5 L7.5 20.5 Z"/>
     <path d="M12.5 7.5 L16.5 11.5"/>
   </symbol>
   <symbol id="axi-play" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
-    <path d="M8.5 2.5 L18 12 L8.5 21.5 Z"/>
+    <path d="M8.5 5.5 L15 12 L8.5 18.5 Z"/>
   </symbol>
   <symbol id="axi-plus" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
     <path d="M12 3.5 L12 20.5"/>
@@ -157,8 +157,8 @@
     <path d="M15.5 12.5 L18.5 15.5 L15.5 18.5 L12.5 15.5 Z"/>
   </symbol>
   <symbol id="axi-skip-forward" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
-    <path d="M4.5 4.5 L12 12 L4.5 19.5 Z"/>
-    <path d="M17.5 4.5 L17.5 19.5"/>
+    <path d="M6.5 5.5 L13 12 L6.5 18.5 Z"/>
+    <path d="M17.5 5.5 L17.5 18.5"/>
   </symbol>
   <symbol id="axi-square" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
     <path d="M4.5 4.5 L19.5 4.5 L19.5 19.5 L4.5 19.5 Z"/>
