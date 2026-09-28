@@ -85,13 +85,17 @@ const iconBody = (svg) =>
     .replace(/<\/svg>\s*$/, '')
     .trim()
 
+// Sorted by name, not by filename: '-' sorts before '.', so sorting the
+// directory listing would put check-check.svg ahead of check.svg while every
+// other ordering in the set - the manifest, icons.json, the docs grid - sorts
+// the bare names. One of those orders has to be the order.
 export const ICONS = readdirSync(ICON_DIR)
   .filter((f) => f.endsWith('.svg') && !f.startsWith('.'))
-  .sort()
   .map((f) => ({
     name: f.replace(/\.svg$/, ''),
     body: iconBody(readFileSync(resolve(ICON_DIR, f), 'utf8')),
   }))
+  .sort((a, b) => (a.name < b.name ? -1 : 1))
 
 // One request for the whole set. The stroke attributes sit on each <symbol>
 // rather than on the sprite root, because <use> instantiates the symbol and
@@ -128,7 +132,7 @@ ${symbols}
 // The manifest, as data a consumer can read: an icon picker in an app should
 // not have to import from docs/.
 export function buildIconsJson(entries = ICON_ENTRIES) {
-  return `${JSON.stringify([...entries].sort((a, b) => a.name.localeCompare(b.name)), null, 2)}\n`
+  return `${JSON.stringify([...entries].sort((a, b) => (a.name < b.name ? -1 : 1)), null, 2)}\n`
 }
 
 // The knob table is generated into README.md between markers. It is the one

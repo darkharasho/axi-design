@@ -129,6 +129,20 @@ thing — the icon is **not shipped**. A wrong glyph is worse than an absent
 one, and the absence is a design note for the next round rather than a
 failure.
 
+**Not shipped, and why**
+
+- **`star`.** A star's edges are the one shape this grammar genuinely cannot
+  approximate. A five-point star needs 36° and 72°; a four-point star drawn at
+  45° has a mathematical floor on how deep its concave vertices can go — the
+  inner radius cannot fall below `R/√2`, which is exactly an octagon. Every
+  version of it read as a lumpy diamond rather than a star. Nothing in the axi
+  suite currently needs a favourite/rating mark; when something does, the
+  answer is likely to be the existing `.axi-diamond` filled, which is already
+  how rule 5 says status is drawn, rather than a star at all.
+
+The working set is therefore **47 icons**, not the 48 the goal named. The
+missing one is named here rather than made up elsewhere.
+
 ### Licensing
 
 Lucide is ISC-licensed and permits derivative works provided the copyright

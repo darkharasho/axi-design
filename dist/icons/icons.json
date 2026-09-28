@@ -1,5 +1,76 @@
 [
   {
+    "name": "arrow-down",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "down"
+    ],
+    "keywords": [
+      "descend",
+      "sort",
+      "below"
+    ]
+  },
+  {
+    "name": "arrow-left",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "back"
+    ],
+    "keywords": [
+      "previous",
+      "return",
+      "west"
+    ]
+  },
+  {
+    "name": "arrow-right",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "forward"
+    ],
+    "keywords": [
+      "next",
+      "proceed",
+      "east"
+    ]
+  },
+  {
+    "name": "arrow-up",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "up"
+    ],
+    "keywords": [
+      "ascend",
+      "sort",
+      "above"
+    ]
+  },
+  {
+    "name": "calendar",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "date",
+      "schedule"
+    ],
+    "keywords": [
+      "day",
+      "month",
+      "event"
+    ]
+  },
+  {
     "name": "check",
     "categories": [
       "status"
@@ -12,6 +83,20 @@
       "confirm",
       "success",
       "ok"
+    ]
+  },
+  {
+    "name": "check-check",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "done-all"
+    ],
+    "keywords": [
+      "read",
+      "confirmed",
+      "both"
     ]
   },
   {
@@ -29,6 +114,20 @@
     ]
   },
   {
+    "name": "chevron-left",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "caret-left"
+    ],
+    "keywords": [
+      "back",
+      "previous",
+      "collapse"
+    ]
+  },
+  {
     "name": "chevron-right",
     "categories": [
       "navigation"
@@ -40,6 +139,20 @@
       "next",
       "forward",
       "breadcrumb"
+    ]
+  },
+  {
+    "name": "chevron-up",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "caret-up"
+    ],
+    "keywords": [
+      "collapse",
+      "close",
+      "less"
     ]
   },
   {
@@ -59,6 +172,146 @@
     ]
   },
   {
+    "name": "circle-check",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "success"
+    ],
+    "keywords": [
+      "verified",
+      "passed",
+      "complete"
+    ]
+  },
+  {
+    "name": "circle-x",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "failure"
+    ],
+    "keywords": [
+      "error",
+      "rejected",
+      "failed"
+    ]
+  },
+  {
+    "name": "clock",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "time"
+    ],
+    "keywords": [
+      "duration",
+      "schedule",
+      "recent"
+    ]
+  },
+  {
+    "name": "copy",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "duplicate"
+    ],
+    "keywords": [
+      "clipboard",
+      "clone"
+    ]
+  },
+  {
+    "name": "download",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "save-to-disk"
+    ],
+    "keywords": [
+      "export",
+      "fetch",
+      "pull"
+    ]
+  },
+  {
+    "name": "external-link",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "open-in-new"
+    ],
+    "keywords": [
+      "outbound",
+      "away",
+      "launch"
+    ]
+  },
+  {
+    "name": "eye",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "visible",
+      "view"
+    ],
+    "keywords": [
+      "preview",
+      "watch",
+      "show"
+    ]
+  },
+  {
+    "name": "file",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "document"
+    ],
+    "keywords": [
+      "sheet",
+      "page",
+      "blank"
+    ]
+  },
+  {
+    "name": "file-text",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "document-text"
+    ],
+    "keywords": [
+      "note",
+      "report",
+      "contents"
+    ]
+  },
+  {
+    "name": "filter",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "funnel"
+    ],
+    "keywords": [
+      "narrow",
+      "refine",
+      "query"
+    ]
+  },
+  {
     "name": "folder",
     "categories": [
       "files"
@@ -69,6 +322,20 @@
     "keywords": [
       "file",
       "group"
+    ]
+  },
+  {
+    "name": "folder-open",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "directory-open"
+    ],
+    "keywords": [
+      "expanded",
+      "browse",
+      "contents"
     ]
   },
   {
@@ -86,6 +353,105 @@
     ]
   },
   {
+    "name": "link",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "chain"
+    ],
+    "keywords": [
+      "url",
+      "anchor",
+      "connect"
+    ]
+  },
+  {
+    "name": "lock",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "locked",
+      "secure"
+    ],
+    "keywords": [
+      "private",
+      "password",
+      "closed"
+    ]
+  },
+  {
+    "name": "menu",
+    "categories": [
+      "navigation"
+    ],
+    "aliases": [
+      "hamburger"
+    ],
+    "keywords": [
+      "nav",
+      "list",
+      "more"
+    ]
+  },
+  {
+    "name": "minus",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "subtract",
+      "remove"
+    ],
+    "keywords": [
+      "collapse",
+      "less"
+    ]
+  },
+  {
+    "name": "pause",
+    "categories": [
+      "media"
+    ],
+    "aliases": [
+      "halt"
+    ],
+    "keywords": [
+      "suspend",
+      "hold"
+    ]
+  },
+  {
+    "name": "pencil",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "edit",
+      "write"
+    ],
+    "keywords": [
+      "rename",
+      "modify",
+      "compose"
+    ]
+  },
+  {
+    "name": "play",
+    "categories": [
+      "media"
+    ],
+    "aliases": [
+      "start"
+    ],
+    "keywords": [
+      "run",
+      "resume",
+      "begin"
+    ]
+  },
+  {
     "name": "plus",
     "categories": [
       "actions"
@@ -97,6 +463,35 @@
     "keywords": [
       "create",
       "insert"
+    ]
+  },
+  {
+    "name": "refresh-cw",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "reload",
+      "sync"
+    ],
+    "keywords": [
+      "retry",
+      "refetch",
+      "again"
+    ]
+  },
+  {
+    "name": "save",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "diskette"
+    ],
+    "keywords": [
+      "store",
+      "persist",
+      "write"
     ]
   },
   {
@@ -115,18 +510,147 @@
     ]
   },
   {
+    "name": "settings-2",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "sliders",
+      "preferences"
+    ],
+    "keywords": [
+      "options",
+      "config",
+      "tune"
+    ]
+  },
+  {
+    "name": "skip-forward",
+    "categories": [
+      "media"
+    ],
+    "aliases": [
+      "next-track"
+    ],
+    "keywords": [
+      "forward",
+      "advance"
+    ]
+  },
+  {
+    "name": "square",
+    "categories": [
+      "media"
+    ],
+    "aliases": [
+      "stop"
+    ],
+    "keywords": [
+      "halt",
+      "end",
+      "record"
+    ]
+  },
+  {
+    "name": "tag",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "label"
+    ],
+    "keywords": [
+      "category",
+      "badge",
+      "marker"
+    ]
+  },
+  {
     "name": "trash-2",
     "categories": [
       "actions"
     ],
     "aliases": [
       "delete",
-      "bin",
-      "remove"
+      "bin"
     ],
     "keywords": [
       "destroy",
-      "discard"
+      "discard",
+      "remove"
+    ]
+  },
+  {
+    "name": "unlock",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "unlocked"
+    ],
+    "keywords": [
+      "open",
+      "public",
+      "granted"
+    ]
+  },
+  {
+    "name": "upload",
+    "categories": [
+      "files"
+    ],
+    "aliases": [
+      "send"
+    ],
+    "keywords": [
+      "import",
+      "push",
+      "attach"
+    ]
+  },
+  {
+    "name": "user",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "person",
+      "account"
+    ],
+    "keywords": [
+      "profile",
+      "member",
+      "who"
+    ]
+  },
+  {
+    "name": "users",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "people",
+      "group"
+    ],
+    "keywords": [
+      "team",
+      "members",
+      "roster"
+    ]
+  },
+  {
+    "name": "volume-2",
+    "categories": [
+      "media"
+    ],
+    "aliases": [
+      "sound",
+      "audio"
+    ],
+    "keywords": [
+      "speaker",
+      "loud",
+      "unmute"
     ]
   },
   {
