@@ -266,6 +266,14 @@ describe('the icon manifest', () => {
     expect(ICON_ENTRIES.map((e) => e.name).sort()).toEqual(drawn)
   })
 
+  // The /icons grid renders in manifest order, not sorted - so a row dropped
+  // in the wrong place is a glyph filed between the wrong two names on the
+  // page, with every other check still green.
+  it('is in alphabetical order', () => {
+    const names = ICON_ENTRIES.map((e) => e.name)
+    expect(names).toEqual([...names].sort())
+  })
+
   it('gives every icon at least one category and one keyword', () => {
     for (const e of ICON_ENTRIES) {
       expect(e.categories.length, `${e.name} has no category`).toBeGreaterThan(0)

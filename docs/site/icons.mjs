@@ -53,6 +53,42 @@ export function iconsPage() {
 ${ICON_ENTRIES.map(tile).join('\n')}
 </ul>
 <div class="axi-prose">
+  <h2 id="substitutions">When the set does not have it</h2>
+  <p>The suite imports 165 distinct Lucide names. This set draws 57 of them and will
+  realistically reach sixty or seventy &mdash; so an app importing from
+  <code>lucide-react</code> <em>and</em> from here is the expected arrangement, not a
+  failure of the migration. The vocabulary was always borrowed; only the drawings are
+  ours. Port what this set answers, leave the rest on Lucide, and do not re-decide it
+  app by app.</p>
+  <p>Some names this set answers under a different one. Those resolve in the sprite, so
+  the port is a rename:</p>
+  <pre><code>&lt;svg class="axi-icon"&gt;&lt;use href="#axi-triangle-alert"/&gt;&lt;/svg&gt;</code></pre>
+  <p>And some it will not draw at all, because the shape needs a curve this grammar does
+  not have. Those need a decision, and here it is:</p>
+  <table>
+    <thead><tr><th>Lucide name</th><th>Use</th><th>Why</th></tr></thead>
+    <tbody>
+      <tr><td><code>star</code></td><td><code>crown</code>, or a filled <code>.axi-diamond</code></td>
+      <td>Five points need 36&deg; and 72&deg;. The four-point substitute cannot have
+      concave vertices closer in than <code>R/&radic;2</code> &mdash; which is an octagon
+      &mdash; so it comes out a lumpy diamond. Use <code>crown</code> where it means
+      <em>featured</em> or <em>best</em>, and the diamond where it means <em>rating</em>.</td></tr>
+      <tr><td><code>sparkles</code></td><td><code>crown</code></td>
+      <td>The same floor by another route. A four-armed twinkle with equal arms reads as
+      <code>plus</code>, with unequal arms as a dagger, and with eight arms it closes into
+      a solid octagon at 3px. Three drawings, none of them the word.</td></tr>
+      <tr><td><code>circle</code></td><td><code>square</code></td>
+      <td>A circle is the one boundary this grammar has decided not to draw. It resolves
+      in the sprite as an alias.</td></tr>
+      <tr><td><code>triangle-alert</code></td><td><code>circle-alert</code></td>
+      <td>Not an absence &mdash; a duplicate. A 45&deg;-only isoceles triangle is forced to
+      2:1 tall-to-wide, which is a spike rather than a warning sign, and the eight-sided
+      room already <em>is</em> the warning sign. It resolves in the sprite as an alias.</td></tr>
+      <tr><td>anything else</td><td>stay on Lucide</td>
+      <td>If the metaphor needs a curve and neither a square nor a diamond says it, an
+      absent glyph beats a wrong one. Open an issue describing what the shape needed.</td></tr>
+    </tbody>
+  </table>
   <h2 id="drawing">Drawing a new icon</h2>
   <ol>
     <li>Find the metaphor in <a href="https://lucide.dev/icons">Lucide</a> and keep its name.</li>
@@ -70,9 +106,9 @@ ${ICON_ENTRIES.map(tile).join('\n')}
     artifact.</li>
   </ol>
   <p>If the metaphor genuinely needs a curve and neither a square nor a diamond says it, do not
-  ship it. A wrong glyph costs more than an absent one &mdash; <code>star</code> is the one this
-  set has so far refused, because a star drawn at 45&deg; has an inner radius it cannot go below
-  and comes out an octagon. Open an issue describing what the shape needed instead.</p>
+  ship it. A wrong glyph costs more than an absent one &mdash;
+  <a href="#substitutions">the table above</a> lists what this set has refused and what to reach
+  for instead. Open an issue describing what the shape needed.</p>
 </div>`,
     scripts: ['icon-search.js'],
   })

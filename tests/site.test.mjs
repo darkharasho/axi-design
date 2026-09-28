@@ -374,4 +374,24 @@ describe('the icons page', () => {
     expect(html).toContain('icons.test.mjs')
     expect(html).toContain('docs/manifest/icons.mjs')
   })
+  // 165 distinct lucide names across the suite against a set that will reach
+  // 60-70. The apps import from both for the foreseeable future, and a
+  // migration that answers a third of its own questions gets abandoned. The
+  // page has to say what to use instead, and that the hybrid is fine.
+  it('says what to use where the set will not draw the shape', () => {
+    const html = read('icons/index.html')
+    expect(html).toMatch(/id="substitutions"/)
+    for (const name of ['star', 'sparkles', 'circle', 'triangle-alert']) {
+      expect(html, `no substitution row for ${name}`).toContain(`<code>${name}</code>`)
+    }
+  })
+
+  it('sanctions importing from lucide alongside the set', () => {
+    expect(read('icons/index.html')).toMatch(/lucide-react/)
+  })
+
+  it('tells a porting app that a lucide name resolves in the sprite', () => {
+    expect(read('icons/index.html')).toContain('#axi-triangle-alert')
+  })
+
 })
