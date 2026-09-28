@@ -57,7 +57,7 @@
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 .axi-prose pre code { background: none; border: 0; padding: 0; font-size: 12.5px; line-height: 1.6; }
 

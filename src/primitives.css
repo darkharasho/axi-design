@@ -12,7 +12,7 @@
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
   /* A panel owns its padding so every consumer doesn't have to invent one;
      override per instance with --axi-panel-pad where a tighter or looser
      fit is genuinely called for. */
@@ -39,13 +39,13 @@
    vision and costs no colour. */
 .axi-btn:hover {
   color: var(--axi-text);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 .axi-btn--primary {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 /* The one button that rests with a block already under it, so the generic
    hover's translate alone would move element and block together and leave the
@@ -53,7 +53,7 @@
    rule 4 warns about. It lifts the way a panel does: the block deepens too. */
 .axi-btn--primary:hover {
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control-hover);
 }
 .axi-btn--ghost { background: transparent; }
 .axi-btn--dashed { background: transparent; border-style: dashed; }
@@ -79,13 +79,13 @@
 }
 .axi-pill:hover {
   color: var(--axi-text);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 .axi-pill[aria-pressed="true"] {
   background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 /* Spelled out rather than left to source order: `.axi-pill:hover` and
    `.axi-pill[aria-pressed="true"]` have identical specificity, so without this
@@ -95,7 +95,7 @@
 .axi-pill[aria-pressed="true"]:hover {
   background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control-hover);
   transform: translate(-2px, -2px);
 }
 
@@ -169,9 +169,9 @@
   letter-spacing: var(--axi-ls-micro);
   text-transform: uppercase;
 }
-.axi-chip--ok { background: var(--axi-ok); color: var(--axi-ink-line); }
-.axi-chip--warn { background: var(--axi-warn); color: var(--axi-ink-line); }
-.axi-chip--danger { background: var(--axi-danger); color: var(--axi-ink-line); }
+.axi-chip--ok { background: var(--axi-ok); color: var(--axi-ink-on-fill); }
+.axi-chip--warn { background: var(--axi-warn); color: var(--axi-ink-on-fill); }
+.axi-chip--danger { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
 .axi-chip--accent { background: var(--axi-accent); color: var(--axi-accent-ink); }
 .axi-chip--meta {
   background: transparent;
@@ -267,7 +267,7 @@
 .axi-picker__btn:hover,
 .axi-picker__btn[aria-expanded='true'] {
   color: var(--axi-text);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 
@@ -288,7 +288,7 @@
     border: var(--axi-border-panel) solid var(--axi-ink-line);
     border-radius: var(--axi-radius);
     background: var(--axi-surface-raised);
-    box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+    box-shadow: var(--axi-shadow-panel);
   }
   .axi-select option {
     display: flex; align-items: center; gap: 9px;
@@ -364,7 +364,7 @@
   /* The block falls outside the popover's own box. An ancestor that clips -
      a scrolling pane, a panel with overflow: hidden - eats it, and the only
      shadow on the screen is the one that goes missing. */
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-picker__pop[hidden] { display: none; }
 /* A popover cannot always live beside its trigger. Inside a pane that scrolls

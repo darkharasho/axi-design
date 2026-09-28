@@ -105,7 +105,10 @@ const references = (css) =>
 // arbitrary third form step (and a blur, via a redefined offset) while both
 // checks stay green. Anchored at the start of the chunk, so
 // `border: var(--axi-border-panel) ...` (a reference) never matches.
-const FORM_TOKEN_DECLARATION = /^(--axi-(border|offset)-[a-z0-9-]+)\s*:/i
+// --axi-shadow-* is in here for the same reason: it is the composed form of
+// an offset pair, so a component redeclaring one mints an arbitrary block
+// (or a blur) while both halves of the offset check below stay green.
+const FORM_TOKEN_DECLARATION = /^(--axi-(border|offset|shadow)-[a-z0-9-]+)\s*:/i
 
 // ---------------------------------------------------------------------------
 // Rule 3, column 1: only two border/outline weight steps, ever.
@@ -169,6 +172,33 @@ const OFFSETS = [
   'var(--axi-offset-panel-hover)',
   'var(--axi-offset-control-hover)',
 ]
+
+// The composed blocks. A component no longer assembles a shadow out of an
+// offset - it names one of these - so the hard-offset shape is now checked
+// once, where the four are defined, and component files are checked for
+// naming one of the four. Both halves are needed: without the first, a
+// token could be redefined to a blur and every component would inherit it;
+// without the second, a component could still write a literal shadow.
+const SHADOWS = [
+  'var(--axi-shadow-panel)',
+  'var(--axi-shadow-control)',
+  'var(--axi-shadow-panel-hover)',
+  'var(--axi-shadow-control-hover)',
+]
+
+// `<offset> <offset> 0 var(--axi-ink-line)`, with the offset drawn from the
+// enumerated list - rule 3's shape, unchanged. Extracted so both the token
+// definitions and the synthetic tests below judge it identically.
+const isHardBlock = (value) => {
+  const parts = value.trim().split(/\s+/)
+  return (
+    parts.length === 4 &&
+    OFFSETS.includes(parts[0]) &&
+    parts[1] === parts[0] &&
+    parts[2] === '0' &&
+    parts[3] === 'var(--axi-ink-line)'
+  )
+}
 
 // box-shadow's hard-offset shape is enforced structurally (below). filter and
 // text-shadow are the other two CSS properties that can draw the exact
@@ -372,24 +402,39 @@ describe('token contract', () => {
     expect(offenders).toEqual([])
   })
 
-  it('draws every block hard, at a declared offset', () => {
+  it('composes every block hard, at a declared offset', () => {
     // The other half of rule 3, and the half docs/RULES.md used to claim was
-    // enforced while nothing checked it: a box-shadow in this language is
-    // always `<offset> <offset> 0 var(--axi-ink-line)`. No blur, no spread,
-    // no bare literal offsets - a third offset step is as much a second
-    // system as a third border weight is.
+    // enforced while nothing checked it: a block in this language is always
+    // `<offset> <offset> 0 var(--axi-ink-line)`. No blur, no spread, no bare
+    // literal offsets - a third offset step is as much a second system as a
+    // third border weight is. Checked here, at the four definitions, because
+    // that is now the only place the shape is written down.
+    const offenders = []
+    for (const { text, line } of declarations(read(TOKENS_FILE))) {
+      if (!/^--axi-shadow-[a-z0-9-]+\s*:/.test(text)) continue
+      if (!isHardBlock(valueOf(text))) {
+        offenders.push(`${TOKENS_FILE}:${line}: ${text.trim().replace(/\s+/g, ' ')}`)
+      }
+    }
+    expect(offenders).toEqual([])
+    // And all four exist: an empty loop above would otherwise pass.
+    const defined = declarations(read(TOKENS_FILE))
+      .filter(({ text }) => /^--axi-shadow-[a-z0-9-]+\s*:/.test(text))
+      .map(({ text }) => `var(${text.slice(0, text.indexOf(':')).trim()})`)
+    expect(defined.sort()).toEqual([...SHADOWS].sort())
+  })
+
+  it('raises every component with a named block, never a composed one', () => {
+    // A component asks for "the panel block". It does not reassemble one out
+    // of an offset - that spelling is what let the shape drift, and it is
+    // what a theme cannot reach in to restate.
     const offenders = []
     for (const name of COMPONENT_FILES()) {
       for (const { text, line } of declarations(read(name))) {
         if (!/\bbox-shadow\s*:/.test(text)) continue
-        const parts = valueOf(text).trim().split(/\s+/)
-        const ok =
-          parts.length === 4 &&
-          OFFSETS.includes(parts[0]) &&
-          parts[1] === parts[0] &&
-          parts[2] === '0' &&
-          parts[3] === 'var(--axi-ink-line)'
-        if (!ok) offenders.push(`${name}:${line}: ${text.trim().replace(/\s+/g, ' ')}`)
+        if (!SHADOWS.includes(valueOf(text).trim())) {
+          offenders.push(`${name}:${line}: ${text.trim().replace(/\s+/g, ' ')}`)
+        }
       }
     }
     expect(offenders).toEqual([])
@@ -499,6 +544,26 @@ describe('form-token and weight escape hatches', () => {
     expect(isLiteralRadius('border-radius: 0')).toBe(false)
     expect(isLiteralRadius('border: var(--axi-border-control) solid var(--axi-ink-line)')).toBe(false)
     expect(isLiteralRadius('border-spacing: 4px')).toBe(false)
+  })
+
+  it('catches a blurred, spread or foreign-ink block token', () => {
+    expect(isHardBlock('var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line)')).toBe(true)
+    // A blur radius in the third slot - the exact softening rule 3 forbids.
+    expect(isHardBlock('var(--axi-offset-panel) var(--axi-offset-panel) 12px var(--axi-ink-line)')).toBe(false)
+    // A spread, as a fifth part.
+    expect(isHardBlock('var(--axi-offset-panel) var(--axi-offset-panel) 0 2px var(--axi-ink-line)')).toBe(false)
+    // Mismatched offsets: a block is square or it is a drop shadow.
+    expect(isHardBlock('var(--axi-offset-panel) var(--axi-offset-control) 0 var(--axi-ink-line)')).toBe(false)
+    // A literal offset, which is how a third step gets minted.
+    expect(isHardBlock('6px 6px 0 var(--axi-ink-line)')).toBe(false)
+    // Drawn in something other than the outline ink.
+    expect(isHardBlock('var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-accent)')).toBe(false)
+  })
+
+  it('flags a component redeclaring a block token', () => {
+    const css = `.axi-hero { --axi-shadow-panel: 0 0 40px var(--axi-ink-line); }`
+    const offenders = declarations(css).filter(({ text }) => FORM_TOKEN_DECLARATION.test(text))
+    expect(offenders.length).toBeGreaterThan(0)
   })
 
   it('catches filter: drop-shadow() and text-shadow', () => {

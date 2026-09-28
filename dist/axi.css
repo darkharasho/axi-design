@@ -31,6 +31,13 @@
      enough to pass contrast on this ground; an app choosing a dark accent
      overrides this to --axi-text rather than editing components. */
   --axi-accent-ink: var(--axi-ink-line);
+  /* Text drawn on top of a STATUS fill (an ok/warn/danger chip, a close
+     button gone red). Identical to --axi-ink-line today, which is precisely
+     why it has to exist: components were spelling this "the outline colour"
+     and it happened to read correctly. A theme that makes the outline light
+     would otherwise put light text on a bright fill and lose the word. Same
+     idea as --axi-accent-ink above, for the fills that are not the accent. */
+  --axi-ink-on-fill: var(--axi-ink-line);
   --axi-meta: #4ec3ff;            /* the one cool ink: meta only, never a status */
   --axi-ok: #2fd38a;
   --axi-warn: #ff7a2f;
@@ -49,6 +56,15 @@
      block instead of admitting bare literals. */
   --axi-offset-panel-hover: 10px;
   --axi-offset-control-hover: 6px;
+  /* The block itself, composed once. A component asks for "the panel block",
+     not for an offset it then has to assemble into a shadow correctly four
+     times per file - and a theme gets one place to restate what raising a
+     thing looks like. The shape is still rule 3's: two equal offsets, zero
+     blur, the outline ink. */
+  --axi-shadow-panel: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  --axi-shadow-control: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  --axi-shadow-panel-hover: var(--axi-offset-panel-hover) var(--axi-offset-panel-hover) 0 var(--axi-ink-line);
+  --axi-shadow-control-hover: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
   /* The form is sharp. A hard outline, a hard block and a rounded corner are
      three decisions, and the rounded one softens the other two: the corner is
      the first place a flat outlined shape can start looking like a button in
@@ -180,7 +196,7 @@ a { color: inherit; }
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
   /* A panel owns its padding so every consumer doesn't have to invent one;
      override per instance with --axi-panel-pad where a tighter or looser
      fit is genuinely called for. */
@@ -207,13 +223,13 @@ a { color: inherit; }
    vision and costs no colour. */
 .axi-btn:hover {
   color: var(--axi-text);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 .axi-btn--primary {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 /* The one button that rests with a block already under it, so the generic
    hover's translate alone would move element and block together and leave the
@@ -221,7 +237,7 @@ a { color: inherit; }
    rule 4 warns about. It lifts the way a panel does: the block deepens too. */
 .axi-btn--primary:hover {
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control-hover);
 }
 .axi-btn--ghost { background: transparent; }
 .axi-btn--dashed { background: transparent; border-style: dashed; }
@@ -247,13 +263,13 @@ a { color: inherit; }
 }
 .axi-pill:hover {
   color: var(--axi-text);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 .axi-pill[aria-pressed="true"] {
   background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 /* Spelled out rather than left to source order: `.axi-pill:hover` and
    `.axi-pill[aria-pressed="true"]` have identical specificity, so without this
@@ -263,7 +279,7 @@ a { color: inherit; }
 .axi-pill[aria-pressed="true"]:hover {
   background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control-hover);
   transform: translate(-2px, -2px);
 }
 
@@ -337,9 +353,9 @@ a { color: inherit; }
   letter-spacing: var(--axi-ls-micro);
   text-transform: uppercase;
 }
-.axi-chip--ok { background: var(--axi-ok); color: var(--axi-ink-line); }
-.axi-chip--warn { background: var(--axi-warn); color: var(--axi-ink-line); }
-.axi-chip--danger { background: var(--axi-danger); color: var(--axi-ink-line); }
+.axi-chip--ok { background: var(--axi-ok); color: var(--axi-ink-on-fill); }
+.axi-chip--warn { background: var(--axi-warn); color: var(--axi-ink-on-fill); }
+.axi-chip--danger { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
 .axi-chip--accent { background: var(--axi-accent); color: var(--axi-accent-ink); }
 .axi-chip--meta {
   background: transparent;
@@ -435,7 +451,7 @@ a { color: inherit; }
 .axi-picker__btn:hover,
 .axi-picker__btn[aria-expanded='true'] {
   color: var(--axi-text);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 
@@ -456,7 +472,7 @@ a { color: inherit; }
     border: var(--axi-border-panel) solid var(--axi-ink-line);
     border-radius: var(--axi-radius);
     background: var(--axi-surface-raised);
-    box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+    box-shadow: var(--axi-shadow-panel);
   }
   .axi-select option {
     display: flex; align-items: center; gap: 9px;
@@ -532,7 +548,7 @@ a { color: inherit; }
   /* The block falls outside the popover's own box. An ancestor that clips -
      a scrolling pane, a panel with overflow: hidden - eats it, and the only
      shadow on the screen is the one that goes missing. */
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-picker__pop[hidden] { display: none; }
 /* A popover cannot always live beside its trigger. Inside a pane that scrolls
@@ -808,7 +824,7 @@ textarea.axi-input {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
   border-color: var(--axi-ink-line);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 
 /* ---------- notice ---------- */
@@ -817,7 +833,7 @@ textarea.axi-input {
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-notice__icon {
   flex: none; width: 26px; height: 26px;
@@ -837,7 +853,7 @@ textarea.axi-input {
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 
 /* ---------- menu popover ---------- */
@@ -854,7 +870,7 @@ textarea.axi-input {
   background: var(--axi-surface-raised);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-menu__pop[hidden] { display: none; }
 .axi-menu__pop label {
@@ -900,13 +916,13 @@ textarea.axi-input {
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
   font: inherit; color: inherit; text-decoration: none; cursor: pointer;
   transition: transform .1s, box-shadow .1s;
 }
 .axi-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: var(--axi-offset-panel-hover) var(--axi-offset-panel-hover) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel-hover);
 }
 /* The top strip is drawn from the card itself so a renderer does not have to
    emit an extra element for it. It is opt-in: a card only gets a strip when
@@ -985,7 +1001,7 @@ textarea.axi-input {
 }
 .axi-drawer__close:hover {
   background: var(--axi-accent); color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 .axi-drawer__body { overflow-y: auto; padding: 18px 24px 30px; }
@@ -1053,7 +1069,7 @@ textarea.axi-input {
 .axi-titlebar__btns button:hover { background: var(--axi-surface); color: var(--axi-text); }
 /* Close is the one destructive control in the chrome, and the one place a
    status ink belongs in a titlebar. */
-.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-line); }
+.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
 /* The scrolling region under the chrome. */
 .axi-window__body { flex: 1; overflow-y: auto; }
 
@@ -1111,7 +1127,7 @@ textarea.axi-input {
 .axi-pages__n[aria-current="page"] {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 /* The elided run between two page numbers. Not a control and never focusable:
    it is the only thing in the row a reader cannot go to. */
@@ -1126,10 +1142,10 @@ textarea.axi-input {
      to the panel hover block, so a card on a hover-emulating touch device
      jumped further than it does on the desktop it was tuned for. */
   .axi-notice, .axi-toolbar, .axi-card {
-    box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+    box-shadow: var(--axi-shadow-control);
   }
   .axi-card:hover {
-    box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+    box-shadow: var(--axi-shadow-control-hover);
   }
 }
 
@@ -1150,7 +1166,7 @@ textarea.axi-input {
   color: var(--axi-text);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-modal::backdrop { background: var(--axi-scrim); }
 /* The head and foot are divided from the body by rules, not by outlines: they
@@ -1178,7 +1194,7 @@ textarea.axi-input {
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 /* Stacked accordions need the gap the block occupies, or each one's block
    lands on the next one's outline. */
@@ -1243,7 +1259,7 @@ textarea.axi-input {
   background: var(--axi-surface-raised);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   font: var(--axi-t-small);
   color: var(--axi-text);
 }
@@ -1667,7 +1683,7 @@ textarea.axi-input {
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 .axi-prose pre code { background: none; border: 0; padding: 0; font-size: 12.5px; line-height: 1.6; }
 

@@ -27,6 +27,13 @@
      enough to pass contrast on this ground; an app choosing a dark accent
      overrides this to --axi-text rather than editing components. */
   --axi-accent-ink: var(--axi-ink-line);
+  /* Text drawn on top of a STATUS fill (an ok/warn/danger chip, a close
+     button gone red). Identical to --axi-ink-line today, which is precisely
+     why it has to exist: components were spelling this "the outline colour"
+     and it happened to read correctly. A theme that makes the outline light
+     would otherwise put light text on a bright fill and lose the word. Same
+     idea as --axi-accent-ink above, for the fills that are not the accent. */
+  --axi-ink-on-fill: var(--axi-ink-line);
   --axi-meta: #4ec3ff;            /* the one cool ink: meta only, never a status */
   --axi-ok: #2fd38a;
   --axi-warn: #ff7a2f;
@@ -45,6 +52,15 @@
      block instead of admitting bare literals. */
   --axi-offset-panel-hover: 10px;
   --axi-offset-control-hover: 6px;
+  /* The block itself, composed once. A component asks for "the panel block",
+     not for an offset it then has to assemble into a shadow correctly four
+     times per file - and a theme gets one place to restate what raising a
+     thing looks like. The shape is still rule 3's: two equal offsets, zero
+     blur, the outline ink. */
+  --axi-shadow-panel: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  --axi-shadow-control: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  --axi-shadow-panel-hover: var(--axi-offset-panel-hover) var(--axi-offset-panel-hover) 0 var(--axi-ink-line);
+  --axi-shadow-control-hover: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
   /* The form is sharp. A hard outline, a hard block and a rounded corner are
      three decisions, and the rounded one softens the other two: the corner is
      the first place a flat outlined shape can start looking like a button in

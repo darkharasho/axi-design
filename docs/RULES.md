@@ -26,6 +26,8 @@ for.
 ## 3. Every raised element is outlined and blocked
 
 An `--axi-ink-line` border plus a hard offset shadow, never a blur.
+A component spells that shadow `var(--axi-shadow-panel)` or
+`var(--axi-shadow-control)`; the offsets those compose are in the table below.
 
 Two weight steps, and only two:
 
@@ -63,18 +65,24 @@ columns:
   `outline`/`outline-width` are checked the same way as `border`
   (`outline-offset` and `outline-color` are not weight properties and are
   untouched).
-- *Offset* — every `box-shadow` in a component file must be exactly
-  `<offset> <offset> 0 var(--axi-ink-line)`, with the offset drawn from an
-  enumerated list of four tokens: the two resting steps above, plus the two
-  hover deepenings rule 4 describes (`--axi-offset-panel-hover` 10px,
+- *Offset* — the block is composed once, in `tokens.css`, as one of four
+  `--axi-shadow-*` tokens, and each must be exactly
+  `<offset> <offset> 0 var(--axi-ink-line)` with the offset drawn from an
+  enumerated list of four: the two resting steps above, plus the two hover
+  deepenings rule 4 describes (`--axi-offset-panel-hover` 10px,
   `--axi-offset-control-hover` 6px). That is what rules out a blur, a spread,
-  an invented offset and a shadow in any colour but the ink line.
-  `filter: drop-shadow(...)` and `text-shadow` — the two other CSS properties
-  that can draw the same blurred look — are forbidden outright, since nothing
-  in this language legitimately reaches for either.
+  an invented offset and a shadow in any colour but the ink line. A component
+  file then names one of the four — `box-shadow: var(--axi-shadow-panel)` —
+  and may write nothing else in a `box-shadow`. Two checks rather than one,
+  because either alone is hollow: the shape check protects the four
+  definitions, the naming check stops a component composing its own block
+  beside them. `filter: drop-shadow(...)` and `text-shadow` — the two other
+  CSS properties that can draw the same blurred look — are forbidden
+  outright, since nothing in this language legitimately reaches for either.
 - *No local escape hatch* — the form tokens themselves
   (`--axi-border-panel`, `--axi-border-control`, `--axi-border-hairline`,
-  `--axi-offset-panel`, `--axi-offset-control`, and their `-hover` variants)
+  `--axi-offset-panel`, `--axi-offset-control`, their `-hover` variants, and
+  the four `--axi-shadow-*` blocks composed from them)
   may be **declared** only in `tokens.css`. A component file redeclaring one
   of these on itself would change the value the border/offset checks above
   are silently trusting, without changing the `var()` text those checks read
@@ -251,6 +259,14 @@ Three bounds, and the rule is only sound with all three:
   carries a 6px block. A second 6px block nested in the first reads as two
   planes arguing; the 3px control step reads as the contents of a box. This is
   also the honest weight: each row is a control you press, not a surface.
+- **Text on a status fill is `--axi-ink-on-fill`, not `--axi-ink-line`.** The
+  two hold the same near-black today, which is why this was easy to get wrong:
+  a chip that says `color: var(--axi-ink-line)` reads correctly and still means
+  the wrong thing. `--axi-ink-line` is *the colour a shape is outlined in*;
+  `--axi-ink-on-fill` is *the colour a word is written in when it sits on a
+  saturated fill*. They only have to diverge once — a theme that outlines in a
+  light colour — for the conflated spelling to put light text on a bright chip.
+  `--axi-accent-ink` is the same distinction for the accent fill specifically.
 - **The outline stays `--axi-ink-line`.** Status goes on a filled shape inside
   the row — the icon tile, a chip — and never on the row's own edge. Colouring
   the edge is exactly the full-height stripe rule 5 rejects: five states become

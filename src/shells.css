@@ -63,7 +63,7 @@
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
   border-color: var(--axi-ink-line);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 
 /* ---------- notice ---------- */
@@ -72,7 +72,7 @@
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-notice__icon {
   flex: none; width: 26px; height: 26px;
@@ -92,7 +92,7 @@
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 
 /* ---------- menu popover ---------- */
@@ -109,7 +109,7 @@
   background: var(--axi-surface-raised);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-menu__pop[hidden] { display: none; }
 .axi-menu__pop label {
@@ -155,13 +155,13 @@
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
   font: inherit; color: inherit; text-decoration: none; cursor: pointer;
   transition: transform .1s, box-shadow .1s;
 }
 .axi-card:hover {
   transform: translate(-3px, -3px);
-  box-shadow: var(--axi-offset-panel-hover) var(--axi-offset-panel-hover) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel-hover);
 }
 /* The top strip is drawn from the card itself so a renderer does not have to
    emit an extra element for it. It is opt-in: a card only gets a strip when
@@ -240,7 +240,7 @@
 }
 .axi-drawer__close:hover {
   background: var(--axi-accent); color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
 }
 .axi-drawer__body { overflow-y: auto; padding: 18px 24px 30px; }
@@ -308,7 +308,7 @@
 .axi-titlebar__btns button:hover { background: var(--axi-surface); color: var(--axi-text); }
 /* Close is the one destructive control in the chrome, and the one place a
    status ink belongs in a titlebar. */
-.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-line); }
+.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
 /* The scrolling region under the chrome. */
 .axi-window__body { flex: 1; overflow-y: auto; }
 
@@ -366,7 +366,7 @@
 .axi-pages__n[aria-current="page"] {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
 }
 /* The elided run between two page numbers. Not a control and never focusable:
    it is the only thing in the row a reader cannot go to. */
@@ -381,10 +381,10 @@
      to the panel hover block, so a card on a hover-emulating touch device
      jumped further than it does on the desktop it was tuned for. */
   .axi-notice, .axi-toolbar, .axi-card {
-    box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+    box-shadow: var(--axi-shadow-control);
   }
   .axi-card:hover {
-    box-shadow: var(--axi-offset-control-hover) var(--axi-offset-control-hover) 0 var(--axi-ink-line);
+    box-shadow: var(--axi-shadow-control-hover);
   }
 }
 
@@ -405,7 +405,7 @@
   color: var(--axi-text);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 .axi-modal::backdrop { background: var(--axi-scrim); }
 /* The head and foot are divided from the body by rules, not by outlines: they
@@ -433,7 +433,7 @@
   background: var(--axi-surface);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
-  box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-panel);
 }
 /* Stacked accordions need the gap the block occupies, or each one's block
    lands on the next one's outline. */
@@ -498,7 +498,7 @@
   background: var(--axi-surface-raised);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  box-shadow: var(--axi-offset-control) var(--axi-offset-control) 0 var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
   font: var(--axi-t-small);
   color: var(--axi-text);
 }
