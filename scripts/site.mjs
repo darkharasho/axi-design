@@ -7,6 +7,7 @@ import { renderMarkdown } from '../docs/site/markdown.mjs'
 import { page, LAYER_NAMES, THEMES } from '../docs/site/shell.mjs'
 import { landing } from '../docs/site/landing.mjs'
 import { llmsTxt } from '../docs/site/llms.mjs'
+import { iconsPage } from '../docs/site/icons.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 
@@ -95,6 +96,11 @@ ${readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8')}`,
     scripts: ['gallery.js'],
   }))
   copy('gallery.js', 'gallery.js')
+
+  write('icons/index.html', iconsPage())
+  // Copied so a reader can fetch the sprite as a file; the pages themselves
+  // reference bare fragments, because the shell inlines it into each one.
+  copy('dist/icons/sprite.svg', 'icons/sprite.svg')
 
   copy('dist/axi.css', 'axi.css')
   copy('dist/accents.css', 'accents.css')

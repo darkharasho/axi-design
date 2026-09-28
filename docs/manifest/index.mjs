@@ -14,7 +14,7 @@ export const LAYERS = ['primitives', 'forms', 'layout', 'shells', 'data', 'feedb
 
 // Static routes the generator writes. A component id may not take one.
 export const RESERVED_IDS = [
-  'index', 'start', 'rules', 'theming', 'components', 'gallery', 'search', 'llms',
+  'index', 'start', 'rules', 'theming', 'components', 'gallery', 'search', 'llms', 'icons',
 ]
 
 const BY_LAYER = { primitives, forms, layout, shells, data, feedback, prose, utilities }

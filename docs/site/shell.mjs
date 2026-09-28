@@ -63,6 +63,7 @@ const NAV = [
   ['rules/', 'Rules'],
   ['theming/', 'Theming'],
   ['components/', 'Components'],
+  ['icons/', 'Icons'],
   ['gallery/', 'Gallery'],
 ]
 

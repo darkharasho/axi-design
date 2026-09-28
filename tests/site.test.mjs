@@ -4,7 +4,8 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { build } from '../scripts/site.mjs'
-import { entries, findEntry } from '../docs/manifest/index.mjs'
+import { entries, findEntry, RESERVED_IDS } from '../docs/manifest/index.mjs'
+import { ICON_ENTRIES } from '../docs/manifest/icons.mjs'
 import { LAYER_NAMES } from '../docs/site/shell.mjs'
 import { unhighlight } from './unhighlight.mjs'
 
@@ -332,5 +333,29 @@ describe('no borrowed glyphs anywhere on the site', () => {
       .filter((f) => f.endsWith('.html'))
       .filter((f) => borrowed(read(f)))
     expect(offenders).toEqual([])
+  })
+})
+
+describe('the icons page', () => {
+  it('is written, with the sprite beside it', () => {
+    expect(written).toContain('icons/index.html')
+    expect(written).toContain('icons/sprite.svg')
+  })
+
+  it('shows every icon in the manifest', () => {
+    const html = read('icons/index.html')
+    for (const e of ICON_ENTRIES) expect(html).toContain(`#axi-${e.name}`)
+  })
+
+  it("carries each icon's aliases so the search finds them", () => {
+    expect(read('icons/index.html')).toContain('magnifier')
+  })
+
+  it('names the Lucide derivation', () => {
+    expect(read('icons/index.html')).toMatch(/Lucide/)
+  })
+
+  it('reserves the route against a component taking it', () => {
+    expect(RESERVED_IDS).toContain('icons')
   })
 })
