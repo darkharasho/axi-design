@@ -2,11 +2,16 @@
   "id": "glass",
   "label": "Glass",
   "//": "A theme restates tokens and nothing else - see the Themes section of docs/RULES.md. Every saturated fill and every form token is absent from this file on purpose: the outline, the hard block, the two weight steps and the five inks are the language, not the theme, and a glass theme that softened them would be a different language wearing this one's class names. What changes is the surface layer: the two surfaces become white at low alpha so what is behind them shows through, the internal rule follows them up, the scrim lightens because it now blurs what it dims rather than only hiding it, and --axi-surface-filter carries the blur to every surface at once.",
-  "//ground": "The first draft put the ground at #0a0c10 and the outlines disappeared - a near-black line on a near-black page. The outline is not decoration here, it is rule 3, so the ground is held clear of --axi-ink-line (#0c0e12) instead - about the separation the main theme keeps, spent on blue rather than on lightness so the page still reads colder and deeper than the main one. Glass reads through translucency and blur, not through crushing the page into the ink. A theme that wanted a genuinely black page would have to relight --axi-ink-line, which it is allowed to do and which this theme deliberately does not: .axi-tooltip is FILLED with the line ink (rule 3 names it as the one such element), so relighting it turns the tooltip into a pale box with pale text. That is a real piece of work, not a token value, and it is not this theme's job.",
+  "//ground": "The first draft held the ground at #141924, well clear of the main theme's --axi-ink-line (#0c0e12), because a near-black line on a near-black page is no line at all and the outline is rule 3 rather than decoration. Going darker therefore meant relighting the line, which was blocked: three shapes are not outlined in the line ink but MADE of it - the tooltip, the titlebar strip, the switch's slug - and lifting the line turned all three into pale boxes. The 1.12 line split that fill out as --axi-ground-deep, so the two can now diverge, and this theme is the reason it exists. So: the page drops to #0a0c10, the outline lifts to #242b38 - far enough to read as ink drawn ON the page rather than a frame around it - and --axi-ground-deep stays at the old line value so the three filled shapes keep the dark they always had.",
+  "//inks": "--axi-accent-ink and --axi-ink-on-fill default to var(--axi-ink-line), so relighting the line would drag them with it and write pale text on saturated fills. They are restated at the old value here for that reason alone: the ink a filled button writes in has not changed, it has only stopped being spelled as the outline.",
   "tokens": {
-    "--axi-ground": "#141924",
+    "--axi-ground": "#0a0c10",
     "--axi-surface": "rgba(255, 255, 255, .09)",
     "--axi-surface-raised": "rgba(255, 255, 255, .15)",
+    "--axi-ink-line": "#242b38",
+    "--axi-ground-deep": "#0c0e12",
+    "--axi-accent-ink": "#0c0e12",
+    "--axi-ink-on-fill": "#0c0e12",
     "--axi-rule": "rgba(255, 255, 255, .17)",
     "--axi-scrim": "rgba(6, 7, 9, .55)",
     "--axi-surface-filter": "blur(14px) saturate(140%)"
