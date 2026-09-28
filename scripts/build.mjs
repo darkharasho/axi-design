@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs'
+import { readFileSync, writeFileSync, mkdirSync, readdirSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 // The knob data lives in the manifest, not here: build.mjs is not in the npm
@@ -47,6 +47,27 @@ export function buildAccentsCss(accents = ACCENTS) {
   return `${BANNER}\n${rules}\n`
 }
 
+// A theme is a repaint of the language, never an extension of it: the Themes
+// section of docs/RULES.md has the whole rule, and tests/themes.test.mjs
+// enforces it against the generated file. Generated for the same reason the
+// accents are - themes/*.json is the source of truth and the third sanctioned
+// home for a colour literal, after tokens.css and accents.json, because it is
+// data the build generates from rather than stylesheet source. It cannot live
+// in src/: ORDER must match src/ exactly, and a theme must never be
+// concatenated into axi.css. Opt-in, one file per theme, so a consumer that
+// wants only the language pays nothing for a theme it does not import.
+export const THEMES = readdirSync(resolve(ROOT, 'themes'))
+  .filter((f) => f.endsWith('.json'))
+  .sort()
+  .map((f) => JSON.parse(readFileSync(resolve(ROOT, 'themes', f), 'utf8')))
+
+export function buildThemeCss(theme) {
+  const body = Object.entries(theme.tokens)
+    .map(([name, value]) => `  ${name}: ${value};`)
+    .join('\n')
+  return `${BANNER}\n[data-axi-theme="${theme.id}"] {\n${body}\n}\n`
+}
+
 // The knob table is generated into README.md between markers. It is the one
 // table in this repo describing src/ that a human used to maintain by hand,
 // and the one that could therefore go stale with no symptom at all - nothing
@@ -71,6 +92,12 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   console.log(`built dist/axi.css from ${ORDER.length} source(s)`)
   writeFileSync(resolve(ROOT, 'dist/accents.css'), buildAccentsCss())
   console.log(`built dist/accents.css from ${ACCENTS.length} accent(s)`)
+
+  mkdirSync(resolve(ROOT, 'dist/themes'), { recursive: true })
+  for (const theme of THEMES) {
+    writeFileSync(resolve(ROOT, `dist/themes/${theme.id}.css`), buildThemeCss(theme))
+  }
+  console.log(`built dist/themes/ from ${THEMES.length} theme(s)`)
 
   const readmePath = resolve(ROOT, 'README.md')
   writeFileSync(readmePath, writeKnobTable(readFileSync(readmePath, 'utf8')))

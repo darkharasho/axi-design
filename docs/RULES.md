@@ -436,8 +436,12 @@ a token is not a theme; it is a change to the language, and it goes through the
 rules above like any other.
 
 A theme is a generated stylesheet, `dist/themes/<id>.css`, built the way
-`dist/accents.css` is: one `[data-axi-theme="<id>"]` block, custom properties
-only, no structural CSS. A consumer imports it beside `axi.css` and sets
+`dist/accents.css` is: `themes/<id>.json` is the source of truth and the build
+emits one `[data-axi-theme="<id>"]` block of custom properties, no structural
+CSS. That makes `themes/*.json` the third sanctioned home for a colour literal,
+after `tokens.css` and `accents.json`, and for the same reason as the second —
+it is data the build generates from, not stylesheet source. Hand-editing
+`dist/themes/glass.css` is exactly as wrong as hand-editing `dist/axi.css`. A consumer imports it beside `axi.css` and sets
 `data-axi-theme` on its root element. That is the whole integration — which is
 the point. A site gets the dark language by default and a different one by
 adding an attribute, and in neither case does it author, carry or maintain a

@@ -20,6 +20,15 @@
   --axi-text-dim: #a7b0be;
   --axi-text-faint: #7c8695;
   --axi-scrim: rgba(6, 7, 9, .72); /* behind a drawer */
+  /* What a surface does to whatever is behind it. `none` here, and `none` is
+     genuinely inert - it paints nothing and, unlike a transform, establishes
+     no containing block, so the fixed-descendant trap rule 4 documents stays
+     closed. It exists so a theme has somewhere to put the answer: a glass
+     theme makes the surfaces translucent and restates this token, and the
+     blur arrives on every surface at once without one component learning the
+     word. This is the toll the Themes section describes - a theme cannot
+     invent a capability, so the capability is declared here first, inert. */
+  --axi-surface-filter: none;
 
   /* --- accent & status --- */
   --axi-accent: #ffc53d;

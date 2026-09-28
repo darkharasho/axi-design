@@ -52,6 +52,31 @@ That is the whole theming surface. See [the documentation
 site](https://darkharasho.github.io/axi-design/) for every component, with a
 live accent switcher. `/gallery/` still holds the everything-at-once view.
 
+### A different look, without carrying one
+
+If the flat dark ground is not what your app wants, import a theme beside the
+stylesheet and set one attribute:
+
+```js
+import '@axiapps/axi-design/axi.css'
+import '@axiapps/axi-design/themes/glass.css'
+```
+
+```html
+<html data-axi-theme="glass">
+```
+
+`glass` keeps the outline, the hard block and every ink exactly as they are,
+and repaints the surface layer: translucent panels over a colder ground, with
+popovers, drawers and modals blurring what sits behind them. Remove the
+attribute and you are back on the main theme with no other change — a theme
+restates tokens and never adds a component, so nothing in your markup knows
+which one is on. That is the point: the look is maintained here rather than
+copied into your app as a custom theme that then has to be kept in step.
+
+The main theme is the language and a theme is a repaint of it — [the
+rules](docs/RULES.md#themes) say what a theme may and may not do.
+
 ## Per-instance knobs
 
 These custom properties are read with a fallback and never declared on the

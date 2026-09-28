@@ -24,6 +24,15 @@
   --axi-text-dim: #a7b0be;
   --axi-text-faint: #7c8695;
   --axi-scrim: rgba(6, 7, 9, .72); /* behind a drawer */
+  /* What a surface does to whatever is behind it. `none` here, and `none` is
+     genuinely inert - it paints nothing and, unlike a transform, establishes
+     no containing block, so the fixed-descendant trap rule 4 documents stays
+     closed. It exists so a theme has somewhere to put the answer: a glass
+     theme makes the surfaces translucent and restates this token, and the
+     blur arrives on every surface at once without one component learning the
+     word. This is the toll the Themes section describes - a theme cannot
+     invent a capability, so the capability is declared here first, inert. */
+  --axi-surface-filter: none;
 
   /* --- accent & status --- */
   --axi-accent: #ffc53d;
@@ -194,6 +203,16 @@ a { color: inherit; }
    us to ship a component for it. */
 .axi-panel {
   background: var(--axi-surface);
+  /* What the surface does to whatever is behind it. `none` in the main theme,
+     which is inert: unlike a transform, `backdrop-filter: none` establishes no
+     containing block, so rule 4's fixed-descendant trap is not reopened here.
+     A theme that makes the surfaces translucent restates this token and the
+     blur arrives everywhere at once. Carried only by the surfaces something
+     can actually be behind - a panel, a popover, an overlay, the scrim. A
+     chip, a switch, a page number and a card glyph sit directly on their
+     parent's fill with nothing but that fill behind them, so the filter would
+     cost a compositor layer each to blur a flat colour. */
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -472,6 +491,7 @@ a { color: inherit; }
     border: var(--axi-border-panel) solid var(--axi-ink-line);
     border-radius: var(--axi-radius);
     background: var(--axi-surface-raised);
+    backdrop-filter: var(--axi-surface-filter);
     box-shadow: var(--axi-shadow-panel);
   }
   .axi-select option {
@@ -543,6 +563,7 @@ a { color: inherit; }
   max-height: 340px; overflow-y: auto;
   padding: 6px;
   background: var(--axi-surface-raised);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   /* The block falls outside the popover's own box. An ancestor that clips -
@@ -831,6 +852,7 @@ textarea.axi-input {
 .axi-notice {
   display: flex; gap: 14px; padding: 15px 18px;
   background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -851,6 +873,7 @@ textarea.axi-input {
   display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
   padding: 14px;
   background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -868,6 +891,7 @@ textarea.axi-input {
   width: var(--axi-menu-width, 310px);
   max-height: 340px; overflow-y: auto; padding: 8px;
   background: var(--axi-surface-raised);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -914,6 +938,7 @@ textarea.axi-input {
   display: flex; flex-direction: column; gap: 11px;
   padding: 22px 16px 14px;
   background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -970,12 +995,13 @@ textarea.axi-input {
 .axi-card:hover .axi-card__go { color: var(--axi-text); }
 
 /* ---------- drawer ---------- */
-.axi-scrim { position: fixed; inset: 0; z-index: 50; background: var(--axi-scrim); border: 0; }
+.axi-scrim { position: fixed; inset: 0; z-index: 50; background: var(--axi-scrim); backdrop-filter: var(--axi-surface-filter); border: 0; }
 .axi-drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 51;
   width: min(var(--axi-drawer-width, 560px), 100vw);
   display: flex; flex-direction: column;
   background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
   border-left: var(--axi-border-panel) solid var(--axi-ink-line);
 }
 .axi-drawer[hidden], .axi-scrim[hidden] { display: none; }
@@ -1163,12 +1189,13 @@ textarea.axi-input {
   padding: 0;
   max-width: min(var(--axi-modal-width, 560px), calc(100vw - 32px));
   background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
   color: var(--axi-text);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
 }
-.axi-modal::backdrop { background: var(--axi-scrim); }
+.axi-modal::backdrop { background: var(--axi-scrim); backdrop-filter: var(--axi-surface-filter); }
 /* The head and foot are divided from the body by rules, not by outlines: they
    are parts of one raised thing, and rule 8's reading applies - a line inside
    a raised surface separates its parts, it does not raise them. */
@@ -1192,6 +1219,7 @@ textarea.axi-input {
    so it is inside rule 4's rationing without needing rule 11. */
 .axi-accordion {
   background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -1257,6 +1285,7 @@ textarea.axi-input {
   display: flex; align-items: center; gap: 12px;
   padding: 12px 15px;
   background: var(--axi-surface-raised);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   box-shadow: var(--axi-shadow-control);

@@ -10,6 +10,16 @@
    us to ship a component for it. */
 .axi-panel {
   background: var(--axi-surface);
+  /* What the surface does to whatever is behind it. `none` in the main theme,
+     which is inert: unlike a transform, `backdrop-filter: none` establishes no
+     containing block, so rule 4's fixed-descendant trap is not reopened here.
+     A theme that makes the surfaces translucent restates this token and the
+     blur arrives everywhere at once. Carried only by the surfaces something
+     can actually be behind - a panel, a popover, an overlay, the scrim. A
+     chip, a switch, a page number and a card glyph sit directly on their
+     parent's fill with nothing but that fill behind them, so the filter would
+     cost a compositor layer each to blur a flat colour. */
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
@@ -288,6 +298,7 @@
     border: var(--axi-border-panel) solid var(--axi-ink-line);
     border-radius: var(--axi-radius);
     background: var(--axi-surface-raised);
+    backdrop-filter: var(--axi-surface-filter);
     box-shadow: var(--axi-shadow-panel);
   }
   .axi-select option {
@@ -359,6 +370,7 @@
   max-height: 340px; overflow-y: auto;
   padding: 6px;
   background: var(--axi-surface-raised);
+  backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   /* The block falls outside the popover's own box. An ancestor that clips -

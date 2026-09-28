@@ -1,6 +1,8 @@
 import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, existsSync } from 'node:fs'
 import { resolve, basename } from 'node:path'
+import { execSync } from 'node:child_process'
+import { THEMES, buildThemeCss } from '../scripts/build.mjs'
 
 // A theme is a repaint of the language, never an extension of it: see the
 // Themes section of docs/RULES.md. The main theme in src/tokens.css is the
@@ -9,8 +11,11 @@ import { resolve, basename } from 'node:path'
 // "no glass-only component" is exactly the kind of rule that erodes one
 // convenient exception at a time.
 //
-// It passes vacuously while dist/themes/ is empty, which is deliberate: it
-// lands before the first theme so the first theme is born under it.
+// The mirror checks are per-theme loops, so they were vacuous when this file
+// landed - deliberately, one commit ahead of the first theme, so that theme
+// was born under them. The synthetic block at the foot is what kept them
+// honest in the meantime and is what keeps them honest if themes/ is ever
+// emptied again.
 
 const THEME_DIR = 'dist/themes'
 
@@ -110,6 +115,66 @@ describe('a theme mirrors the main theme one-for-one', () => {
         }
       }
     }
+  })
+})
+
+// dist/themes/ is committed for the same reason dist/accents.css is: npm and
+// the Pages workflow publish the artifact, nothing in-repo imports it, and so
+// a stale file would have no symptom at all.
+describe('the generated theme files', () => {
+  it('match the generation from themes/*.json', () => {
+    for (const theme of THEMES) {
+      const committed = readFileSync(resolve(`dist/themes/${theme.id}.css`), 'utf8')
+      expect(committed, `dist/themes/${theme.id}.css is stale`).toBe(buildThemeCss(theme))
+    }
+  })
+
+  // The dist/ scan the mirror checks run over and the themes/ list the build
+  // generates from have to be the same set. A json with no css is a theme the
+  // build forgot; a css with no json is a hand-written file the mirror checks
+  // would police but nothing regenerates.
+  it('are exactly the themes themes/ declares', () => {
+    expect(themeFiles().map((t) => t.id).sort()).toEqual(THEMES.map((t) => t.id).sort())
+  })
+
+  it('leaves the saturated fills and the whole form to the language', () => {
+    // Stated as a check because it is the claim the Themes section rests on:
+    // a theme repaints, it does not redesign. The five fills carry meaning
+    // (rules 5, 6, 9, 10) and the form carries the shape (rules 3, 4), and a
+    // theme that moved either would be a second design language wearing these
+    // class names.
+    //
+    // The `-ink` companions are deliberately NOT on this list. --axi-accent-ink
+    // and --axi-ink-on-fill are the colour a WORD is written in when it sits on
+    // one of those fills, not the fill itself, and a theme that lightens the
+    // outline has to be able to hold them dark - that is the entire reason
+    // --axi-ink-on-fill was split out of --axi-ink-line. Forbidding them here
+    // would forbid the one case the split exists to serve.
+    const FILLS = ['--axi-accent', '--axi-meta', '--axi-ok', '--axi-warn', '--axi-danger']
+    const FORM = /^--axi-(border|offset|shadow|radius|page|gutter|sans|mono|t|ls)(-|$)/
+    for (const theme of THEMES) {
+      for (const name of Object.keys(theme.tokens)) {
+        expect(FILLS.includes(name), `${theme.id} restates the fill ${name}`).toBe(false)
+        expect(FORM.test(name), `${theme.id} restates the form token ${name}`).toBe(false)
+      }
+    }
+  })
+})
+
+describe('theme packaging', () => {
+  it('ships the generated themes in the npm tarball', () => {
+    const [pack] = JSON.parse(execSync('npm pack --dry-run --json', { encoding: 'utf8' }))
+    const paths = pack.files.map((f) => f.path)
+    for (const theme of THEMES) {
+      expect(paths).toContain(`dist/themes/${theme.id}.css`)
+    }
+  })
+
+  // A subpath pattern rather than an entry per theme, so adding a theme
+  // cannot silently ship an unimportable file.
+  it('exports every theme through one subpath pattern', () => {
+    const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
+    expect(pkg.exports['./themes/*.css']).toBe('./dist/themes/*.css')
   })
 })
 

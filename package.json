@@ -17,11 +17,12 @@
   "publishConfig": {
     "access": "public"
   },
-  "//exports": "Two entry points, and both are stylesheets. Consumers import the path rather than the package root because there is no JavaScript here to be a default export - `import '@axiapps/axi-design/axi.css'` says what it does, and a bare `import '@axiapps/axi-design'` resolving to a stylesheet would not. ./tokens.css is the palette without the components, for an app that already draws its own components through its own variables and wants to point them at ours: it is the whole language for a consumer like that, and copying the token block by hand is the one way those values are guaranteed to drift.",
+  "//exports": "Every entry point is a stylesheet. Consumers import the path rather than the package root because there is no JavaScript here to be a default export - `import '@axiapps/axi-design/axi.css'` says what it does, and a bare `import '@axiapps/axi-design'` resolving to a stylesheet would not. ./tokens.css is the palette without the components, for an app that already draws its own components through its own variables and wants to point them at ours: it is the whole language for a consumer like that, and copying the token block by hand is the one way those values are guaranteed to drift. ./themes/*.css is a subpath pattern rather than one entry per theme, so adding a theme is adding themes/<id>.json and nothing else - an entry that has to be remembered is an entry that will be forgotten, and the symptom would be an import that resolves in this repo and not from an install.",
   "exports": {
     "./axi.css": "./dist/axi.css",
     "./tokens.css": "./src/tokens.css",
     "./accents.css": "./dist/accents.css",
+    "./themes/*.css": "./dist/themes/*.css",
     "./accents.json": "./accents.json",
     "./package.json": "./package.json"
   },

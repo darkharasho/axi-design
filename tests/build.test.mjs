@@ -53,7 +53,25 @@ describe('package exports', () => {
 
   it('every entry point resolves to a file that exists', () => {
     for (const target of Object.values(pkg.exports)) {
+      if (target.includes('*')) continue
       expect(() => readFileSync(resolve(target), 'utf8')).not.toThrow()
+    }
+  })
+
+  // A subpath pattern has no single target to stat, so the check above has to
+  // skip it - and skipping is how an export stops being checked at all. Every
+  // pattern is therefore expanded against what is actually on disk and every
+  // expansion resolved, which is the same guarantee for the form of export
+  // that would otherwise get a free pass.
+  it('every subpath pattern resolves for everything it matches', () => {
+    for (const [subpath, target] of Object.entries(pkg.exports)) {
+      if (!target.includes('*')) continue
+      const [dir, suffix] = target.split('*')
+      const matches = readdirSync(resolve(dir)).filter((f) => f.endsWith(suffix))
+      expect(matches.length, `${subpath} matches nothing`).toBeGreaterThan(0)
+      for (const m of matches) {
+        expect(() => readFileSync(resolve(dir, m), 'utf8')).not.toThrow()
+      }
     }
   })
 
