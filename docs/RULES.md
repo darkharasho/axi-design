@@ -14,7 +14,12 @@ to draw a *shape*, with no soft transition anywhere in them: the select caret
 (two `linear-gradient`s meeting to make a triangle) and `.axi-plot`'s
 gridlines (a `repeating-linear-gradient` of hard stops, which is how N evenly
 spaced rules get drawn without asking every consumer to emit N empty divs).
-A gradient across a surface is still forbidden, and always will be.
+A gradient across a surface is still forbidden in every component file, and
+always will be. The single relief is a *theme* restating the surface tokens
+themselves — see [Themes](#themes) — which is what lets a glass theme exist
+without one component ever learning the word "glass". A component cannot reach
+for that exception, because it cannot see it: what it reads is the same surface
+token it was already reading.
 
 ## 2. No colour at partial opacity over the ground
 
@@ -22,6 +27,14 @@ If a colour is present it is at full strength. A muted gold over near-black is
 just brown, and five muted inks over near-black are five browns. When something
 should be quieter, reach for a neutral from the ramp — that is what the ramp is
 for.
+
+A theme gets the same carve-out as rule 1 and not one inch more: it may hold the
+*surface* tokens at partial opacity, because a translucent surface is that
+surface's own definition rather than a colour laid over the ground. The inks are
+untouched. A muted `--axi-warn`, a faded accent, a status ink at 60% — still
+forbidden, in a theme exactly as in a component, because the paragraph above is
+about what happens to meaning when five inks become five browns, and changing
+which stylesheet does the muting does not change that.
 
 ## 3. Every raised element is outlined and blocked
 
@@ -391,6 +404,9 @@ literal, so a light theme is a second palette block, not a rewrite. It is not
 a token swap either — the saturated inks that read as vivid on near-black go
 washed out on white and would need retuning.
 
+When it does ship it ships as a theme, under the section below, with the same
+1:1 obligation: light mode does not get a component the dark language lacks.
+
 ## The official accents
 
 `--axi-accent` is the per-app theming surface, and the family now agrees on
@@ -410,12 +426,65 @@ dist/axi.css.
 The default remains `#ffc53d` Axi Gold, declared in tokens.css: an app that
 sets no `data-axi-accent` is gold, and correctly themed.
 
+## Themes
+
+The palette in `tokens.css` is not "the default theme". It is the language, and
+a theme is a repaint of it. Everything rules 1-11 describe — the outline, the
+block, what a fill means, what the cool ink is reserved for — is defined once,
+there, and a theme inherits all of it. Anything a theme cannot say by restating
+a token is not a theme; it is a change to the language, and it goes through the
+rules above like any other.
+
+A theme is a generated stylesheet, `dist/themes/<id>.css`, built the way
+`dist/accents.css` is: one `[data-axi-theme="<id>"]` block, custom properties
+only, no structural CSS. A consumer imports it beside `axi.css` and sets
+`data-axi-theme` on its root element. That is the whole integration — which is
+the point. A site gets the dark language by default and a different one by
+adding an attribute, and in neither case does it author, carry or maintain a
+line of theme CSS of its own.
+
+**A theme mirrors the main theme one-for-one.** In both directions:
+
+- **Nothing added.** No token a theme invents, no selector but its own root
+  hook, and above all no component that exists only under a theme. There is no
+  `.axi-panel--glass`, no glass-only card, no variant that appears when the
+  attribute is set. A component that is worth having is worth having in the
+  language; one that only makes sense translucent is a component the language
+  does not have.
+- **Nothing dropped.** A theme may not leave a token unset and a component
+  unpainted. Every component renders under every theme, which is what makes the
+  attribute a swap rather than a migration — a site can set it, unset it, or
+  offer the choice to its users, and no markup changes either way.
+
+The consequence worth stating plainly: **a new theme capability costs a
+main-theme token first.** A glass theme wants a `backdrop-filter`; it does not
+get to introduce one. `--axi-surface-filter` is declared in `tokens.css` with an
+inert default (`none`), the surfaces read it unconditionally, and the theme
+restates it. The main theme is unchanged in appearance and the hook is part of
+the language rather than part of the theme. Every theme pays this toll, and it
+is what keeps the mirror true: a token the theme could set that the main theme
+had never heard of is the first step back toward theme-only components.
+
+Rules 1 and 2 name the only relief a theme gets, and it is confined to the
+surface layer: a theme may put a gradient on a surface and may hold a surface
+token at partial opacity. It may not mute an ink. Read those two rules for why.
+
+**What is mechanically enforced.** `tests/themes.test.mjs` reads every
+`dist/themes/*.css` and checks the mirror rather than trusting it: the file
+contains exactly one rule, its selector is `[data-axi-theme="<id>"]` for the
+`<id>` in its own filename, every declaration in it is a custom property with a
+non-empty value, and every property it declares is already declared in
+`tokens.css`. A theme-only component fails the first check, because drawing one
+takes a second selector. An invented token fails the last. The suite passes
+vacuously while no theme exists, and binds the moment the first file lands.
+
 ## Adding a component
 
 1. Which rule justifies it? If none, write the rule first or stop.
 2. Build it from the existing primitives. A shell that redefines `.axi-panel`
    instead of using it will drift the first time the panel changes.
-3. No colour literals. No third form step.
+3. No colour literals. No third form step. No theme-only variant — see
+   [Themes](#themes).
 4. Add it to the gallery, and check it with the accent switcher — if it does
    not follow the accent, it hard-coded something.
 5. `npm run build` and commit `dist/axi.css` with your source change.
