@@ -200,4 +200,31 @@
     <path d="M5.5 5.5 L18.5 18.5"/>
     <path d="M18.5 5.5 L5.5 18.5"/>
   </symbol>
+  <symbol id="axi-alert-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-circle-alert"/>
+  </symbol>
+  <symbol id="axi-alert-triangle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-circle-alert"/>
+  </symbol>
+  <symbol id="axi-check-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-circle-check"/>
+  </symbol>
+  <symbol id="axi-check-circle-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-circle-check"/>
+  </symbol>
+  <symbol id="axi-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-square"/>
+  </symbol>
+  <symbol id="axi-edit-2" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-pencil"/>
+  </symbol>
+  <symbol id="axi-square-pen" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-pencil"/>
+  </symbol>
+  <symbol id="axi-triangle-alert" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-circle-alert"/>
+  </symbol>
+  <symbol id="axi-x-circle" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linejoin="miter">
+    <use href="#axi-circle-x"/>
+  </symbol>
 </svg>

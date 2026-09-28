@@ -281,6 +281,43 @@ describe('the icon manifest', () => {
       }
     }
   })
+
+  // `lucide` is a promise that `<use href="#axi-<name>">` draws something.
+  // Every way that promise can be broken is silent: a name that matches no
+  // drawing renders an empty box, and a name that collides with a real icon
+  // or with another entry's claim produces a duplicate id, where the first
+  // symbol wins and the second is unreachable with no error anywhere.
+  it('points every lucide name at a drawing that exists', () => {
+    const names = new Set(ICON_ENTRIES.map((e) => e.name))
+    for (const e of ICON_ENTRIES) {
+      for (const l of e.lucide ?? []) {
+        expect(names.has(l), `${e.name} claims the lucide name "${l}", which is a real icon`).toBe(false)
+      }
+    }
+  })
+
+  it('never lets two entries claim the same lucide name', () => {
+    const seen = new Map()
+    for (const e of ICON_ENTRIES) {
+      for (const l of e.lucide ?? []) {
+        expect(seen.has(l), `${l} is claimed by both ${seen.get(l)} and ${e.name}`).toBe(false)
+        seen.set(l, e.name)
+      }
+    }
+  })
+
+  it('keeps lucide names out of the search-word field', () => {
+    for (const e of ICON_ENTRIES) {
+      for (const l of e.lucide ?? []) {
+        expect(e.aliases, `${e.name} lists "${l}" as both a lucide name and a search word`).not.toContain(l)
+      }
+    }
+  })
+
+  it('gives triangle-alert to circle-alert', () => {
+    const entry = ICON_ENTRIES.find((e) => e.name === 'circle-alert')
+    expect(entry.lucide).toContain('triangle-alert')
+  })
 })
 
 // The checker's own adversaries. Every drawing in the set is trusted because

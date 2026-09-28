@@ -165,6 +165,11 @@
       "warning",
       "exclamation"
     ],
+    "lucide": [
+      "alert-circle",
+      "triangle-alert",
+      "alert-triangle"
+    ],
     "keywords": [
       "danger",
       "error",
@@ -179,6 +184,10 @@
     "aliases": [
       "success"
     ],
+    "lucide": [
+      "check-circle",
+      "check-circle-2"
+    ],
     "keywords": [
       "verified",
       "passed",
@@ -192,6 +201,9 @@
     ],
     "aliases": [
       "failure"
+    ],
+    "lucide": [
+      "x-circle"
     ],
     "keywords": [
       "error",
@@ -431,6 +443,10 @@
       "edit",
       "write"
     ],
+    "lucide": [
+      "edit-2",
+      "square-pen"
+    ],
     "keywords": [
       "rename",
       "modify",
@@ -544,6 +560,9 @@
     ],
     "aliases": [
       "stop"
+    ],
+    "lucide": [
+      "circle"
     ],
     "keywords": [
       "halt",
