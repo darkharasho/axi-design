@@ -53,6 +53,36 @@ site](https://darkharasho.github.io/axi-design/) for every component, with live
 accent and theme switchers in the masthead. `/gallery/` still holds the
 everything-at-once view.
 
+### An icon set of its own
+
+Forty-seven glyphs drawn to [rule 12](docs/RULES.md) — a 24 canvas, a 3px
+stroke, mitered joins, square corners, and no angle that is not 0°, 45° or 90°.
+They take their ink from whatever they sit in, so a glyph inside an accent
+button turns accent-ink with the label and follows every accent and theme
+switch with no extra rule.
+
+```html
+<svg class="axi-icon"><use href="node_modules/@axiapps/axi-design/dist/icons/sprite.svg#axi-search"/></svg>
+```
+
+**One caveat, and it matters for Electron.** A `<use>` pointing into a separate
+file is a cross-document reference, and those are same-origin: over `http(s)`
+from your own origin it works and the glyph inherits `currentColor` (measured in
+Chromium 150). Under `file://` — which is how an Electron window opened with
+`loadFile()` runs — the reference resolves to nothing and the icon is silently
+absent, no error, no fallback. In that case do one of two things: inline
+`dist/icons/sprite.svg` into the document once (a hidden `<svg>` before
+`</body>`, which is what this project's own docs site does) and reference bare
+fragments like `#axi-search`, or use the standalone `dist/icons/<name>.svg`
+files. Serving the renderer over `http://localhost` also works.
+
+One sprite holds the set; `dist/icons/<name>.svg` is the same drawing on its own,
+and `dist/icons/icons.json` is the catalogue — name, categories, aliases and
+keywords — for an app that wants to build a picker. Size a glyph with
+`--axi-icon-size`. The vocabulary derives from [Lucide](https://lucide.dev)
+under the ISC licence (`icons/LICENSE-LUCIDE`); none of the path data does.
+Browse the set at [`/icons/`](https://darkharasho.github.io/axi-design/icons/).
+
 ### A different look, without carrying one
 
 If the flat dark ground is not what your app wants, import a theme beside the
@@ -125,6 +155,7 @@ not "what does the system look like". Everything else is
 | `--axi-tick-h` | the height of an `.axi-ticks` strip, and so of every mark in it | `15px` | `<div class="axi-ticks" style="--axi-tick-h: 22px">` |
 | `--axi-ticks-gap` | the gap between marks in `.axi-ticks` | `3px` | `<div class="axi-ticks" style="--axi-ticks-gap: 2px">` |
 | `--axi-spinner-size` | the size of an `.axi-spinner` | `20px` | `<span class="axi-spinner" style="--axi-spinner-size: 34px"></span>` |
+| `--axi-icon-size` | an `.axi-icon`'s box, both dimensions | `1.25em` | `<svg class="axi-icon" style="--axi-icon-size: 2rem"><use href="#axi-search"/></svg>` |
 <!-- /axi:knobs -->
 
 `--axi-page-pad: 0` is the one to know about: it is how a measure nested

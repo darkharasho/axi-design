@@ -4,7 +4,8 @@ import { mkdtempSync, readFileSync, rmSync } from 'node:fs'
 import { tmpdir } from 'node:os'
 import { resolve } from 'node:path'
 import { build } from '../scripts/site.mjs'
-import { entries, findEntry } from '../docs/manifest/index.mjs'
+import { entries, findEntry, RESERVED_IDS } from '../docs/manifest/index.mjs'
+import { ICON_ENTRIES } from '../docs/manifest/icons.mjs'
 import { LAYER_NAMES } from '../docs/site/shell.mjs'
 import { unhighlight } from './unhighlight.mjs'
 
@@ -310,3 +311,67 @@ describe('machine-readable output', () => {
 })
 
 afterAll(() => rmSync(out, { recursive: true, force: true }))
+
+// Rule 12's milestone claim, as a check: nothing this site renders is a glyph
+// drawn by whatever font the OS happens to hand the browser. The range is the
+// arrow/symbol/dingbat blocks, not punctuation - an ellipsis, an em dash and a
+// non-breaking space are typography and stay. Scanned across the built pages
+// rather than the manifest, because the shell's own chrome and gallery.html
+// are markup no manifest test ever sees.
+describe('no borrowed glyphs anywhere on the site', () => {
+  const SYMBOL = /[\u2190-\u21FF\u2300-\u23FF\u25A0-\u27BF\u2B00-\u2BFF]/
+  // Numeric entities are decoded first rather than pattern-matched, so the test
+  // judges the glyph that renders and not the spelling. `&#8230;` is an ellipsis
+  // and stays; `&#8981;` is the magnifier this set exists to replace, and the
+  // two are three digits apart.
+  const borrowed = (html) => SYMBOL.test(html.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))))
+
+  // One test rather than one per page: `written` is filled by beforeAll, so a
+  // loop at collection time would see nothing and pass by drawing no tests.
+  it('every built page draws its own', () => {
+    const offenders = written
+      .filter((f) => f.endsWith('.html'))
+      .filter((f) => borrowed(read(f)))
+    expect(offenders).toEqual([])
+  })
+})
+
+describe('the icons page', () => {
+  it('is written, with the sprite beside it', () => {
+    expect(written).toContain('icons/index.html')
+    expect(written).toContain('icons/sprite.svg')
+  })
+
+  it('shows every icon in the manifest', () => {
+    const html = read('icons/index.html')
+    for (const e of ICON_ENTRIES) expect(html).toContain(`#axi-${e.name}`)
+  })
+
+  // Asserting the word appears in the HTML would pass on a data- attribute
+  // nothing reads, which is what this page shipped first. The filter field,
+  // the script that binds it and the per-tile name are the three things that
+  // have to be present for typing "magnifier" to actually find `search`.
+  it("carries each icon's aliases somewhere a filter can reach them", () => {
+    const html = read('icons/index.html')
+    expect(html).toContain('data-keywords="magnifier')
+    expect(html).toContain('data-name="search"')
+    expect(html).toContain('data-icon-filter')
+    expect(html).toContain('icon-search.js')
+    expect(written).toContain('icon-search.js')
+  })
+
+  it('names the Lucide derivation', () => {
+    expect(read('icons/index.html')).toMatch(/Lucide/)
+  })
+
+  it('reserves the route against a component taking it', () => {
+    expect(RESERVED_IDS).toContain('icons')
+  })
+
+  it('tells a newcomer how to draw the next one', () => {
+    const html = read('icons/index.html')
+    expect(html).toMatch(/Drawing a new icon/)
+    expect(html).toContain('icons.test.mjs')
+    expect(html).toContain('docs/manifest/icons.mjs')
+  })
+})

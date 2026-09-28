@@ -357,6 +357,70 @@ anything that claims to show liveness.
 
 Motion elsewhere is still rationed by rule 4.
 
+## 12. An icon is drawn in the language's angles, at control weight
+
+An icon is an object, not a rule. The objects here are outlined at
+`--axi-border-control` (3px), so that is the weight a glyph is drawn at — an
+icon at the 2px hairline is a *rule* weight on a thing that is not a rule, and
+inside a 3px-bordered button it reads as a thin drawing in a heavy frame
+rather than as one object.
+
+The contract:
+
+| | |
+|---|---|
+| Canvas | 24×24 `viewBox`, all geometry inset 1.5 from every edge |
+| Stroke | 3px, `currentColor`, mitered joins, butt caps |
+| Corners | radius 0, as everywhere else |
+| Angles | 0°, 45° and 90°, and nothing between |
+| Curves | none |
+| Coordinates | multiples of 0.5; an axis-aligned stroke sits on an odd half-integer or on the centre axis at 12 |
+
+**No curve.** This language has no rounded corner (rule 3) and its motif is a
+rotated square (rule 7). One arc in the set is one exception in the set, and
+the exception is where the eye finds the seam. Where a borrowed metaphor
+genuinely needs a circle, the circle becomes a **diamond if it is a node** — a
+lens, a head, a dot, a knob — and a **square if it is a boundary** — a clock
+face, a frame, a container. The diamond frame reads as a warning sign, so it
+is spent only where warning is the meaning. An octagon was considered as a
+third frame shape and refused for the reason rule 3 refuses a third weight
+step.
+
+**No colour of its own.** An icon inherits `currentColor` and is whatever ink
+it sits in. A two-tone glyph with an accent detail would be colour encoding
+nothing, which rule 5 refuses on a chip and rule 10 refuses in a chart.
+
+**The centre-axis exemption, precisely.** A 3px stroke centred on a 24 canvas
+spans 10.5–13.5: it can be centred or pixel-aligned, never both. For the few
+glyphs built around a centre line, symmetry wins. The exemption is one
+coordinate wide — `12` — so it cannot spread into a general licence to sit on
+whole integers.
+
+**What is mechanically enforced.** `tests/icons.test.mjs` reads every file in
+`icons/` and works from an **allowlist**, not a list of prohibitions. A drawing
+may contain one root `<svg>` and `<path>` elements, and nothing else — a
+`<circle>`, a `<rect>` or a `<polygon>` is rejected for being unlisted rather
+than for being round. The root declares exactly the six attributes in the
+contract above, at exactly those values; a `<path>` may carry `d`, and `fill`
+or `stroke` only at `none` or `currentColor`. Everything else — a
+`transform`, an `rx`, a `stroke-linecap`, a per-element `stroke-width="2"`, a
+colour of any spelling — is an unlisted attribute and fails on that ground.
+A file containing no `<path>` at all fails too, because a drawing with nothing
+in it satisfies every geometric check by having nothing to check.
+
+Each `d` is then parsed — tracking the current point through relative
+commands, and reading the extra coordinate pairs of an `M` as the implicit
+linetos they are — and fails on a curve command, an angle that is neither
+axis-aligned nor 45°, a coordinate off the 0.5 grid or outside the live
+area, or an axis-aligned stroke off its permitted centerlines. Both ends of
+every segment are checked, including the moveto point that starts a subpath and
+may never appear as any segment's endpoint.
+
+The checker is itself tested: `tests/icons.test.mjs` feeds it a set of drawings
+that must be rejected, one per prohibition. The rule above is therefore a check
+rather than a promise — the same treatment rule 3's weights get in
+`tests/tokens.test.mjs`.
+
 ## Tokens
 
 Three layers, in `src/tokens.css` — the only file permitted to contain a colour

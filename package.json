@@ -23,6 +23,9 @@
     "./tokens.css": "./src/tokens.css",
     "./accents.css": "./dist/accents.css",
     "./themes/*.css": "./dist/themes/*.css",
+    "./icons/sprite.svg": "./dist/icons/sprite.svg",
+    "./icons/*.svg": "./dist/icons/*.svg",
+    "./icons.json": "./dist/icons/icons.json",
     "./accents.json": "./accents.json",
     "./package.json": "./package.json"
   },
@@ -33,6 +36,7 @@
   "//files": "dist/ is the artifact; src/ rides along because a consumer reading a component wants the source next to them; docs/RULES.md rides along because it is the reason any of it is shaped the way it is. The rest of docs/ - the manifest, the generator and the guides - builds the site and is no use to a consumer. No tests, no gallery. LICENSE and README are included by npm regardless of this list.",
   "files": [
     "dist",
+    "icons",
     "src",
     "docs/RULES.md",
     "accents.json",

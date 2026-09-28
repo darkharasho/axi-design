@@ -143,3 +143,44 @@ body { margin: 0; }
   .docs-toc { display: none; }
   .docs-side { position: static; max-height: none; overflow: visible; }
 }
+
+/* The icon set, all of it, on one page. auto-fill rather than auto-fit so a
+   short last row keeps the tile width of every row above it instead of
+   stretching to fill - a grid of glyphs is read by comparing them, and a
+   tile that changed size would be the one thing the eye goes to. */
+.docs-icons {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(140px, 1fr));
+  gap: var(--axi-gutter);
+  list-style: none;
+  padding: 0;
+  margin: var(--axi-gutter) 0 0;
+}
+
+.docs-icon {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 10px;
+  padding: 18px 8px 14px;
+  background: var(--axi-surface);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+}
+
+.docs-icon code {
+  font-family: var(--axi-mono);
+  font-size: 12px;
+  color: var(--axi-text-dim);
+  text-align: center;
+  overflow-wrap: anywhere;
+}
+
+.docs-icons__filter {
+  margin: var(--axi-gutter) 0 0;
+  max-width: 340px;
+}
+
+.docs-icons__empty {
+  margin: var(--axi-gutter) 0 0;
+  color: var(--axi-text-dim);
+}

@@ -197,6 +197,12 @@ export const KNOBS = [
     fallback: '`20px`',
     example: '<span class="axi-spinner" style="--axi-spinner-size: 34px"></span>',
   },
+  {
+    name: '--axi-icon-size',
+    sets: "an `.axi-icon`'s box, both dimensions",
+    fallback: '`1.25em`',
+    example: '<svg class="axi-icon" style="--axi-icon-size: 2rem"><use href="#axi-search"/></svg>',
+  },
 ]
 
 export function knobsFor(names) {

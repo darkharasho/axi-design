@@ -4,6 +4,7 @@ import { definedClasses, ruleNumbers, fallbackKnobs } from '../docs/manifest/int
 import { KNOBS, knobsFor } from '../docs/manifest/knobs.mjs'
 import { buildKnobTable } from '../scripts/build.mjs'
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 const ALL = entries()
 
@@ -214,4 +215,59 @@ describe('aliases', () => {
     const bad = entries().flatMap((e) => (e.aliases ?? []).filter((a) => !/^[a-z]+$/.test(a)))
     expect(bad).toEqual([])
   })
+})
+
+// Rule 12 is the icon set's whole justification, and every icon entry cites
+// it. A renumbering or a reword that dropped it would leave those citations
+// deep-linking to a #rule-12 anchor that no longer exists.
+describe('rule 12', () => {
+  const md = () => readFileSync(resolve('docs/RULES.md'), 'utf8')
+
+  it('is present in RULES.md and names the icon contract', () => {
+    const md = readFileSync(resolve('docs/RULES.md'), 'utf8')
+    const titles = new Map([...md.matchAll(/^## (\d+)\. (.+)$/gm)].map((m) => [Number(m[1]), m[2]]))
+    expect(titles.get(12)).toMatch(/icon/i)
+  })
+
+  it('states the weight, the angles and the curve prohibition', () => {
+    const md = readFileSync(resolve('docs/RULES.md'), 'utf8')
+    const body = md.split(/^## 12\. /m)[1].split(/^## /m)[0]
+    expect(body).toContain('--axi-border-control')
+    expect(body).toContain('45')
+    expect(body).toMatch(/no curve|curves/i)
+  })
+
+  // The enforcement paragraph is a claim about another file, and a claim like
+  // that rots silently. It used to say the check catches "a stroke width that
+  // is not 3" when stroke-width was only scanned file-wide; it now describes
+  // the allowlist that actually runs.
+  it('describes the check as an allowlist, which is what it is', () => {
+    const body = md().split(/^## 12\. /m)[1].split(/^## /m)[0]
+    const enforced = body.split('**What is mechanically enforced.**')[1]
+    expect(enforced).toBeDefined()
+    expect(enforced).toMatch(/allow-?list/i)
+    expect(enforced).toMatch(/<path>/)
+  })
+})
+
+// The reason the set exists. A Unicode symbol in an example is a glyph drawn
+// by whatever font the OS hands Chromium - the one part of this language its
+// own rules never reached. The range below is the symbol/dingbat/arrow
+// blocks, not punctuation: an ellipsis, an em dash and a non-breaking space
+// are typography and stay.
+describe('the examples draw their own glyphs', () => {
+  const SYMBOL = /[\u2190-\u21FF\u2300-\u23FF\u25A0-\u27BF\u2B00-\u2BFF]/
+  // Numeric entities are decoded first rather than pattern-matched, so the test
+  // judges the glyph that renders and not the spelling. `&#8230;` is an ellipsis
+  // and stays; `&#8981;` is the magnifier this set exists to replace, and the
+  // two are three digits apart.
+  const borrowed = (html) => SYMBOL.test(html.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))))
+
+  for (const e of entries()) {
+    for (const [i, ex] of (e.examples ?? []).entries()) {
+      it(`${e.id} example ${i} uses no borrowed symbol glyph`, () => {
+        expect(borrowed(ex.html)).toBe(false)
+      })
+    }
+  }
 })

@@ -1,7 +1,8 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs'
+import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
-import { buildCss, ORDER } from '../scripts/build.mjs'
+import { buildCss, ORDER, ICONS, buildIconSprite, buildIconsJson, staleIconFiles } from '../scripts/build.mjs'
 
 // dist/axi.css is committed, because the release workflow publishes that exact
 // file and consumers link it by URL. A committed artifact can go stale the
@@ -98,5 +99,108 @@ describe('licensing', () => {
     // language cannot be installed by the apps that need it.
     expect(pkg.name.startsWith('@')).toBe(true)
     expect(pkg.publishConfig?.access).toBe('public')
+  })
+})
+
+// dist/ is committed and published, same as dist/axi.css: an icon added to
+// icons/ and never built is an icon the docs page lists and the consumer
+// cannot render.
+describe('dist/icons', () => {
+  it('reads every file in icons/', () => {
+    const onDisk = readdirSync(resolve('icons'))
+      .filter((f) => f.endsWith('.svg') && !f.startsWith('.'))
+      .map((f) => f.replace(/\.svg$/, ''))
+      .sort()
+    expect(ICONS.map((i) => i.name)).toEqual(onDisk)
+  })
+
+  it('gives every icon a symbol carrying the canvas', () => {
+    const sprite = buildIconSprite()
+    for (const icon of ICONS) {
+      expect(sprite).toContain(`<symbol id="axi-${icon.name}" viewBox="0 0 24 24"`)
+    }
+    expect(sprite.match(/<symbol /g).length).toBe(ICONS.length)
+  })
+
+  // The stroke attributes live on the symbol, not on the sprite root: a
+  // <use> instantiates the symbol, and an attribute on the root would not
+  // travel with it.
+  it('carries the stroke attributes on each symbol', () => {
+    const sprite = buildIconSprite()
+    const symbol = sprite.split('<symbol ')[1]
+    expect(symbol).toContain('stroke="currentColor"')
+    expect(symbol).toContain('stroke-width="3"')
+    expect(symbol).toContain('fill="none"')
+  })
+
+  it('matches the committed sprite', () => {
+    expect(readFileSync(resolve('dist/icons/sprite.svg'), 'utf8')).toBe(buildIconSprite())
+  })
+
+  // icons.json is committed and published beside the sprite, and nothing in
+  // this repo imports it - so an entry added to docs/manifest/icons.mjs and
+  // never rebuilt ships a catalogue that disagrees with the drawings, with a
+  // green run to say so. Same guarantee dist/axi.css gets.
+  it('matches the committed icons.json', () => {
+    expect(readFileSync(resolve('dist/icons/icons.json'), 'utf8')).toBe(buildIconsJson())
+  })
+
+  it('writes an individual file per icon', () => {
+    for (const icon of ICONS) {
+      expect(existsSync(resolve(`dist/icons/${icon.name}.svg`))).toBe(true)
+    }
+  })
+})
+
+// An external <use> is a cross-document reference, and cross-document means
+// same-origin: under file:// - which is exactly how an Electron app loading
+// with loadFile() runs, and Electron is half of what this language is for -
+// the reference resolves to nothing and the glyph is silently absent. The
+// pattern the README hands a consumer cannot be the one that fails on the
+// platform the spec promises. This lives in build.test.mjs because the README
+// is where a consumer meets the sprite.
+describe('the documented consumer pattern', () => {
+  const readme = readFileSync(resolve('README.md'), 'utf8')
+  const section = readme.slice(readme.indexOf('### An icon set of its own'))
+
+  it('warns that an external sprite is same-origin only', () => {
+    expect(section).toMatch(/file:\/\//)
+    expect(section).toMatch(/same-origin|same origin/i)
+  })
+
+  it('names what to do instead', () => {
+    expect(section).toMatch(/inline|dist\/icons\/&lt;name&gt;\.svg|dist\/icons\/<name>\.svg/)
+  })
+})
+
+// The drift test above only runs one way: it asserts every icon in icons/ has
+// a file in dist/icons/. Nothing asserted the reverse, and the build never
+// cleaned the directory - so renaming `folder-open.svg` leaves the old
+// `folder-open.svg` in dist/, committed and published, a glyph the catalogue
+// does not list and no test would ever mention again. A generated directory
+// that only ever grows is not generated, it is accumulated.
+describe('dist/icons is generated, not accumulated', () => {
+  it('names the files that no longer belong', () => {
+    const present = ['sprite.svg', 'icons.json', 'search.svg', 'folder-open.svg']
+    const icons = [{ name: 'search' }]
+    expect(staleIconFiles(present, icons)).toEqual(['folder-open.svg'])
+  })
+
+  it('keeps the sprite and the catalogue', () => {
+    expect(staleIconFiles(['sprite.svg', 'icons.json'], [])).toEqual([])
+  })
+
+  it('leaves nothing in the committed directory that the set does not claim', () => {
+    const expected = new Set(['sprite.svg', 'icons.json', ...ICONS.map((i) => `${i.name}.svg`)])
+    const extra = readdirSync(resolve('dist/icons')).filter((f) => !expected.has(f))
+    expect(extra).toEqual([])
+  })
+
+  // The helper is only worth anything if the build actually calls it.
+  it('removes a stale file on the next build', () => {
+    const stale = resolve('dist/icons/zz-not-an-icon.svg')
+    writeFileSync(stale, '<svg/>\n')
+    execFileSync('node', ['scripts/build.mjs'], { stdio: 'pipe' })
+    expect(existsSync(stale)).toBe(false)
   })
 })
