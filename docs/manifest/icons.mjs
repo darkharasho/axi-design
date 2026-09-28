@@ -9,6 +9,7 @@
 // app porting off lucide-react can rewrite the name and stop. Search words do
 // not; `done` and `back` are not API.
 export const ICON_ENTRIES = [
+  { name: 'activity', categories: ['status'], aliases: ['pulse', 'live'], keywords: ['health', 'chart', 'monitor', 'heartbeat'] },
   { name: 'arrow-down', categories: ['navigation'], aliases: ['down'], keywords: ['descend', 'sort', 'below'] },
   { name: 'arrow-left', categories: ['navigation'], aliases: ['back'], keywords: ['previous', 'return', 'west'] },
   { name: 'arrow-right', categories: ['navigation'], aliases: ['forward'], keywords: ['next', 'proceed', 'east'] },
@@ -22,6 +23,7 @@ export const ICON_ENTRIES = [
   { name: 'chevron-up', categories: ['navigation'], aliases: ['caret-up'], keywords: ['collapse', 'close', 'less'] },
   { name: 'circle-alert', categories: ['status'], aliases: ['alert', 'warning', 'exclamation'], lucide: ['alert-circle', 'triangle-alert', 'alert-triangle'], keywords: ['danger', 'error', 'caution'] },
   { name: 'circle-check', categories: ['status'], aliases: ['success'], lucide: ['check-circle', 'check-circle-2'], keywords: ['verified', 'passed', 'complete'] },
+  { name: 'circle-help', categories: ['status'], aliases: ['help', 'question'], lucide: ['help-circle'], keywords: ['what', 'support', 'unknown', 'faq'] },
   { name: 'circle-x', categories: ['status'], aliases: ['failure'], lucide: ['x-circle'], keywords: ['error', 'rejected', 'failed'] },
   { name: 'crown', categories: ['objects'], aliases: ['king', 'best'], keywords: ['rank', 'premium', 'featured', 'top'] },
   { name: 'clock', categories: ['objects'], aliases: ['time'], keywords: ['duration', 'schedule', 'recent'] },
@@ -49,10 +51,13 @@ export const ICON_ENTRIES = [
   { name: 'refresh-cw', categories: ['actions'], aliases: ['reload', 'sync'], keywords: ['retry', 'refetch', 'again'] },
   { name: 'save', categories: ['files'], aliases: ['diskette'], keywords: ['store', 'persist', 'write'] },
   { name: 'search', categories: ['actions'], aliases: ['magnifier', 'find'], keywords: ['filter', 'lookup', 'query'] },
+  { name: 'settings', categories: ['actions'], aliases: ['gear', 'cog'], keywords: ['admin', 'system', 'controls', 'setup'] },
   { name: 'settings-2', categories: ['actions'], aliases: ['sliders', 'preferences'], keywords: ['options', 'config', 'tune'] },
+  { name: 'share-2', categories: ['actions'], aliases: ['share'], keywords: ['send', 'distribute', 'network', 'nodes'] },
   { name: 'shield', categories: ['status'], aliases: ['secure', 'protected'], keywords: ['guard', 'safety', 'defence', 'trust'] },
   { name: 'skip-forward', categories: ['media'], aliases: ['next-track'], keywords: ['forward', 'advance'] },
   { name: 'square', categories: ['media'], aliases: ['stop'], lucide: ['circle'], keywords: ['halt', 'end', 'record'] },
+  { name: 'swords', categories: ['objects'], aliases: ['combat', 'versus'], keywords: ['battle', 'fight', 'pvp', 'duel'] },
   { name: 'tag', categories: ['objects'], aliases: ['label'], keywords: ['category', 'badge', 'marker'] },
   { name: 'trash-2', categories: ['actions'], aliases: ['delete', 'bin'], keywords: ['destroy', 'discard', 'remove'] },
   { name: 'unlock', categories: ['objects'], aliases: ['unlocked'], keywords: ['open', 'public', 'granted'] },

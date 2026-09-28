@@ -1,5 +1,21 @@
 [
   {
+    "name": "activity",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "pulse",
+      "live"
+    ],
+    "keywords": [
+      "health",
+      "chart",
+      "monitor",
+      "heartbeat"
+    ]
+  },
+  {
     "name": "arrow-down",
     "categories": [
       "navigation"
@@ -192,6 +208,25 @@
       "verified",
       "passed",
       "complete"
+    ]
+  },
+  {
+    "name": "circle-help",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "help",
+      "question"
+    ],
+    "lucide": [
+      "help-circle"
+    ],
+    "keywords": [
+      "what",
+      "support",
+      "unknown",
+      "faq"
     ]
   },
   {
@@ -592,6 +627,22 @@
     ]
   },
   {
+    "name": "settings",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "gear",
+      "cog"
+    ],
+    "keywords": [
+      "admin",
+      "system",
+      "controls",
+      "setup"
+    ]
+  },
+  {
     "name": "settings-2",
     "categories": [
       "actions"
@@ -604,6 +655,21 @@
       "options",
       "config",
       "tune"
+    ]
+  },
+  {
+    "name": "share-2",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "share"
+    ],
+    "keywords": [
+      "send",
+      "distribute",
+      "network",
+      "nodes"
     ]
   },
   {
@@ -650,6 +716,22 @@
       "halt",
       "end",
       "record"
+    ]
+  },
+  {
+    "name": "swords",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "combat",
+      "versus"
+    ],
+    "keywords": [
+      "battle",
+      "fight",
+      "pvp",
+      "duel"
     ]
   },
   {

@@ -314,6 +314,19 @@ describe('the icon manifest', () => {
     }
   })
 
+  // Two drawings one character apart. The gear and the sliders are different
+  // answers to "settings", and a shared keyword makes a picker offer both -
+  // at which point the name stops being the thing that tells them apart.
+  it('keeps the gear and the sliders apart', () => {
+    const find = (n) => ICON_ENTRIES.find((e) => e.name === n)
+    const gear = find('settings')
+    const sliders = find('settings-2')
+    const shared = [...gear.aliases, ...gear.keywords].filter((w) =>
+      [...sliders.aliases, ...sliders.keywords].includes(w),
+    )
+    expect(shared, `settings and settings-2 share ${shared.join(', ')}`).toEqual([])
+  })
+
   it('gives triangle-alert to circle-alert', () => {
     const entry = ICON_ENTRIES.find((e) => e.name === 'circle-alert')
     expect(entry.lucide).toContain('triangle-alert')
