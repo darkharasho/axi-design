@@ -1,5 +1,21 @@
 [
   {
+    "name": "activity",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "pulse",
+      "live"
+    ],
+    "keywords": [
+      "health",
+      "chart",
+      "monitor",
+      "heartbeat"
+    ]
+  },
+  {
     "name": "arrow-down",
     "categories": [
       "navigation"
@@ -165,6 +181,11 @@
       "warning",
       "exclamation"
     ],
+    "lucide": [
+      "alert-circle",
+      "triangle-alert",
+      "alert-triangle"
+    ],
     "keywords": [
       "danger",
       "error",
@@ -179,10 +200,33 @@
     "aliases": [
       "success"
     ],
+    "lucide": [
+      "check-circle",
+      "check-circle-2"
+    ],
     "keywords": [
       "verified",
       "passed",
       "complete"
+    ]
+  },
+  {
+    "name": "circle-help",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "help",
+      "question"
+    ],
+    "lucide": [
+      "help-circle"
+    ],
+    "keywords": [
+      "what",
+      "support",
+      "unknown",
+      "faq"
     ]
   },
   {
@@ -192,6 +236,9 @@
     ],
     "aliases": [
       "failure"
+    ],
+    "lucide": [
+      "x-circle"
     ],
     "keywords": [
       "error",
@@ -224,6 +271,22 @@
     "keywords": [
       "clipboard",
       "clone"
+    ]
+  },
+  {
+    "name": "crown",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "king",
+      "best"
+    ],
+    "keywords": [
+      "rank",
+      "premium",
+      "featured",
+      "top"
     ]
   },
   {
@@ -367,6 +430,25 @@
     ]
   },
   {
+    "name": "loader-circle",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "spinner",
+      "loading"
+    ],
+    "lucide": [
+      "loader-2"
+    ],
+    "keywords": [
+      "busy",
+      "pending",
+      "wait",
+      "progress"
+    ]
+  },
+  {
     "name": "lock",
     "categories": [
       "objects"
@@ -382,6 +464,21 @@
     ]
   },
   {
+    "name": "maximize-2",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "expand",
+      "fullscreen"
+    ],
+    "keywords": [
+      "enlarge",
+      "grow",
+      "open"
+    ]
+  },
+  {
     "name": "menu",
     "categories": [
       "navigation"
@@ -393,6 +490,22 @@
       "nav",
       "list",
       "more"
+    ]
+  },
+  {
+    "name": "message-square",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "comment",
+      "chat"
+    ],
+    "keywords": [
+      "speech",
+      "reply",
+      "thread",
+      "note"
     ]
   },
   {
@@ -430,6 +543,10 @@
     "aliases": [
       "edit",
       "write"
+    ],
+    "lucide": [
+      "edit-2",
+      "square-pen"
     ],
     "keywords": [
       "rename",
@@ -510,6 +627,22 @@
     ]
   },
   {
+    "name": "settings",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "gear",
+      "cog"
+    ],
+    "keywords": [
+      "admin",
+      "system",
+      "controls",
+      "setup"
+    ]
+  },
+  {
     "name": "settings-2",
     "categories": [
       "actions"
@@ -522,6 +655,37 @@
       "options",
       "config",
       "tune"
+    ]
+  },
+  {
+    "name": "share-2",
+    "categories": [
+      "actions"
+    ],
+    "aliases": [
+      "share"
+    ],
+    "keywords": [
+      "send",
+      "distribute",
+      "network",
+      "nodes"
+    ]
+  },
+  {
+    "name": "shield",
+    "categories": [
+      "status"
+    ],
+    "aliases": [
+      "secure",
+      "protected"
+    ],
+    "keywords": [
+      "guard",
+      "safety",
+      "defence",
+      "trust"
     ]
   },
   {
@@ -545,10 +709,29 @@
     "aliases": [
       "stop"
     ],
+    "lucide": [
+      "circle"
+    ],
     "keywords": [
       "halt",
       "end",
       "record"
+    ]
+  },
+  {
+    "name": "swords",
+    "categories": [
+      "objects"
+    ],
+    "aliases": [
+      "combat",
+      "versus"
+    ],
+    "keywords": [
+      "battle",
+      "fight",
+      "pvp",
+      "duel"
     ]
   },
   {

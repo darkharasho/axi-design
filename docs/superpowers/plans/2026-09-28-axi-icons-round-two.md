@@ -757,6 +757,38 @@ git commit -m "feat(icons): fifty-seven"
 
 ---
 
+## What the final review changed
+
+The whole-branch review found three things this plan got wrong, all of them
+about ink rather than coordinates. Recorded here because the plan asserts the
+opposite above:
+
+1. **`tests/icons.test.mjs` checked coordinates, not where the stroke lands.**
+   The live-area inset of 1.5 holds a stroke square-on to the edge and nothing
+   else: a mitered vertex reaches `1.5/sin(theta/2)`, which is 2.12 at a right
+   angle and 3.92 at the 45° corner this grammar makes constantly. Five drawings
+   were green with ink outside the viewBox, where it is clipped — `share-2` and
+   `message-square` from this tranche, and `filter`, `folder-open` and
+   `volume-2` from round one. The checker now models the miter and all five were
+   redrawn. Task 3's reasoning that `y = 1.5` and `y = 22.5` were "exactly the
+   live edge" and therefore safe is the error, stated in full.
+2. **`settings` shipped as the framed target it was supposed to avoid.** The
+   four-tooth fallback has the same two defects the plan cites against eight
+   teeth: at radius 3 with a 3px stroke the hub's interior is 0.88 units — a
+   pinhole — and its miter reaches past the ring's inner edge, so hub and frame
+   are one connected shape. The teeth were 1.5 units against a 3px stroke. It is
+   now a notched-square silhouette with a solid diamond hub, which is a gear at
+   20px.
+3. **`swords` was indistinguishable from `x` at 20px.** Both were a full-width
+   X. The cross now sits low, with blades roughly twice the hilts and a guard
+   across each hilt.
+
+Two documentation errors, both mine: the icons page said the set "draws 57 of"
+the 165 names, conflating the size of the set with its coverage — it is 57
+drawings answering **47** of them — and the page's own filter matched on
+`aliases + keywords` only, so typing `triangle-alert` returned *"Nothing in the
+set answers to that"* on a page whose inlined sprite contains that exact id.
+
 ## Not in this plan
 
 - **`sparkles` and `star`.** Ruled out above and documented in the substitution table.

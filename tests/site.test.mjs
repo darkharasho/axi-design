@@ -374,4 +374,48 @@ describe('the icons page', () => {
     expect(html).toContain('icons.test.mjs')
     expect(html).toContain('docs/manifest/icons.mjs')
   })
+  // 165 distinct lucide names across the suite against a set that will reach
+  // 60-70. The apps import from both for the foreseeable future, and a
+  // migration that answers a third of its own questions gets abandoned. The
+  // page has to say what to use instead, and that the hybrid is fine.
+  it('says what to use where the set will not draw the shape', () => {
+    const html = read('icons/index.html')
+    expect(html).toMatch(/id="substitutions"/)
+    for (const name of ['star', 'sparkles', 'circle', 'triangle-alert']) {
+      expect(html, `no substitution row for ${name}`).toContain(`<code>${name}</code>`)
+    }
+  })
+
+  it('sanctions importing from lucide alongside the set', () => {
+    expect(read('icons/index.html')).toMatch(/lucide-react/)
+  })
+
+  it('tells a porting app that a lucide name resolves in the sprite', () => {
+    expect(read('icons/index.html')).toContain('#axi-triangle-alert')
+  })
+
+  // The page documents nine lucide names that resolve in the sprite, and its
+  // own filter matched on `aliases + keywords` only - so typing the very name
+  // the substitution section promises produced "Nothing in the set answers to
+  // that", on a page whose inlined sprite contains that exact id.
+  it('lets the filter find a lucide name', () => {
+    const html = read('icons/index.html')
+    for (const e of ICON_ENTRIES) {
+      for (const l of e.lucide ?? []) {
+        const tile = html.split(`data-name="${e.name}"`)[1].split('</li>')[0]
+        expect(tile, `${l} is not findable on the icons page`).toContain(l)
+      }
+    }
+  })
+
+  // 57 drawings is the size of the set. 47 is how many of the 165 names the
+  // apps import it answers. Saying the set "draws 57 of them" overstates
+  // coverage by ten on the page written to make the migration credible.
+  it('does not confuse the size of the set with its coverage', () => {
+    const html = read('icons/index.html')
+    expect(html).toContain(`${ICON_ENTRIES.length} drawings`)
+    expect(html).toMatch(/answers 47 of them/)
+    expect(html).not.toMatch(new RegExp(`draws ${ICON_ENTRIES.length} of them`))
+  })
+
 })

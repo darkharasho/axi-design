@@ -55,7 +55,7 @@ everything-at-once view.
 
 ### An icon set of its own
 
-Forty-seven glyphs drawn to [rule 12](docs/RULES.md) — a 24 canvas, a 3px
+Fifty-seven glyphs drawn to [rule 12](docs/RULES.md) — a 24 canvas, a 3px
 stroke, mitered joins, square corners, and no angle that is not 0°, 45° or 90°.
 They take their ink from whatever they sit in, so a glyph inside an accent
 button turns accent-ink with the label and follows every accent and theme
@@ -74,12 +74,19 @@ absent, no error, no fallback. In that case do one of two things: inline
 `dist/icons/sprite.svg` into the document once (a hidden `<svg>` before
 `</body>`, which is what this project's own docs site does) and reference bare
 fragments like `#axi-search`, or use the standalone `dist/icons/<name>.svg`
-files. Serving the renderer over `http://localhost` also works.
+files. Serving the renderer over `http://localhost` also works. Note that
+alias names resolve only through the sprite — there is no
+`dist/icons/triangle-alert.svg` — so the standalone-file route wants the
+canonical name.
 
 One sprite holds the set; `dist/icons/<name>.svg` is the same drawing on its own,
 and `dist/icons/icons.json` is the catalogue — name, categories, aliases and
-keywords — for an app that wants to build a picker. Size a glyph with
-`--axi-icon-size`. The vocabulary derives from [Lucide](https://lucide.dev)
+keywords — for an app that wants to build a picker. A Lucide name this set
+answers to under a different one — `triangle-alert`, `alert-circle`, `loader-2` —
+resolves in the sprite too, so porting off `lucide-react` is a rename rather than
+a call-site audit. Where the set will not draw a shape at all, the
+[icons page](https://darkharasho.github.io/axi-design/icons/#substitutions) says
+what to use instead. Size a glyph with `--axi-icon-size`. The vocabulary derives from [Lucide](https://lucide.dev)
 under the ISC licence (`icons/LICENSE-LUCIDE`); none of the path data does.
 Browse the set at [`/icons/`](https://darkharasho.github.io/axi-design/icons/).
 

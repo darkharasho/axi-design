@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest'
 import { readFileSync, readdirSync, existsSync, writeFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { resolve } from 'node:path'
-import { buildCss, ORDER, ICONS, buildIconSprite, buildIconsJson, staleIconFiles } from '../scripts/build.mjs'
+import { buildCss, ORDER, ICONS, aliasPairs, buildIconSprite, buildIconsJson, staleIconFiles } from '../scripts/build.mjs'
 
 // dist/axi.css is committed, because the release workflow publishes that exact
 // file and consumers link it by URL. A committed artifact can go stale the
@@ -119,7 +119,35 @@ describe('dist/icons', () => {
     for (const icon of ICONS) {
       expect(sprite).toContain(`<symbol id="axi-${icon.name}" viewBox="0 0 24 24"`)
     }
-    expect(sprite.match(/<symbol /g).length).toBe(ICONS.length)
+  })
+
+  it('emits one symbol per drawing and one per lucide name', () => {
+    const sprite = buildIconSprite()
+    expect(sprite.match(/<symbol /g).length).toBe(ICONS.length + aliasPairs().length)
+  })
+
+  // The alias symbol is a real symbol with a real body. An `aliases` field
+  // that only fed the docs filter left `<use href="#axi-triangle-alert">`
+  // resolving to nothing - a name that is discoverable and does not work.
+  it('resolves a lucide name to the canonical drawing', () => {
+    const sprite = buildIconSprite()
+    expect(sprite).toContain('<symbol id="axi-triangle-alert"')
+    const symbol = sprite.split('<symbol id="axi-triangle-alert"')[1].split('</symbol>')[0]
+    expect(symbol).toContain('<use href="#axi-circle-alert"/>')
+  })
+
+  it('gives every symbol in the sprite a unique id', () => {
+    const ids = [...buildIconSprite().matchAll(/<symbol id="([^"]+)"/g)].map((m) => m[1])
+    expect(ids.length).toBe(new Set(ids).size)
+  })
+
+  // A file per alias is real weight for a case - <img src>, mask-image -
+  // where the consumer is writing the path by hand and can write the
+  // canonical one. The sprite is where the indirection belongs.
+  it('writes no standalone file for a lucide name', () => {
+    for (const { alias } of aliasPairs()) {
+      expect(existsSync(resolve(`dist/icons/${alias}.svg`)), `dist/icons/${alias}.svg`).toBe(false)
+    }
   })
 
   // The stroke attributes live on the symbol, not on the sprite root: a
@@ -170,6 +198,26 @@ describe('the documented consumer pattern', () => {
 
   it('names what to do instead', () => {
     expect(section).toMatch(/inline|dist\/icons\/&lt;name&gt;\.svg|dist\/icons\/<name>\.svg/)
+  })
+
+  // The README's file:// workaround offers the standalone dist/icons/<name>.svg
+  // files - which do not exist for an alias, deliberately. An Electron app on
+  // loadFile() that took the rename at face value would get a 404 and a
+  // missing glyph, having been promised a mechanical port.
+  it('says an alias resolves only through the sprite', () => {
+    const section = readFileSync(resolve('README.md'), 'utf8')
+    expect(section.slice(section.indexOf('### An icon set of its own'))).toMatch(
+      /alias(es)? (name[s]? )?resolve[s]? only (through|in) the sprite/i,
+    )
+  })
+
+  // The one number in the README that no test read, in a file nothing imports.
+  it('states the real size of the set', () => {
+    const words = ['Forty-seven', 'Forty-eight', 'Forty-nine', 'Fifty', 'Fifty-one', 'Fifty-two',
+      'Fifty-three', 'Fifty-four', 'Fifty-five', 'Fifty-six', 'Fifty-seven', 'Fifty-eight',
+      'Fifty-nine', 'Sixty']
+    expect(words[ICONS.length - 47], `no word for ${ICONS.length}`).toBeDefined()
+    expect(section).toContain(`${words[ICONS.length - 47]} glyphs drawn to`)
   })
 })
 
