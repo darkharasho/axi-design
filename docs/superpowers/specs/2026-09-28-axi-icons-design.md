@@ -61,7 +61,7 @@ afterwards.
 | Corners | radius 0, matching `--axi-radius` |
 | Angles | 0°, 45° and 90° only |
 | Curves | none — no `A`, `C`, `S`, `Q` or `T` in any path |
-| Coordinates | centerlines on half-integers, so every stroke edge lands on a whole pixel |
+| Coordinates | every coordinate a multiple of 0.5; an axis-aligned stroke's centerline on an odd half-integer, or on the centre axis at 12 |
 
 **Why 3px and not 2px.** 2px is `--axi-border-hairline`, which rule 3 reserves
 for a line drawn *inside* content — the rules between table rows, a plot's
@@ -71,12 +71,25 @@ icon is an object, not a rule. The objects in this language are outlined at
 as one drawing rather than as a thin thing inside a heavy frame.
 
 **Why half-integers.** A 3px stroke is centred on its path, so a centerline at
-`x = 3.5` puts its edges at 2 and 5 — whole pixels, no straddle, no grey
-fringe at 1× on the 24px rendering the set is tuned for. A centerline on a
-whole integer would put both edges on half-pixels. This is the one rule in the
-contract that is about rendering rather than about form, and it is the reason
-the geometry reads crisp without `shape-rendering: crispEdges`, which would
-wreck every 45° segment.
+`x = 3.5` puts its edges at 2 and 5 — whole pixels, no straddle, no grey fringe
+at 1× on the 24px rendering the set is tuned for. A centerline on a whole
+integer would put both edges on half-pixels.
+
+The rule has two deliberate limits, and stating them is what makes it
+enforceable rather than aspirational:
+
+- **It binds only axis-aligned strokes.** A 45° segment is antialiased at any
+  offset, so demanding a particular one buys nothing and would forbid
+  legitimate geometry.
+- **The centre axis at 12 is exempt.** On a 24 canvas a centred stroke spans
+  10.5–13.5 — a stroke can be centred or aligned, not both, and for the
+  handful of glyphs built around a centre line (`plus`, the bang in `alert`,
+  the hands of `clock`) symmetry is the more valuable of the two. The
+  exemption is exactly one coordinate wide so it cannot spread.
+
+This is the one part of the contract that is about rendering rather than form,
+and it is why the set reads crisp without `shape-rendering: crispEdges` — which
+would wreck every 45° segment in the set.
 
 **Why no curves.** This language has no rounded corner anywhere (rule 3, "the
 corner is square"), and its family motif is a rotated square (rule 7). A set
@@ -205,7 +218,8 @@ the constraints being this tight. `tests/icons.test.mjs` parses every path in
   `|dx| == |dy|`. This is rule 12's 0°/45°/90° as an assertion rather than an
   aspiration, and it is the check that would have caught every icon I have
   ever seen drift out of a set.
-- **Every coordinate on the half-integer grid and inside the live area.**
+- **Every coordinate on the 0.5 grid and inside the live area**, and every
+  axis-aligned segment's constant coordinate on an odd half-integer or at 12.
 - **Uniform attributes.** `viewBox` is `0 0 24 24`, `stroke` is
   `currentColor`, `stroke-width` is `3`, joins are mitered. A solid mark — the
   diamond knob on `settings`, a filled dot — is the one shape permitted to
