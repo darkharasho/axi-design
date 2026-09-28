@@ -199,6 +199,15 @@ describe('the documented consumer pattern', () => {
   it('names what to do instead', () => {
     expect(section).toMatch(/inline|dist\/icons\/&lt;name&gt;\.svg|dist\/icons\/<name>\.svg/)
   })
+
+  // The one number in the README that no test read, in a file nothing imports.
+  it('states the real size of the set', () => {
+    const words = ['Forty-seven', 'Forty-eight', 'Forty-nine', 'Fifty', 'Fifty-one', 'Fifty-two',
+      'Fifty-three', 'Fifty-four', 'Fifty-five', 'Fifty-six', 'Fifty-seven', 'Fifty-eight',
+      'Fifty-nine', 'Sixty']
+    expect(words[ICONS.length - 47], `no word for ${ICONS.length}`).toBeDefined()
+    expect(section).toContain(`${words[ICONS.length - 47]} glyphs drawn to`)
+  })
 })
 
 // The drift test above only runs one way: it asserts every icon in icons/ has
