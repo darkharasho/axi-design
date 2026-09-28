@@ -1,8 +1,12 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync, readdirSync, existsSync } from 'node:fs'
+import { readFileSync, readdirSync, existsSync, mkdtempSync, rmSync } from 'node:fs'
+import { tmpdir } from 'node:os'
 import { resolve, basename } from 'node:path'
 import { execSync } from 'node:child_process'
 import { THEMES, buildThemeCss } from '../scripts/build.mjs'
+import { page } from '../docs/site/shell.mjs'
+import { chooseTheme, applyTheme } from '../docs/site/theme.js'
+import { build } from '../scripts/site.mjs'
 
 // A theme is a repaint of the language, never an extension of it: see the
 // Themes section of docs/RULES.md. The main theme in src/tokens.css is the
@@ -229,5 +233,93 @@ describe('the mirror checks themselves', () => {
     expect(known.has('--axi-surface')).toBe(true)
     expect(known.has('--axi-ink-line')).toBe(true)
     expect(known.has('--axi-glass-blur')).toBe(false)
+  })
+})
+
+// The site is the only place a reader can see a theme before adopting one, and
+// the switcher is deliberately not a preview: it sets the same attribute a
+// consumer sets, against the same generated stylesheet a consumer imports. So
+// what these check is that the site keeps using the published mechanism, not
+// that a picker exists.
+describe('the docs site switcher', () => {
+  const html = page({ title: 'Meter', nav: 'components', body: '<p>hi</p>' })
+
+  it('offers the main theme and every theme, in that order', () => {
+    const select = html.match(/<select class="axi-select" id="theme">([\s\S]*?)<\/select>/)
+    expect(select, 'no theme select in the masthead').not.toBeNull()
+    const values = [...select[1].matchAll(/<option value="([^"]*)">/g)].map((m) => m[1])
+    expect(values).toEqual(['', ...THEMES.map((t) => t.id)])
+  })
+
+  it('labels the select for a reader who cannot see it', () => {
+    expect(html).toContain('<label class="axi-sr-only" for="theme">Theme</label>')
+  })
+
+  // Linked on every page rather than fetched on switch: a theme is inert until
+  // its attribute matches, so the cost is one small file and the benefit is
+  // that switching cannot half-apply while a stylesheet is still in flight.
+  it('links every theme stylesheet through url()', () => {
+    for (const theme of THEMES) {
+      expect(html).toContain(`<link rel="stylesheet" href="/axi-design/themes/${theme.id}.css">`)
+    }
+    expect(html).toContain('src="/axi-design/theme.js"')
+  })
+
+  it('copies every theme into the built site', () => {
+    const out = mkdtempSync(resolve(tmpdir(), 'axi-themes-'))
+    try {
+      const written = build(out)
+      for (const theme of THEMES) {
+        expect(written).toContain(`themes/${theme.id}.css`)
+        expect(readFileSync(resolve(out, `themes/${theme.id}.css`), 'utf8')).toBe(buildThemeCss(theme))
+      }
+      expect(written).toContain('theme.js')
+    } finally {
+      rmSync(out, { recursive: true, force: true })
+    }
+  })
+})
+
+describe('chooseTheme', () => {
+  const valid = THEMES.map((t) => t.id)
+
+  it('keeps a persisted theme that still exists', () => {
+    expect(chooseTheme('glass', valid)).toBe('glass')
+  })
+
+  // The accent's fallback exists because an unset accent is an unthemed page.
+  // This one is the opposite case and must not be modelled on it: no theme is
+  // the main theme, which is the language, so a retired id and a first visit
+  // land in the same correct place rather than on whichever theme is first.
+  it('falls back to the main theme, not to the first theme', () => {
+    expect(chooseTheme('frosted', valid)).toBe('')
+    expect(chooseTheme(null, valid)).toBe('')
+  })
+})
+
+// `[data-axi-theme=""]` matches no theme rule, so an empty attribute renders
+// correctly and would pass any screenshot - while telling everything else
+// reading the DOM that a theme is on. Assert the attribute is gone.
+describe('applyTheme', () => {
+  const root = () => {
+    const attrs = new Map()
+    return {
+      attrs,
+      setAttribute: (k, v) => attrs.set(k, v),
+      removeAttribute: (k) => attrs.delete(k),
+    }
+  }
+
+  it('sets the attribute for a theme', () => {
+    const el = root()
+    applyTheme(el, 'glass')
+    expect(el.attrs.get('data-axi-theme')).toBe('glass')
+  })
+
+  it('removes the attribute for the main theme', () => {
+    const el = root()
+    applyTheme(el, 'glass')
+    applyTheme(el, '')
+    expect(el.attrs.has('data-axi-theme')).toBe(false)
   })
 })

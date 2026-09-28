@@ -39,6 +39,37 @@ ids and labels.
 The default remains `#ffc53d` Axi Gold, declared in `tokens.css`: an app that
 sets no `data-axi-accent` is gold, and correctly themed.
 
+## Themes
+
+An accent moves one ink. A theme repaints the surface layer: import it beside
+`axi.css` and set one attribute on your root element.
+
+```js
+import '@axiapps/axi-design/axi.css'
+import '@axiapps/axi-design/themes/glass.css'
+```
+
+```html
+<html data-axi-theme="glass">
+```
+
+<!-- axi:themes -->
+
+The picker in the masthead does exactly that and nothing else, so the page you
+are reading is the demo: switch it and every component on this site repaints at
+once, with no markup anywhere knowing which theme is on.
+
+That is the whole contract. A theme is one `[data-axi-theme="<id>"]` block of
+custom properties restating tokens the main theme already declares — it may
+not invent a token, add a selector, or ship a component the main theme lacks,
+and `tests/themes.test.mjs` fails the build if one tries. So there is never a
+`.axi-panel--glass` to migrate to and never one to migrate back from: remove
+the attribute and you are on the main theme, with no other change.
+
+The main theme is the language and a theme is a repaint of it — the
+[Themes](../rules/#themes) section of the rules says what a theme may and may
+not do.
+
 ## Knobs are not tokens
 
 Tokens answer "what does the system look like" — they live in `:root`, once,

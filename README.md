@@ -49,8 +49,9 @@ Either way, set your accent:
 ```
 
 That is the whole theming surface. See [the documentation
-site](https://darkharasho.github.io/axi-design/) for every component, with a
-live accent switcher. `/gallery/` still holds the everything-at-once view.
+site](https://darkharasho.github.io/axi-design/) for every component, with live
+accent and theme switchers in the masthead. `/gallery/` still holds the
+everything-at-once view.
 
 ### A different look, without carrying one
 

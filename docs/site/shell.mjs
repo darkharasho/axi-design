@@ -2,12 +2,14 @@ import { readFileSync } from 'node:fs'
 import { resolve, dirname } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import { byLayer } from '../manifest/index.mjs'
+import { THEMES } from '../../scripts/build.mjs'
 import { escapeHtml } from './highlight.mjs'
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '../..')
 
 export const VERSION = JSON.parse(readFileSync(resolve(ROOT, 'package.json'), 'utf8')).version
 export const ACCENTS = JSON.parse(readFileSync(resolve(ROOT, 'accents.json'), 'utf8'))
+export { THEMES }
 
 // The site is served from /axi-design/ on Pages and from / by `npm run serve`.
 // Every link in every emitted page goes through url(); a hand-written absolute
@@ -68,6 +70,27 @@ function accentSelect() {
     <select class="axi-select" id="accent">${options}</select>`
 }
 
+// The main theme is an option, not the absence of one. Its value is empty
+// because that is literally what it means - no data-axi-theme on the root -
+// and a reader who has switched to glass needs a way back that is as visible
+// as the way out. Listed first, because it is the language and a theme is a
+// repaint of it.
+function themeSelect() {
+  const options = [`<option value="">Main</option>`,
+    ...THEMES.map((t) => `<option value="${t.id}">${t.label}</option>`)].join('')
+  return `<label class="axi-sr-only" for="theme">Theme</label>
+    <select class="axi-select" id="theme">${options}</select>`
+}
+
+// Every theme is linked on every page, and that is safe rather than wasteful:
+// a theme is one `[data-axi-theme="<id>"]` block of custom properties, so an
+// unselected one matches nothing and costs nothing to have loaded. Switching
+// is then an attribute write with no stylesheet to fetch first - which is also
+// exactly what a consumer gets, since they import the theme at build time too.
+function themeLinks() {
+  return THEMES.map((t) => `<link rel="stylesheet" href="${url(`themes/${t.id}.css`)}">`).join('\n')
+}
+
 // `description` is plain text, escaped here (R-30). It is a manifest summary on
 // a component page, and a summary also lands in search.json and llms.txt, where
 // it is text and nothing else - a field that were HTML in the page and text in
@@ -94,6 +117,7 @@ export function page({ title, nav, body, toc = '', sidebar: side = '', descripti
 ${description ? `<meta name="description" content="${escapeHtml(description)}">` : ''}
 <link rel="stylesheet" href="${url('axi.css')}">
 <link rel="stylesheet" href="${url('accents.css')}">
+${themeLinks()}
 <link rel="stylesheet" href="${url('docs.css')}">
 </head>
 <body>
@@ -108,12 +132,14 @@ ${description ? `<meta name="description" content="${escapeHtml(description)}">`
       <input class="axi-input" id="q" type="search" placeholder="Search components&#8230;" autocomplete="off"></div>
     <div class="docs-results" id="results" hidden></div>
   </div>
+  ${themeSelect()}
   ${accentSelect()}
 </div></header>
 <div class="${shellClass}">
   ${columns}
 </div>
 <script type="module" src="${url('accent.js')}"></script>
+<script type="module" src="${url('theme.js')}"></script>
 <script type="module" src="${url('copy.js')}"></script>
 <script type="module" src="${url('search.js')}"></script>
 ${scripts.map((src) => `<script type="module" src="${url(src)}"></script>`).join('\n')}

@@ -1,6 +1,6 @@
 import { marked } from 'marked'
 import { buildKnobTable } from '../../scripts/build.mjs'
-import { ACCENTS } from './shell.mjs'
+import { ACCENTS, THEMES } from './shell.mjs'
 
 // Generated content a Markdown page can embed. A guide that needs the knob
 // table gets the real one rather than a hand-copied second version, which is
@@ -9,6 +9,9 @@ export const PLACEHOLDERS = {
   knobs: () => marked.parse(buildKnobTable()),
   accents: () => `<table><thead><tr><th>Accent</th><th>Id</th><th>Hex</th></tr></thead><tbody>${
     ACCENTS.map((a) => `<tr><td><span class="axi-diamond axi-diamond--series" style="--axi-series: ${a.hex}"></span> ${a.label}</td><td><code>${a.id}</code></td><td><code>${a.hex}</code></td></tr>`).join('')
+  }</tbody></table>`,
+  themes: () => `<table><thead><tr><th>Theme</th><th>Attribute</th><th>Import</th></tr></thead><tbody>${
+    THEMES.map((t) => `<tr><td>${t.label}</td><td><code>data-axi-theme="${t.id}"</code></td><td><code>@axiapps/axi-design/themes/${t.id}.css</code></td></tr>`).join('')
   }</tbody></table>`,
 }
 

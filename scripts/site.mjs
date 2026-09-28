@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { entries } from '../docs/manifest/index.mjs'
 import { componentPage, componentsIndex } from '../docs/site/render.mjs'
 import { renderMarkdown } from '../docs/site/markdown.mjs'
-import { page, LAYER_NAMES } from '../docs/site/shell.mjs'
+import { page, LAYER_NAMES, THEMES } from '../docs/site/shell.mjs'
 import { landing } from '../docs/site/landing.mjs'
 import { llmsTxt } from '../docs/site/llms.mjs'
 
@@ -74,7 +74,7 @@ export function build(outDir) {
     title: 'Theming',
     nav: 'theming/',
     eyebrow: 'Guide',
-    description: 'How far you can move axi-design without writing new CSS: the tokens, the eleven accents, and the per-instance knobs each component exposes.',
+    description: 'How far you can move axi-design without writing new CSS: the tokens, the eleven accents, the themes, and the per-instance knobs each component exposes.',
   })
   guide('rules/index.html', 'docs/RULES.md', {
     title: 'Rules',
@@ -98,8 +98,13 @@ ${readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8')}`,
 
   copy('dist/axi.css', 'axi.css')
   copy('dist/accents.css', 'accents.css')
+  // Every theme, not a chosen one: the shell links them all and the switcher
+  // picks between them with an attribute, so a theme missing here is a select
+  // option that silently does nothing.
+  for (const theme of THEMES) copy(`dist/themes/${theme.id}.css`, `themes/${theme.id}.css`)
   copy('docs/site/docs.css', 'docs.css')
   copy('docs/site/accent.js', 'accent.js')
+  copy('docs/site/theme.js', 'theme.js')
   copy('docs/site/copy.js', 'copy.js')
   copy('docs/site/search.js', 'search.js')
 
