@@ -107,6 +107,7 @@ ${readFileSync(resolve(ROOT, 'docs/pages/gallery.html'), 'utf8')}`,
   copy('docs/site/theme.js', 'theme.js')
   copy('docs/site/copy.js', 'copy.js')
   copy('docs/site/search.js', 'search.js')
+  copy('docs/site/favicon.svg', 'favicon.svg')
 
   // Seven fields, not the six the brief's search client shows: layerName is
   // the projected display name, since search.js is a browser module and

@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="axi-design">
+  <!-- The sigil from src/shells.css, minus the glyph: an "A" legible at 34px
+       is a smudge at 16px, and the diamond is the motif anyway. Square corners
+       and the ink-line outline, because the main theme is the language and a
+       favicon cannot follow the theme switcher. Drawn as a rotated rect rather
+       than a path so the shape stays the one the sigil draws.
+
+       The stroke is 1 of 32 because the sigil's is 1px of 34px - at 2 it reads
+       as a black frame around the diamond at any size a tab does not use, and
+       it is an outline, not a mount. Half of it still falls outside the fill,
+       which is the seam that keeps the diamond off a light tab strip. -->
+  <rect x="5.5" y="5.5" width="21" height="21" transform="rotate(45 16 16)"
+        fill="#ffc53d" stroke="#0c0e12" stroke-width="1"/>
+</svg>

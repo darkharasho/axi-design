@@ -115,6 +115,7 @@ export function page({ title, nav, body, toc = '', sidebar: side = '', descripti
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>${title} · axi-design</title>
 ${description ? `<meta name="description" content="${escapeHtml(description)}">` : ''}
+<link rel="icon" href="${url('favicon.svg')}" type="image/svg+xml">
 <link rel="stylesheet" href="${url('axi.css')}">
 <link rel="stylesheet" href="${url('accents.css')}">
 ${themeLinks()}
