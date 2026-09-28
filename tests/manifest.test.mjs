@@ -4,6 +4,7 @@ import { definedClasses, ruleNumbers, fallbackKnobs } from '../docs/manifest/int
 import { KNOBS, knobsFor } from '../docs/manifest/knobs.mjs'
 import { buildKnobTable } from '../scripts/build.mjs'
 import { readFileSync } from 'node:fs'
+import { resolve } from 'node:path'
 
 const ALL = entries()
 
@@ -213,5 +214,24 @@ describe('aliases', () => {
   it('uses only lower-case single words', () => {
     const bad = entries().flatMap((e) => (e.aliases ?? []).filter((a) => !/^[a-z]+$/.test(a)))
     expect(bad).toEqual([])
+  })
+})
+
+// Rule 12 is the icon set's whole justification, and every icon entry cites
+// it. A renumbering or a reword that dropped it would leave those citations
+// deep-linking to a #rule-12 anchor that no longer exists.
+describe('rule 12', () => {
+  it('is present in RULES.md and names the icon contract', () => {
+    const md = readFileSync(resolve('docs/RULES.md'), 'utf8')
+    const titles = new Map([...md.matchAll(/^## (\d+)\. (.+)$/gm)].map((m) => [Number(m[1]), m[2]]))
+    expect(titles.get(12)).toMatch(/icon/i)
+  })
+
+  it('states the weight, the angles and the curve prohibition', () => {
+    const md = readFileSync(resolve('docs/RULES.md'), 'utf8')
+    const body = md.split(/^## 12\. /m)[1].split(/^## /m)[0]
+    expect(body).toContain('--axi-border-control')
+    expect(body).toContain('45')
+    expect(body).toMatch(/no curve|curves/i)
   })
 })
