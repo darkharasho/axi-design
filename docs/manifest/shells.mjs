@@ -296,7 +296,7 @@ blocks eat horizontal room a narrow viewport does not have.`,
         title: 'Search, sort and a filter menu',
         html: `<div class="axi-toolbar">
   <div class="axi-search" style="flex: 1 1 200px; max-width: 260px">
-    <span class="axi-search__icon" aria-hidden="true">&#8981;</span>
+    <span class="axi-search__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-search"/></svg></span>
     <label class="axi-sr-only" for="toolbar-demo-q">Search</label>
     <input class="axi-input" id="toolbar-demo-q" placeholder="Search…">
   </div>

@@ -235,3 +235,25 @@ describe('rule 12', () => {
     expect(body).toMatch(/no curve|curves/i)
   })
 })
+
+// The reason the set exists. A Unicode symbol in an example is a glyph drawn
+// by whatever font the OS hands Chromium - the one part of this language its
+// own rules never reached. The range below is the symbol/dingbat/arrow
+// blocks, not punctuation: an ellipsis, an em dash and a non-breaking space
+// are typography and stay.
+describe('the examples draw their own glyphs', () => {
+  const SYMBOL = /[\u2190-\u21FF\u2300-\u23FF\u25A0-\u27BF\u2B00-\u2BFF]/
+  // Numeric entities are decoded first rather than pattern-matched, so the test
+  // judges the glyph that renders and not the spelling. `&#8230;` is an ellipsis
+  // and stays; `&#8981;` is the magnifier this set exists to replace, and the
+  // two are three digits apart.
+  const borrowed = (html) => SYMBOL.test(html.replace(/&#(\d+);/g, (_, n) => String.fromCodePoint(Number(n))))
+
+  for (const e of entries()) {
+    for (const [i, ex] of (e.examples ?? []).entries()) {
+      it(`${e.id} example ${i} uses no borrowed symbol glyph`, () => {
+        expect(borrowed(ex.html)).toBe(false)
+      })
+    }
+  }
+})

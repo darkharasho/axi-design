@@ -141,7 +141,7 @@ ${SPRITE}<header class="axi-mast"><div class="axi-mast__in">
   </a>
   <nav class="axi-tabs">${tabs}</nav>
   <div class="docs-search">
-    <div class="axi-search"><span class="axi-search__icon" aria-hidden="true">&#8981;</span>
+    <div class="axi-search"><span class="axi-search__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-search"/></svg></span>
       <input class="axi-input" id="q" type="search" placeholder="Search components&#8230;" autocomplete="off"></div>
     <div class="docs-results" id="results" hidden></div>
   </div>

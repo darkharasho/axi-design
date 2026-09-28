@@ -204,7 +204,7 @@ It sits at the same measure as the input, so give the wrapper the width.`,
       {
         title: 'Search inside a toolbar',
         html: `<div class="axi-search" style="max-width: 260px">
-  <span class="axi-search__icon" aria-hidden="true">&#8981;</span>
+  <span class="axi-search__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-search"/></svg></span>
   <label class="axi-sr-only" for="search-demo">Search</label>
   <input class="axi-input" id="search-demo" placeholder="Search…">
 </div>`,
@@ -230,7 +230,7 @@ marked without a class.`,
       {
         title: 'A theming notice',
         html: `<div class="axi-notice">
-  <span class="axi-notice__icon" aria-hidden="true">!</span>
+  <span class="axi-notice__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-info"/></svg></span>
   <p><b>One variable.</b> An app that sets <code>--axi-accent</code> and nothing else is correctly themed. If something ignores the accent switcher, it hard-coded a colour.</p>
 </div>`,
       },
@@ -238,15 +238,15 @@ marked without a class.`,
         title: 'The three statuses',
         note: 'Rule 5: the icon is the part that asserts, so the status lives there and the paragraph stays in the reading ink',
         html: `<div class="axi-notice axi-notice--ok">
-  <span class="axi-notice__icon" aria-hidden="true">✓</span>
+  <span class="axi-notice__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-check"/></svg></span>
   <p><b>Parsed.</b> All 14 encounters matched a known boss.</p>
 </div>
 <div class="axi-notice axi-notice--warn">
-  <span class="axi-notice__icon" aria-hidden="true">!</span>
+  <span class="axi-notice__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-circle-alert"/></svg></span>
   <p><b>Partial.</b> Two encounters had no boss agent and were skipped.</p>
 </div>
 <div class="axi-notice axi-notice--danger">
-  <span class="axi-notice__icon" aria-hidden="true">!</span>
+  <span class="axi-notice__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-circle-alert"/></svg></span>
   <p><b>Failed.</b> The archive is missing its header.</p>
 </div>`,
       },
