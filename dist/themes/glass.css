@@ -3,13 +3,26 @@
 
 [data-axi-theme="glass"] {
   --axi-ground: #0a0c10;
-  --axi-surface: rgba(255, 255, 255, .09);
-  --axi-surface-raised: rgba(255, 255, 255, .15);
-  --axi-ink-line: #242b38;
+  --axi-ground-image: radial-gradient(900px 500px at 15% 0%, rgba(120, 90, 255, .30), transparent 60%), radial-gradient(700px 500px at 95% 30%, rgba(0, 190, 255, .22), transparent 62%), radial-gradient(600px 600px at 60% 100%, rgba(255, 90, 170, .20), transparent 60%);
+  --axi-surface: linear-gradient(145deg, rgba(58, 68, 92, .55), rgba(28, 33, 46, .42));
+  --axi-surface-raised: linear-gradient(145deg, rgba(86, 99, 130, .5), rgba(44, 52, 71, .38));
+  --axi-surface-filter: blur(18px) saturate(140%);
+  --axi-ink-line: rgba(180, 200, 255, .16);
+  --axi-rule: rgba(180, 200, 255, .14);
   --axi-ground-deep: #0c0e12;
   --axi-accent-ink: #0c0e12;
   --axi-ink-on-fill: #0c0e12;
-  --axi-rule: rgba(255, 255, 255, .17);
-  --axi-scrim: rgba(6, 7, 9, .55);
-  --axi-surface-filter: blur(14px) saturate(140%);
+  --axi-text: #f2f5fb;
+  --axi-text-dim: #b3bdd0;
+  --axi-text-faint: #7f8aa0;
+  --axi-scrim: rgba(4, 6, 12, .66);
+  --axi-shadow-panel: 0 18px 44px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .14);
+  --axi-shadow-control: 0 6px 16px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .12);
+  --axi-shadow-panel-hover: 0 26px 60px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .2);
+  --axi-shadow-control-hover: 0 10px 24px rgba(0, 0, 0, .5), inset 0 1px 0 rgba(255, 255, 255, .18);
+  --axi-border-panel: 1px;
+  --axi-border-control: 1px;
+  --axi-border-hairline: 1px;
+  --axi-radius: 16px;
+  --axi-radius-sm: 10px;
 }

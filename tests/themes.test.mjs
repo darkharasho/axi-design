@@ -141,12 +141,11 @@ describe('the generated theme files', () => {
     expect(themeFiles().map((t) => t.id).sort()).toEqual(THEMES.map((t) => t.id).sort())
   })
 
-  it('leaves the saturated fills and the whole form to the language', () => {
+  it('leaves the saturated fills, the measure and the type to the language', () => {
     // Stated as a check because it is the claim the Themes section rests on:
     // a theme repaints, it does not redesign. The five fills carry meaning
-    // (rules 5, 6, 9, 10) and the form carries the shape (rules 3, 4), and a
-    // theme that moved either would be a second design language wearing these
-    // class names.
+    // (rules 5, 6, 9, 10), and a theme that moved one would be a second design
+    // language wearing these class names.
     //
     // The `-ink` companions are deliberately NOT on this list. --axi-accent-ink
     // and --axi-ink-on-fill are the colour a WORD is written in when it sits on
@@ -154,13 +153,44 @@ describe('the generated theme files', () => {
     // outline has to be able to hold them dark - that is the entire reason
     // --axi-ink-on-fill was split out of --axi-ink-line. Forbidding them here
     // would forbid the one case the split exists to serve.
+    //
+    // This list used to hold the whole form, on the reading that rule 3's hard
+    // block and square corner were the language itself. That was too wide, and
+    // it is what made the first glass theme a pale sketch of its own mock. What
+    // rule 3 actually requires is that a raised element READ as raised and an
+    // outlined one as outlined, and a soft drop with an inset highlight is a
+    // second answer to that question rather than a refusal of it. So a theme
+    // may now restate --axi-shadow-*, --axi-border-* and --axi-radius*: the
+    // block and the corner are how a theme says what its material is, and one
+    // material drawn in another's block is the component drift this file is
+    // here to prevent, not an example of it.
+    //
+    // What stays the language, and why each one is not the same call:
+    //   --axi-offset-*  the step scale the main block is composed FROM. A theme
+    //                   restates the composed --axi-shadow-* wholesale or not at
+    //                   all; retuning the offsets underneath it would leave the
+    //                   two spellings of "the block" disagreeing.
+    //   measure         --axi-page, --axi-gutter. Where the text wraps is not a
+    //                   look, and a theme that moved it would reflow the page.
+    //   type            --axi-sans, --axi-mono, --axi-t-*, --axi-ls-*. Same,
+    //                   harder: the type scale is the voice.
     const FILLS = ['--axi-accent', '--axi-meta', '--axi-ok', '--axi-warn', '--axi-danger']
-    const FORM = /^--axi-(border|offset|shadow|radius|page|gutter|sans|mono|t|ls)(-|$)/
+    const FORM = /^--axi-(offset|page|gutter|sans|mono|t|ls)(-|$)/
     for (const theme of THEMES) {
       for (const name of Object.keys(theme.tokens)) {
         expect(FILLS.includes(name), `${theme.id} restates the fill ${name}`).toBe(false)
-        expect(FORM.test(name), `${theme.id} restates the form token ${name}`).toBe(false)
+        expect(FORM.test(name), `${theme.id} restates the language token ${name}`).toBe(false)
       }
+    }
+
+    // The loop above only runs over the themes that exist, so it would go on
+    // passing if the line were widened until it matched nothing. Pin both
+    // edges of where it was just moved to.
+    for (const open of ['--axi-shadow-panel', '--axi-border-control', '--axi-radius', '--axi-radius-sm']) {
+      expect(FORM.test(open), `${open} should be a theme's to restate`).toBe(false)
+    }
+    for (const shut of ['--axi-offset-panel', '--axi-page', '--axi-gutter', '--axi-t-body', '--axi-ls-label', '--axi-sans']) {
+      expect(FORM.test(shut), `${shut} should be the language's`).toBe(true)
     }
   })
 })

@@ -16,10 +16,11 @@ gridlines (a `repeating-linear-gradient` of hard stops, which is how N evenly
 spaced rules get drawn without asking every consumer to emit N empty divs).
 A gradient across a surface is still forbidden in every component file, and
 always will be. The single relief is a *theme* restating the surface tokens
-themselves — see [Themes](#themes) — which is what lets a glass theme exist
-without one component ever learning the word "glass". A component cannot reach
-for that exception, because it cannot see it: what it reads is the same surface
-token it was already reading.
+themselves — and `--axi-ground-image`, the page's own light, which is declared
+inert in `tokens.css` and read only by `body`; see [Themes](#themes). That is
+what lets a glass theme exist without one component ever learning the word
+"glass". A component cannot reach for that exception, because it cannot see it:
+what it reads is the same surface token it was already reading.
 
 ## 2. No colour at partial opacity over the ground
 
@@ -28,13 +29,19 @@ just brown, and five muted inks over near-black are five browns. When something
 should be quieter, reach for a neutral from the ramp — that is what the ramp is
 for.
 
-A theme gets the same carve-out as rule 1 and not one inch more: it may hold the
-*surface* tokens at partial opacity, because a translucent surface is that
-surface's own definition rather than a colour laid over the ground. The inks are
-untouched. A muted `--axi-warn`, a faded accent, a status ink at 60% — still
-forbidden, in a theme exactly as in a component, because the paragraph above is
-about what happens to meaning when five inks become five browns, and changing
-which stylesheet does the muting does not change that.
+A theme gets the same carve-out as rule 1: it may hold the *surface layer* at
+partial opacity, because a translucent surface is that surface's own definition
+rather than a colour laid over the ground. That layer is the two surfaces and
+the lines that bound and divide them — `--axi-ink-line` and `--axi-rule` — for
+the same reason: the edge of a translucent panel is as much the panel as its
+face, and an opaque hairline around a pane of glass is a picture frame.
+
+The five saturated inks are untouched. A muted `--axi-warn`, a faded accent, a
+status ink at 60% — still forbidden, in a theme exactly as in a component,
+because the paragraph above is about what happens to meaning when five inks
+become five browns, and changing which stylesheet does the muting does not
+change that. The neutral text ramp is likewise a theme's to restate but not to
+fade: a theme picks where `--axi-text-dim` sits, it does not write text at 60%.
 
 ## 3. Every raised element is outlined and blocked
 
@@ -474,13 +481,47 @@ main-theme token first.** A glass theme wants a `backdrop-filter`; it does not
 get to introduce one. `--axi-surface-filter` is declared in `tokens.css` with an
 inert default (`none`), the surfaces read it unconditionally, and the theme
 restates it. The main theme is unchanged in appearance and the hook is part of
-the language rather than part of the theme. Every theme pays this toll, and it
-is what keeps the mirror true: a token the theme could set that the main theme
-had never heard of is the first step back toward theme-only components.
+the language rather than part of the theme. `--axi-ground-image` is the second
+of these, on the same terms: the page's light, inert at `none`, read by `body`
+and nowhere else. Every theme pays this toll, and it is what keeps the mirror
+true: a token the theme could set that the main theme had never heard of is the
+first step back toward theme-only components.
 
-Rules 1 and 2 name the only relief a theme gets, and it is confined to the
-surface layer: a theme may put a gradient on a surface and may hold a surface
-token at partial opacity. It may not mute an ink. Read those two rules for why.
+### What a theme may restate
+
+Rules 1 and 2 name the relief a theme gets in the surface layer: a theme may
+put a gradient on a surface and may hold a surface token at partial opacity. It
+may not mute an ink. Read those two rules for why.
+
+The relief is not confined to that layer, though, and the first draft of this
+section said it was. **A theme may also restate the block and the corner** —
+`--axi-shadow-*`, `--axi-border-*`, `--axi-radius` and `--axi-radius-sm`. Rule 3
+requires that a raised element read as raised and an outlined one as outlined.
+A hard offset block in the line ink is how the main theme answers that; a soft
+drop with an inset top highlight is a different answer to the same question,
+and a translucent panel wearing an opaque theme's block does not look like
+glass, it looks like a bug. The block and the corner are how a theme says what
+its material is.
+
+What is **not** a theme's to restate, and each for its own reason:
+
+- **The five saturated fills.** `--axi-accent`, `--axi-meta`, `--axi-ok`,
+  `--axi-warn`, `--axi-danger` carry meaning (rules 5, 6, 9, 10). Their `-ink`
+  companions are not on this list: `--axi-accent-ink` and `--axi-ink-on-fill`
+  are the colour a word is written in when it sits on a fill, and a theme that
+  lightens the outline has to be able to hold them dark.
+- **The offset scale.** `--axi-offset-*` is what the main theme's block is
+  composed *from*. A theme restates the composed `--axi-shadow-*` wholesale or
+  leaves it; retuning the offsets underneath would leave the two spellings of
+  "the block" disagreeing.
+- **The measure.** `--axi-page`, `--axi-gutter`. Where the text wraps is not a
+  look, and moving it would reflow every page rather than repaint it.
+- **The type.** `--axi-sans`, `--axi-mono`, `--axi-t-*`, `--axi-ls-*`. The same
+  call, harder: the type scale is the voice.
+
+The line to hold is the one-for-one rule above, not a list of layers. A theme
+that restates the block still paints every component; a theme that invents one
+does not.
 
 **What is mechanically enforced.** `tests/themes.test.mjs` reads every
 `dist/themes/*.css` and checks the mirror rather than trusting it: the file

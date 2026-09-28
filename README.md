@@ -67,13 +67,16 @@ import '@axiapps/axi-design/themes/glass.css'
 <html data-axi-theme="glass">
 ```
 
-`glass` keeps the outline, the hard block and every ink exactly as they are,
-and repaints the surface layer: translucent panels over a colder ground, with
-popovers, drawers and modals blurring what sits behind them. Remove the
-attribute and you are back on the main theme with no other change — a theme
-restates tokens and never adds a component, so nothing in your markup knows
-which one is on. That is the point: the look is maintained here rather than
-copied into your app as a custom theme that then has to be kept in step.
+`glass` repaints the material: translucent panels lit from the top-left over a
+near-black page with three wide colour washes on it, hairline edges, rounded
+corners and a soft drop instead of the main theme's hard offset block, with
+popovers, drawers and modals blurring what sits behind them. The five saturated
+inks, the measure and the type are untouched — they are the language, not the
+paint. Remove the attribute and you are back on the main theme with no other
+change: a theme restates tokens and never adds a component, so nothing in your
+markup knows which one is on. That is the point — the look is maintained here
+rather than copied into your app as a custom theme that then has to be kept in
+step.
 
 The main theme is the language and a theme is a repaint of it — [the
 rules](docs/RULES.md#themes) say what a theme may and may not do.
