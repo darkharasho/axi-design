@@ -702,3 +702,34 @@ whole section exists to prevent.
 
 The test to write is not "does `.axi-code` exist". It is "are both spellings in
 the same rule", because only the second one fails when someone splits them.
+
+### A refusal holds at every level, not just the one it was written for
+
+The rail refuses two accent fills inside itself. That is why
+`.axi-rail__subitem` is brightened text and not a second filled row: with two
+fills the reader has to decide which of them answers "where am I", and the
+answer to one question cannot be two things.
+
+Written that way, the refusal sounds like it is about indentation. It is not.
+It is about how many times one screen may claim to be a place, and nesting a
+whole rail inside a panel is the same arithmetic as nesting a row inside a
+rail. A stats page with a category rail down the side and a twenty-row metric
+picker inside each section has two rails, both correct on their own, and both
+filled — so the screen makes the claim twice and neither wins. The app that
+hit this had already reasoned its way to the same conclusion and written the
+quiet treatment by hand, in its own stylesheet, with a comment giving exactly
+this reason. Two parties deriving the same rule independently is the signal
+that the rule belongs in the language, not in either party's override file.
+
+So when adding a component, take every refusal the neighbouring components
+state and ask what it is really counting. If the answer is "per screen" rather
+than "per box", the component needs a way to stand down — and the modifier is
+cheaper than the override every consumer writes instead. `.axi-rail__nav--quiet`
+is that: the fill goes, the accent stays as the leading edge, and nothing else
+moves.
+
+What the modifier must not do is reach for the weaker treatment that already
+exists. A subitem drops the fill *and* the weight, which is right for a few
+leaves under an open category and wrong for a picker that is the primary
+control of its own panel — there, brightened text loses the selection in the
+list. Standing down is one step, not two.

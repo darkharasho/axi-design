@@ -13,9 +13,18 @@
 }
 
 /* ---------- masthead ---------- */
+/* Opaque, because content scrolls under it. Which is also why it paints the
+   page's light as well as the page's colour: an opaque strip across the top of
+   a lit page is a dark band over that light, and the band is there on every
+   page of a site the whole time it is open. Attachment fixed, the same as
+   `body`, so the strip's share of the light is the share the page would have
+   shown there - a wash positioned to this element's own box instead would
+   line up with nothing. */
 .axi-mast {
   position: sticky; top: 0; z-index: 40;
-  background: var(--axi-ground);
+  background-color: var(--axi-ground);
+  background-image: var(--axi-ground-image);
+  background-attachment: fixed;
   border-bottom: var(--axi-border-panel) solid var(--axi-ink-line);
 }
 .axi-mast__in {
@@ -226,6 +235,41 @@
    the faint tone, and inside a filled item it follows the item's ink. */
 .axi-rail__item .axi-icon { color: var(--axi-text-faint); }
 .axi-rail__item[aria-current] .axi-icon { color: var(--axi-accent-ink); }
+/* A rail nested inside a panel whose content already spends the accent: a
+   metric picker beside the table it drives, a filter list beside its results.
+   The language already refuses two fills at two levels inside one rail - that
+   is why .axi-rail__subitem has no fill - and a rail that is itself the inner
+   level is the same refusal one container further out. Two filled rails on
+   one screen name two places, and only one of them is where you are.
+
+   What it cannot do is borrow the subitem's answer. A subitem is one of a
+   handful of leaves under an open category; a picker like this is twenty rows
+   and the primary control of its own panel, so brightened text alone loses
+   the selection in the list. This is the third weight between the two: the
+   row rises off the rail as any hovered row does, and the accent arrives on
+   its leading edge. The accent still says which row without the row claiming
+   to be the place.
+
+   The edge is the item's own border, which .axi-rail__item already reserves
+   at the control weight and draws transparent - so the bar costs no shadow,
+   no extra box and no reflow when it lights up. Logical, not left: this is
+   the leading edge, the same correction .axi-rail--flush took.
+
+   The modifier goes on the list, not on .axi-rail, because a nested picker
+   usually has no rail box around it - it sits directly in the panel or well
+   that holds it, and inheriting a 208px width and a panel shadow is the
+   opposite of what it wants. */
+.axi-rail__nav--quiet .axi-rail__item[aria-current],
+.axi-rail__nav--quiet .axi-rail__item[aria-current]:hover {
+  background: var(--axi-surface-raised);
+  color: var(--axi-text);
+  border-color: transparent;
+  border-inline-start-color: var(--axi-accent);
+}
+/* No accent fill here, so the icon has no accent ink to follow - it follows
+   the row's own text, the way it does in an unselected item. */
+.axi-rail__nav--quiet .axi-rail__item[aria-current] .axi-icon { color: var(--axi-text); }
+
 /* The second level, indented under the item it belongs to. */
 .axi-rail__sub { display: flex; flex-direction: column; margin: 3px 0 5px 10px; }
 .axi-rail__subitem {
@@ -757,6 +801,13 @@
   overflow-y: auto;
   background-color: var(--axi-ground);
   background-image: var(--axi-ground-image);
+  /* Fixed for both of the reasons `body` is: the light stays put while the
+     sheet's own content scrolls, and it is positioned to the viewport rather
+     than to this box - which matters here because --axi-sheet-top pushes that
+     box down under an app's titlebar, and a wash measured from its top edge
+     would sit lower than the one on the page it covers. Opening a sheet would
+     nudge the light sideways. */
+  background-attachment: fixed;
   padding: var(--axi-sheet-pad, 12px 16px);
 }
 /* The heading the sheet opened with, divided from the body by a rule. Rule 8:
@@ -797,13 +848,24 @@
    takes the panel outline. It carries no block, because a block is an
    element's shadow on the surface behind it and there is nothing behind a
    window that this language is entitled to draw on.
+
+   It is the page. Not a page inside one - the only one, for as long as the app
+   is running, which is why it paints the ground's IMAGE as well as the
+   ground's colour. `body` is behind it and lights nothing, because a window
+   covers the viewport and is opaque by the same requirement that makes it
+   opaque over its own content. A window that skipped the image would render a
+   theme whose character is the light - glass - as flat near-black: every panel
+   inside it correctly translucent, over nothing. Longhands for the reason
+   .axi-sheet gives at length below; no attachment, because this element's box
+   IS the viewport and never scrolls, so fixed and scroll paint the same pixels.
    The titlebar is filled with the ink line rather than a surface: it is the
    outline widened into a strip, which is why the app's content reads as
    sitting inside the outline instead of under a second toolbar. */
 .axi-window {
   height: 100vh;
   display: flex; flex-direction: column; overflow: hidden;
-  background: var(--axi-ground);
+  background-color: var(--axi-ground);
+  background-image: var(--axi-ground-image);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
 }

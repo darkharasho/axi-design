@@ -390,3 +390,49 @@ describe('the ground image token', () => {
     expect(bad.map(([, p]) => p)).toEqual(['background'])
   })
 })
+
+// A theme's light is `--axi-ground-image`, and the fix(well) commit already
+// named the set it belongs to: body, the masthead, the sheet and the window -
+// "the four things content scrolls under and which therefore need real
+// opacity". Real opacity is the reason they are on this list, and it is also
+// the reason each of them must paint the light itself. An opaque element over
+// a lit page hides the light for as long as it is on screen, and three of
+// these four are on screen permanently. .axi-sheet says exactly this in its
+// own comment ("a sheet is the page for as long as it is open"); a window has
+// the stronger claim, being the page for as long as the app is running.
+//
+// The symptom when one of them forgets is not subtle and is not local: a
+// frameless desktop app is a single full-viewport .axi-window, so a window
+// that misses the image renders the glass theme as flat near-black - every
+// translucent panel correct, over nothing. That is the whole theme gone, from
+// one missing longhand, and it cannot be seen from any page in this repo's own
+// gallery, which is a body-scrolling document.
+describe('the page-level elements paint the light', () => {
+  const SRC = resolve(process.cwd(), 'src')
+  const FILES = ['base.css', 'shells.css']
+  const css = FILES.map((f) => readFileSync(resolve(SRC, f), 'utf8')).join('\n')
+
+  // The declaration block of a top-level rule, by exact selector. Naive on
+  // purpose: these four are flat, single-selector rules at column zero, and a
+  // brace-counting parser here would be a second CSS implementation to trust.
+  const rule = (selector) => {
+    const at = stripComments(css).indexOf(`\n${selector} {`)
+    if (at < 0) throw new Error(`no top-level rule for ${selector}`)
+    const from = at + selector.length + 3
+    return stripComments(css).slice(from, stripComments(css).indexOf('}', from))
+  }
+
+  for (const selector of ['body', '.axi-mast', '.axi-sheet', '.axi-window']) {
+    it(`${selector} reads --axi-ground-image`, () => {
+      expect(rule(selector)).toMatch(/background-image:\s*var\(--axi-ground-image\)/)
+    })
+
+    // The colour has to arrive as a longhand too. Not the same check as the
+    // describe above, which only rules out the image riding in `background`:
+    // `background: var(--axi-ground)` on its own is valid CSS that silently
+    // resets background-image to none on the very element that just set it.
+    it(`${selector} sets its ground colour without resetting the image`, () => {
+      expect(rule(selector)).not.toMatch(/(^|[;{\s])background:\s*var\(--axi-ground\)/)
+    })
+  }
+})

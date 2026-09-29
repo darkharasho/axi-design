@@ -703,7 +703,7 @@ cursor reaches it.`,
     id: 'rail',
     name: 'Rail',
     layer: 'shells',
-    classes: ['.axi-rail', '.axi-rail--flush', '.axi-rail--float', '.axi-rail__nav', '.axi-rail__item', '.axi-rail__sub', '.axi-rail__subitem', '.axi-rail__mark'],
+    classes: ['.axi-rail', '.axi-rail--flush', '.axi-rail--float', '.axi-rail__nav', '.axi-rail__nav--quiet', '.axi-rail__item', '.axi-rail__sub', '.axi-rail__subitem', '.axi-rail__mark'],
     summary: 'Vertical navigation, for a set too large for a tab strip to hold. The category you are on is filled and blocked; a section under it is brightened text.',
     rules: [3, 5],
     knobs: ['--axi-rail-w', '--axi-rail-pad'],
@@ -735,7 +735,22 @@ way to ask for it yet.
 It changes one thing, the surface: \`--axi-surface\` is a translucent tint under a
 theme like glass, which reads as a pane only while what is behind it holds
 still, and a rail pinned over a scrolling table is the case where it does not.
-It is orthogonal to \`--flush\`, and a pinned rail usually wants both.`,
+It is orthogonal to \`--flush\`, and a pinned rail usually wants both.
+
+\`.axi-rail__nav--quiet\` is for the case where the accent is already spent. A
+metric picker beside the table it drives, a filter list beside its results: the
+pane next to it holds the accent, and a filled row in the rail would be a second
+claim on the same screen about where you are. The refusal is the one
+\`.axi-rail__subitem\` already makes inside a single rail, one container further
+out. It cannot borrow the subitem's answer, though - a subitem is one of a few
+leaves under an open category, while a picker is twenty rows and the primary
+control of its own panel, so brightened text alone loses the selection. So the
+row rises as a hovered row does and the accent arrives on its leading edge, in
+the border \`.axi-rail__item\` already reserves at the control weight and draws
+transparent. The modifier goes on the list rather than on \`.axi-rail\`, because a
+nested picker usually has no rail box at all - it sits directly in the panel or
+well that holds it, and a 208px width and a panel block are the opposite of what
+it wants.`,
     examples: [
       {
         title: 'A rail with an open category',
@@ -751,6 +766,22 @@ It is orthogonal to \`--flush\`, and a pinned rail usually wants both.`,
     <button class="axi-rail__item" type="button">Support</button>
   </nav>
 </aside>`,
+      },
+      {
+        title: 'A nested picker, where the pane beside it holds the accent',
+        note: 'The selected row rises and takes the accent on its leading edge, not as a fill',
+        html: `<div class="axi-row" style="--axi-row-gap: 12px; align-items: stretch">
+  <div class="axi-well" style="width: 168px">
+    <nav class="axi-rail__nav axi-rail__nav--quiet">
+      <button class="axi-rail__item" type="button">Damage</button>
+      <button class="axi-rail__item" type="button" aria-current="location">Downs and kills</button>
+      <button class="axi-rail__item" type="button">Interrupts</button>
+    </nav>
+  </div>
+  <div class="axi-panel" style="flex: 1">
+    <button class="axi-btn axi-btn--primary" type="button">Export</button>
+  </div>
+</div>`,
       },
       {
         title: 'Flush against the page edge',

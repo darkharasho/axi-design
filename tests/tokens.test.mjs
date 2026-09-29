@@ -903,3 +903,53 @@ describe('the well has a class for each of the two scales it is used at', () => 
     expect(base[1]).toMatch(/border-radius:\s*var\(--axi-well-radius,\s*var\(--axi-radius\)\)/)
   })
 })
+
+// Two filled rails on one screen name two places. The nested picker's whole
+// reason to exist is that the accent is already spent by the pane beside it, so
+// the modifier's job is to take the fill away and leave the accent as a mark.
+// Both halves are asserted, because either one alone is the bug: keep the fill
+// and the modifier does nothing; drop the accent entirely and the selected row
+// is only a hover that never ends.
+describe('a rail nested under a spent accent marks its selection instead of filling it', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+  const quiet = () =>
+    (/\.axi-rail__nav--quiet\s+\.axi-rail__item\[aria-current\][^{]*\{([^}]*)\}/.exec(css) || [])[1]
+
+  it('does not fill the selected row with the accent', () => {
+    expect(quiet(), 'no .axi-rail__nav--quiet rule found').toBeTruthy()
+    expect(quiet()).not.toMatch(/background:\s*var\(--axi-accent\)/)
+    expect(quiet()).toMatch(/background:\s*var\(--axi-surface-raised\)/)
+  })
+
+  it('still spends the accent, as an edge rather than a fill', () => {
+    // The item's own border, not a shadow and not a pseudo-element: the base
+    // rule already reserves it at the control weight and draws it transparent,
+    // so lighting one side costs nothing and moves nothing. Asserting the
+    // logical property is the point - a `border-left-color` here would be
+    // correct on this page and wrong in the first right-to-left one.
+    expect(quiet()).toMatch(/border-inline-start-color:\s*var\(--axi-accent\)/)
+    const base = /\.axi-rail__item\s*\{([^}]*)\}/.exec(
+      COMPONENT_FILES().map(read).map(stripComments).join('\n')
+    )
+    expect(base[1], 'the base item does not reserve a border to light').toMatch(
+      /border:\s*var\(--axi-border-control\)\s+solid\s+transparent/
+    )
+  })
+
+  it('overrides the base item, which does fill', () => {
+    // The point of the modifier is that the unmodified item is the loud one.
+    // If this ever stops being true the modifier is redundant, not working.
+    const base = /\.axi-rail__item\[aria-current\],[^{]*\{([^}]*)\}/.exec(css)
+    expect(base, 'no base .axi-rail__item[aria-current] rule found').toBeTruthy()
+    expect(base[1]).toMatch(/background:\s*var\(--axi-accent\)/)
+  })
+
+  it('takes the accent ink off the icon, having taken the accent fill off the row', () => {
+    // The base rule paints a selected item's icon --axi-accent-ink because it
+    // sits on the accent. With no fill there is nothing for that ink to read
+    // against, so leaving this out would put near-black glyphs on a surface.
+    const icon = /\.axi-rail__nav--quiet\s+\.axi-rail__item\[aria-current\]\s+\.axi-icon\s*\{([^}]*)\}/.exec(css)
+    expect(icon, 'the quiet rail does not correct its icon ink').toBeTruthy()
+    expect(icon[1]).not.toMatch(/--axi-accent-ink/)
+  })
+})
