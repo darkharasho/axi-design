@@ -551,7 +551,7 @@ cursor reaches it.`,
     id: 'rail',
     name: 'Rail',
     layer: 'shells',
-    classes: ['.axi-rail', '.axi-rail--flush', '.axi-rail__nav', '.axi-rail__item', '.axi-rail__sub', '.axi-rail__subitem', '.axi-rail__mark'],
+    classes: ['.axi-rail', '.axi-rail--flush', '.axi-rail--float', '.axi-rail__nav', '.axi-rail__item', '.axi-rail__sub', '.axi-rail__subitem', '.axi-rail__mark'],
     summary: 'Vertical navigation, for a set too large for a tab strip to hold. The category you are on is filled and blocked; a section under it is brightened text.',
     rules: [3, 5],
     knobs: ['--axi-rail-w', '--axi-rail-pad'],
@@ -573,7 +573,13 @@ within a single view. The treatment means the same thing either way.
 \`.axi-rail--flush\` is for a rail that is the edge of the page rather than an
 object standing in the layout - pinned to the viewport, or the contents of a
 drawer. It keeps the one border facing the content and drops the radius and the
-block, because a block needs somewhere to fall.`,
+block, because a block needs somewhere to fall.
+
+\`.axi-rail--float\` is for a rail the page scrolls *behind* rather than beside.
+It changes one thing, the surface: \`--axi-surface\` is a translucent tint under a
+theme like glass, which reads as a pane only while what is behind it holds
+still, and a rail pinned over a scrolling table is the case where it does not.
+It is orthogonal to \`--flush\`, and a pinned rail usually wants both.`,
     examples: [
       {
         title: 'A rail with an open category',

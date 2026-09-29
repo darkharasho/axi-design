@@ -152,6 +152,14 @@
   border-right: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: 0;
 }
+/* A rail the page scrolls behind, rather than one the page sits beside.
+   It is the same object, so it keeps every other rule; the one thing that
+   changes is the surface it is printed on. --axi-surface is a translucent
+   tint under a theme like glass, which reads as a pane only while the
+   content behind it holds still — the moment a table scrolls past, the
+   rows show through the nav. --axi-surface-float is the surface for
+   exactly that case, so say it once here instead of in each consumer. */
+.axi-rail--float { background: var(--axi-surface-float); }
 .axi-rail__nav { display: flex; flex-direction: column; gap: 2px; }
 .axi-rail__item {
   display: flex;
