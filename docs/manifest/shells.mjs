@@ -379,10 +379,10 @@ a button's answer to the cursor because it is still a thing you press.`,
     id: 'toolbar',
     name: 'Toolbar',
     layer: 'shells',
-    classes: ['.axi-toolbar'],
+    classes: ['.axi-toolbar', '.axi-toolbar--float', '.axi-toolbar--nowrap'],
     summary: 'The strip of controls above a list: search, sort, filters. A raised surface holding controls, wrapping rather than overflowing.',
     rules: [3],
-    knobs: [],
+    knobs: ['--axi-toolbar-pad'],
     notes: `Rule 3's two steps nest here the way they do in a notice: the toolbar
 takes the panel border and block, and every control inside it takes the
 control step. That is the whole reason a toolbar is a component rather than a
@@ -390,7 +390,26 @@ control step. That is the whole reason a toolbar is a component rather than a
 heavier of the two weights or the controls read as floating.
 
 On a phone the panel step drops to the control step, because the offset
-blocks eat horizontal room a narrow viewport does not have.`,
+blocks eat horizontal room a narrow viewport does not have.
+
+**FLOAT.** \`.axi-toolbar--float\` is for a toolbar pinned over content that
+moves under it rather than one sitting above content that does not: transport
+controls over a map or a replay, a readout over a chart. It changes one thing,
+the surface, and says exactly what \`.axi-panel--float\` and
+\`.axi-rail--float\` say - \`--axi-surface\` is a translucent tint under a
+theme like glass, which reads as a pane only while what is behind it holds
+still. A strip above a list is not that case and keeps the plain surface.
+
+**WRAP.** The default wrap is right for a strip above a list, where losing a
+filter off the edge is worse than a second line. It is wrong for a bar whose
+height other things are positioned against, because a wrap moves all of them:
+reach for \`.axi-toolbar--nowrap\` there, and give the one child that can
+absorb the width \`flex: 1; min-width: 0\`.
+
+**PADDING.** \`--axi-toolbar-pad\` is the knob. The default 14px is a figure
+for a strip above a list; a transport bar is the same object at a third of the
+height, and before the knob existed its only way to say so was to write its
+own padding and stop being a toolbar.`,
     examples: [
       {
         title: 'Search, sort and a filter menu',
@@ -583,7 +602,11 @@ within a single view. The treatment means the same thing either way.
 \`.axi-rail--flush\` is for a rail that is the edge of the page rather than an
 object standing in the layout - pinned to the viewport, or the contents of a
 drawer. It keeps the one border facing the content and drops the radius and the
-block, because a block needs somewhere to fall.
+block, because a block needs somewhere to fall. That border is
+\`border-inline-end\`, so it follows the writing direction rather than always
+landing on the right; what it still assumes is the *leading* edge. A rail
+pinned to the trailing edge of its content needs the opposite border and has no
+way to ask for it yet.
 
 \`.axi-rail--float\` is for a rail the page scrolls *behind* rather than beside.
 It changes one thing, the surface: \`--axi-surface\` is a translucent tint under a

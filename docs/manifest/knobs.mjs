@@ -78,6 +78,12 @@ export const KNOBS = [
     example: '<aside class="axi-rail" style="--axi-rail-pad: 6px">',
   },
   {
+    name: '--axi-toolbar-pad',
+    sets: 'the padding inside an `.axi-toolbar`',
+    fallback: '`14px`',
+    example: '<div class="axi-toolbar" style="--axi-toolbar-pad: 4px 7px">',
+  },
+  {
     name: '--axi-avatar-size',
     sets: 'the size of an `.axi-avatar` square',
     fallback: '`40px`',

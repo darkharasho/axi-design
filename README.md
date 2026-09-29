@@ -142,6 +142,7 @@ not "what does the system look like". Everything else is
 | `--axi-well-radius` | an `.axi-well`'s corner radius, for a well used at reading scale rather than page scale | `var(--axi-radius)` | `<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">` |
 | `--axi-rail-w` | an `.axi-rail`'s width, for labels longer than the default holds | `208px` | `<aside class="axi-rail" style="--axi-rail-w: 260px">` |
 | `--axi-rail-pad` | the padding inside an `.axi-rail` | `10px` | `<aside class="axi-rail" style="--axi-rail-pad: 6px">` |
+| `--axi-toolbar-pad` | the padding inside an `.axi-toolbar` | `14px` | `<div class="axi-toolbar" style="--axi-toolbar-pad: 4px 7px">` |
 | `--axi-avatar-size` | the size of an `.axi-avatar` square | `40px` | `<span class="axi-avatar" style="--axi-avatar-size: 28px">MS</span>` |
 | `--axi-modal-width` | the maximum width of an `.axi-modal`, before the viewport clamp | `560px` | `<dialog class="axi-modal" style="--axi-modal-width: 760px">` |
 | `--axi-card-strip` | the colour of `.axi-card--strip`'s top strip | `var(--axi-accent)` | `<a class="axi-card axi-card--strip" style="--axi-card-strip: var(--axi-ok)">` |

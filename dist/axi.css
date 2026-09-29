@@ -38,8 +38,8 @@
   --axi-surface-raised: #2b313d;
   /* The fill for a surface that FLOATS over content which scrolls behind it:
      the command palette, the menu and picker popovers, the modal, the drawer,
-     the toast, and any .axi-panel--float or .axi-rail--float a consumer
-     declares. Holds --axi-surface, because for
+     the toast, and any .axi-panel--float, .axi-rail--float or
+     .axi-toolbar--float a consumer declares. Holds --axi-surface, because for
      a theme whose panels are opaque a floating panel is just a panel and there
      is nothing to decide.
 
@@ -1148,7 +1148,13 @@ textarea.axi-input {
 .axi-rail:not(.axi-rail--flush) { box-shadow: var(--axi-shadow-panel); }
 .axi-rail--flush {
   border: 0;
-  border-right: var(--axi-border-panel) solid var(--axi-ink-line);
+  /* Logical, not physical: the border faces the content, and which physical
+     side that is depends on the writing direction. `border-right` was correct
+     only for an LTR rail pinned to the leading edge - under RTL it drew the
+     seam on the outside, facing the viewport. Note that this still assumes the
+     LEADING edge; a rail pinned to the trailing edge of its content needs the
+     other border and has no way to ask for it yet. */
+  border-inline-end: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: 0;
 }
 /* A rail the page scrolls behind, rather than one the page sits beside.
@@ -1244,13 +1250,34 @@ textarea.axi-input {
 /* ---------- toolbar ---------- */
 .axi-toolbar {
   display: flex; gap: 8px; flex-wrap: wrap; align-items: center;
-  padding: 14px;
+  /* Own knob, like .axi-panel's and .axi-rail's. The toolbar was the one
+     container in this language whose padding was a literal, and 14px is a
+     figure for a strip above a list - a transport bar over a video or a map
+     is the same object at a third of the height, and had no way to say so
+     without writing its own padding and losing the component. */
+  padding: var(--axi-toolbar-pad, 14px);
   background: var(--axi-surface);
   backdrop-filter: var(--axi-surface-filter);
   border: var(--axi-border-panel) solid var(--axi-ink-line);
   border-radius: var(--axi-radius);
   box-shadow: var(--axi-shadow-panel);
 }
+/* A toolbar that floats over moving content rather than sitting above it: the
+   controls pinned over a map, a chart, a replay. Says exactly what
+   .axi-panel--float and .axi-rail--float say, and for the same reason -
+   --axi-surface-float's own note lists the surfaces that need it and the
+   toolbar was missing from that list, which is the whole of the bug. A strip
+   above a list is not floating and keeps the plain surface; a strip over a
+   map is, and a translucent one shows the map through its own labels on any
+   platform where the blur is unavailable. */
+.axi-toolbar--float { background: var(--axi-surface-float); }
+/* A toolbar that must not become two rows. The wrap is right for a strip
+   above a list, where losing a filter off the edge is worse than a second
+   line - and wrong for a bar whose height other things are positioned
+   against, because wrapping moves everything around it. Stated as its own
+   modifier rather than left to each consumer's inline style, so the reason
+   lives here instead of in a comment in somebody's component. */
+.axi-toolbar--nowrap { flex-wrap: nowrap; }
 
 /* ---------- menu popover ---------- */
 /* A disclosure, not a permanent row of controls. The trigger is an .axi-btn

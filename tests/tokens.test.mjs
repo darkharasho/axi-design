@@ -622,3 +622,57 @@ describe('form-token and weight escape hatches', () => {
     expect(BLUR_PROPERTY.test('text-shadow: 3px 3px 0 var(--axi-ink-line)')).toBe(true)
   })
 })
+
+// A floating surface is one the page scrolls BEHIND. Every such surface has to
+// read --axi-surface-float rather than --axi-surface or --axi-surface-raised,
+// because a theme that goes translucent restates only the float near-opaque and
+// a .42-alpha pane over a scrolling table carries text with text behind it.
+//
+// This list is the check. It shipped as a bug first: --axi-surface-float's own
+// comment named the palette, the popovers and the modal as its consumers and
+// only the palette had ever been wired to it, so the rest quietly read a
+// translucent fill for four releases. A prose list of consumers is not a
+// guarantee; asserting on the declaration is. Anything added to the list below
+// must also be added to that comment in tokens.css, and both must agree.
+describe('the float surface reaches every surface that floats', () => {
+  const FLOATING = [
+    '.axi-modal',
+    '.axi-menu__pop',
+    '.axi-picker__pop',
+    '.axi-toast',
+    '.axi-drawer',
+    '.axi-panel--float',
+    '.axi-rail--float',
+    '.axi-toolbar--float',
+  ]
+
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+
+  // The selector's own rule body, not the whole file: a component may legally
+  // name a floating surface inside some other rule (a descendant selector, a
+  // media query) and only its own block is being judged.
+  const bodyOf = (selector) => {
+    // Word-boundary the class so .axi-panel--float is not found by .axi-panel,
+    // and so .axi-modal does not match .axi-modal__head.
+    const re = new RegExp(`(^|[\\s,}])${selector.replace(/[.\-]/g, '\\$&')}(?![\\w-])[^{}]*\\{([^}]*)\\}`, 'm')
+    const m = css.match(re)
+    return m ? m[2] : null
+  }
+
+  for (const selector of FLOATING) {
+    it(`${selector} reads --axi-surface-float`, () => {
+      const body = bodyOf(selector)
+      expect(body, `${selector} has no rule of its own`).not.toBeNull()
+      expect(body).toMatch(/background:\s*var\(--axi-surface-float\)/)
+    })
+  }
+
+  it('names the same consumers in the token comment', () => {
+    const comment = read(TOKENS_FILE).match(/FLOATS over content[\s\S]*?\*\//)[0]
+    // The five named components are spelled in prose there ("the modal", "the
+    // drawer"), so only the three modifier classes are literal enough to pin.
+    for (const selector of ['.axi-panel--float', '.axi-rail--float', '.axi-toolbar--float']) {
+      expect(comment, `${selector} missing from the token's consumer list`).toContain(selector)
+    }
+  })
+})
