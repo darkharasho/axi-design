@@ -138,6 +138,8 @@ not "what does the system look like". Everything else is
 | `--axi-check-size` | the size of an `.axi-check` or `.axi-radio` box | `22px` | `<input type="checkbox" class="axi-check" style="--axi-check-size: 16px">` |
 | `--axi-check-fill` | the fill a checked `.axi-check` takes, and the colour of a checked `.axi-radio`'s diamond | `var(--axi-accent)` | `<input type="checkbox" class="axi-check" style="--axi-check-fill: var(--axi-danger)">` |
 | `--axi-textarea-h` | the minimum height of a `<textarea class="axi-input">` | `90px` | `<textarea class="axi-input" style="--axi-textarea-h: 200px">` |
+| `--axi-input-pad` | the padding inside an `.axi-input`, for a field that is furniture in a header rather than a control on a page | `11px 12px` | `<input class="axi-input" style="--axi-input-pad: 7px 12px">` |
+| `--axi-input-size` | an `.axi-input`'s text size, which travels with its padding | `14px` | `<input class="axi-input" style="--axi-input-size: 13px">` |
 | `--axi-well-pad` | the padding inside an `.axi-well` | `10px` | `<div class="axi-well" style="--axi-well-pad: 18px">` |
 | `--axi-well-radius` | an `.axi-well`'s corner radius, for a well used at reading scale rather than page scale | `var(--axi-radius)` | `<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">` |
 | `--axi-rail-w` | an `.axi-rail`'s width, for labels longer than the default holds | `208px` | `<aside class="axi-rail" style="--axi-rail-w: 260px">` |

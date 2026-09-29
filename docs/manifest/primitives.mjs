@@ -79,13 +79,20 @@ maintainer's note from a measurement before reading either word.`,
     classes: ['.axi-input'],
     summary: 'A single-line text field, drawn on the ground rather than on a surface so it reads as a well cut into the panel it sits in.',
     rules: [],
-    knobs: ['--axi-textarea-h'],
+    knobs: ['--axi-input-pad', '--axi-input-size', '--axi-textarea-h'],
     aliases: ['textarea', 'field', 'textbox'],
     notes: `It takes the control outline weight and no block: a block would make
 it look pressable, and the thing you press is the button next to it. The
 placeholder is the faint ink, so an empty field never reads as a filled one.
 An input is full-width by default - give the wrapper the measure you want
-rather than the field.`,
+rather than the field.
+
+It is used at two scales, which is what \`--axi-input-pad\` and
+\`--axi-input-size\` are for: the 14px default is a form control standing on a
+page, and a filter in a section header or a row in a bar wants the smaller
+one, because there it is furniture beside the reading rather than the thing
+the page is for. \`.axi-palette__bar\` is the one place upstream needs it, and
+it spends the knobs rather than redeclaring the properties.`,
     examples: [
       {
         title: 'A labelled field',

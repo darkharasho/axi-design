@@ -439,7 +439,7 @@
    not a form control standing on a page. No focus ring: the palette opens with
    the caret already here, so a permanent outline says nothing, and it would
    argue with the one mark that does - the accent on the cursor row. */
-.axi-palette__bar .axi-input { padding-top: 7px; padding-bottom: 7px; font-size: 13px; }
+.axi-palette__bar .axi-input { --axi-input-pad: 7px 12px; --axi-input-size: 13px; }
 .axi-palette__bar .axi-input:focus-visible { outline: none; }
 .axi-palette__filters { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
 /* What the list is not showing. Meta, at the end of the filter row, because it

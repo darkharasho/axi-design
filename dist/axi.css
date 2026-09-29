@@ -562,15 +562,23 @@ button.axi-panel--tile:hover,
 .axi-diamond--series { background: var(--axi-series, var(--axi-accent)); }
 
 /* ---------- input ---------- */
+/* Two knobs rather than one fixed size, for the same reason --axi-well-pad
+   exists: a field is used at two scales. A form control standing on a page is
+   the 14px default; a filter sitting in a section header or a row in a bar is
+   smaller, because there it is furniture next to 11px type rather than the
+   thing the page is for. The alternative is what this file did before - a
+   context selector per place that wanted the small one (.axi-palette__bar
+   .axi-input, still the only one upstream needs) - and that does not scale
+   past the cases upstream happens to ship. */
 .axi-input {
   width: 100%;
-  padding: 11px 12px;
+  padding: var(--axi-input-pad, 11px 12px);
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   color: var(--axi-text);
   font: var(--axi-t-label);
-  font-size: 14px;
+  font-size: var(--axi-input-size, 14px);
 }
 .axi-input::placeholder { color: var(--axi-text-faint); font-weight: 500; }
 
@@ -1411,7 +1419,7 @@ textarea.axi-input {
    not a form control standing on a page. No focus ring: the palette opens with
    the caret already here, so a permanent outline says nothing, and it would
    argue with the one mark that does - the accent on the cursor row. */
-.axi-palette__bar .axi-input { padding-top: 7px; padding-bottom: 7px; font-size: 13px; }
+.axi-palette__bar .axi-input { --axi-input-pad: 7px 12px; --axi-input-size: 13px; }
 .axi-palette__bar .axi-input:focus-visible { outline: none; }
 .axi-palette__filters { display: flex; align-items: center; gap: 6px; margin-top: 8px; }
 /* What the list is not showing. Meta, at the end of the filter row, because it

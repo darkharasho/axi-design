@@ -54,6 +54,18 @@ export const KNOBS = [
     example: '<textarea class="axi-input" style="--axi-textarea-h: 200px">',
   },
   {
+    name: '--axi-input-pad',
+    sets: 'the padding inside an `.axi-input`, for a field that is furniture in a header rather than a control on a page',
+    fallback: '`11px 12px`',
+    example: '<input class="axi-input" style="--axi-input-pad: 7px 12px">',
+  },
+  {
+    name: '--axi-input-size',
+    sets: "an `.axi-input`'s text size, which travels with its padding",
+    fallback: '`14px`',
+    example: '<input class="axi-input" style="--axi-input-size: 13px">',
+  },
+  {
     name: '--axi-well-pad',
     sets: 'the padding inside an `.axi-well`',
     fallback: '`10px`',
