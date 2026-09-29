@@ -109,6 +109,107 @@
 }
 .axi-tabs .axi-tabs__close:hover { color: var(--axi-text); border-color: transparent; }
 
+/* ---------- rail ---------- */
+/* Vertical navigation, for a set too large for a tab strip to hold. Same
+   grammar as .axi-tabs deliberately - the item you are on is filled with the
+   accent and blocked, the rest are transparent until hovered - because "where
+   am I" is one question and should have one answer however the app happens to
+   be laying it out.
+
+   What a rail adds over a strip is a second level. A category is a place and
+   takes the fill; a section under it is where the page is scrolled to, which is
+   a smaller claim and is drawn as one: brightened text against the dim list
+   around it, no fill, no edge. Two fills at two levels would leave the reader
+   deciding which of them is the answer.
+
+   --axi-rail-w is declared nowhere and read with a fallback, i.e. it is the hook
+   a consumer overrides to widen the rail for longer labels. */
+.axi-rail {
+  display: flex;
+  flex-direction: column;
+  width: var(--axi-rail-w, 208px);
+  flex: none;
+  overflow-y: auto;
+  padding: var(--axi-rail-pad, 10px);
+  background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
+  border: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius);
+}
+/* A rail that IS the edge of the page rather than a panel standing in the
+   layout - pinned to the viewport, or a drawer's contents. It keeps the one
+   border that faces the content and drops everything that says "this is an
+   object with space around it": no radius on the flush side, and no block,
+   because a block needs somewhere to fall.
+
+   The block is stated as what a free-standing rail has rather than as
+   something the flush one turns off, so there is exactly one box-shadow here
+   and it names the panel block. `box-shadow: none` would be a second spelling
+   of the raise for a theme to miss. */
+.axi-rail:not(.axi-rail--flush) { box-shadow: var(--axi-shadow-panel); }
+.axi-rail--flush {
+  border: 0;
+  border-right: var(--axi-border-panel) solid var(--axi-ink-line);
+  border-radius: 0;
+}
+.axi-rail__nav { display: flex; flex-direction: column; gap: 2px; }
+.axi-rail__item {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  width: 100%;
+  padding: 8px 10px;
+  font: 800 12.5px/1 var(--axi-sans);
+  color: var(--axi-text-dim);
+  text-align: left;
+  background: transparent;
+  border: var(--axi-border-control) solid transparent;
+  border-radius: var(--axi-radius-sm);
+  cursor: pointer;
+}
+.axi-rail__item:hover { color: var(--axi-text); background: var(--axi-surface-raised); }
+/* The same treatment a pressed pill and a current tab get. Only ever one of
+   these on screen. Any aria-current value, because the right one depends on
+   what the rail navigates - `page` for a view, `location` for a place within
+   one - and the fill means the same thing either way. */
+.axi-rail__item[aria-current],
+.axi-rail__item[aria-current]:hover {
+  background: var(--axi-accent);
+  color: var(--axi-accent-ink);
+  border-color: var(--axi-ink-line);
+  box-shadow: var(--axi-shadow-control);
+}
+/* An icon beside a label is a label for it, not a second accent - so it takes
+   the faint tone, and inside a filled item it follows the item's ink. */
+.axi-rail__item .axi-icon { color: var(--axi-text-faint); }
+.axi-rail__item[aria-current] .axi-icon { color: var(--axi-accent-ink); }
+/* The second level, indented under the item it belongs to. */
+.axi-rail__sub { display: flex; flex-direction: column; margin: 3px 0 5px 10px; }
+.axi-rail__subitem {
+  padding: 5px 8px;
+  font: 700 11.5px/1.3 var(--axi-sans);
+  text-align: left;
+  color: var(--axi-text-faint);
+  background: transparent;
+  border: 0;
+  border-radius: var(--axi-radius-sm);
+  cursor: pointer;
+}
+.axi-rail__subitem:hover { color: var(--axi-text-dim); background: var(--axi-surface-raised); }
+.axi-rail__subitem[aria-current] { color: var(--axi-text); }
+/* An annotation on an item, not a measurement of it, so rule 5 draws it
+   outlined rather than filled. */
+.axi-rail__mark {
+  margin-left: auto;
+  padding: 2px 5px;
+  font: var(--axi-t-micro);
+  letter-spacing: .04em;
+  text-transform: uppercase;
+  color: var(--axi-meta);
+  border: var(--axi-border-hairline) solid var(--axi-meta);
+  border-radius: var(--axi-radius-sm);
+}
+
 /* ---------- notice ---------- */
 .axi-notice {
   display: flex; gap: 14px; padding: 15px 18px;

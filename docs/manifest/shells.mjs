@@ -458,6 +458,66 @@ cursor reaches it.`,
     ],
   },
   {
+    id: 'rail',
+    name: 'Rail',
+    layer: 'shells',
+    classes: ['.axi-rail', '.axi-rail--flush', '.axi-rail__nav', '.axi-rail__item', '.axi-rail__sub', '.axi-rail__subitem', '.axi-rail__mark'],
+    summary: 'Vertical navigation, for a set too large for a tab strip to hold. The category you are on is filled and blocked; a section under it is brightened text.',
+    rules: [3, 5],
+    knobs: ['--axi-rail-w', '--axi-rail-pad'],
+    notes: `Deliberately the same grammar as \`.axi-tabs\`: the thing you are on is
+filled with the accent and blocked, and everything else is transparent until
+hovered. "Where am I" is one question and it gets one answer however the app
+happens to be laying the set out.
+
+What a rail adds over a strip is a second level, and the two levels are not
+drawn alike. A category is a place, so \`.axi-rail__item\` takes the fill. A
+section under it is only where the page is scrolled to - a smaller claim - so
+\`.axi-rail__subitem\` is brightened text with no fill and no edge. Two fills at
+two levels would leave the reader deciding which of them is the answer.
+
+\`aria-current\` marks the current item at either level, and any value counts:
+\`page\` for a rail that navigates between views, \`location\` for one that moves
+within a single view. The treatment means the same thing either way.
+
+\`.axi-rail--flush\` is for a rail that is the edge of the page rather than an
+object standing in the layout - pinned to the viewport, or the contents of a
+drawer. It keeps the one border facing the content and drops the radius and the
+block, because a block needs somewhere to fall.`,
+    examples: [
+      {
+        title: 'A rail with an open category',
+        html: `<aside class="axi-rail" style="height: 260px">
+  <nav class="axi-rail__nav">
+    <button class="axi-rail__item" type="button">Overview</button>
+    <button class="axi-rail__item" type="button" aria-current="page">Offense</button>
+    <div class="axi-rail__sub">
+      <button class="axi-rail__subitem" type="button" aria-current="location">Damage</button>
+      <button class="axi-rail__subitem" type="button">Bursts</button>
+    </div>
+    <button class="axi-rail__item" type="button">Defense<span class="axi-rail__mark">Local</span></button>
+    <button class="axi-rail__item" type="button">Support</button>
+  </nav>
+</aside>`,
+      },
+      {
+        title: 'Flush against the page edge',
+        note: 'No radius, no block - only the border facing the content',
+        html: `<div class="axi-row" style="--axi-row-gap: 0; align-items: stretch; height: 160px">
+  <aside class="axi-rail axi-rail--flush">
+    <nav class="axi-rail__nav">
+      <button class="axi-rail__item" type="button" aria-current="page">Report</button>
+      <button class="axi-rail__item" type="button">Roster</button>
+    </nav>
+  </aside>
+  <div style="flex: 1; padding: 16px">
+    <p class="axi-eyebrow">Content</p>
+  </div>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'crumbs',
     name: 'Breadcrumbs',
     layer: 'shells',
