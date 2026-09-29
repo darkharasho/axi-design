@@ -461,6 +461,9 @@ instead of joining it.
 
 | Layer | z-index | What sits here |
 |---|---|---|
+| Pinned column | 1 | `.axi-table--pinned`'s first column |
+| Sticky head | 2 | `.axi-table--sticky`'s `thead th` |
+| Table corner | 3 | where the two cross |
 | Sticky chrome | 40 | `.axi-mast` |
 | Popovers | 41 | `.axi-menu__pop`, `.axi-picker__pop` |
 | Scrim | 50 | `.axi-scrim` |
@@ -472,6 +475,15 @@ instead of joining it.
 The modal has no number on purpose. A `<dialog>` opened with `showModal()` is
 promoted to the browser's top layer, which sits above every `z-index` there is;
 writing a number in that row would describe a competition the modal is not in.
+
+The first three are sealed rather than low. `.axi-table__scroll` sets
+`isolation: isolate`, so those numbers are resolved inside the scroll container
+and never compete with the page layers under them - a table's sticky head
+cannot climb over a mast, and a table inside a drawer cannot reach out of it.
+They are listed because a table needs three orderings among its own cells and a
+number that is never written down is a number that drifts; the isolation is
+what keeps 1, 2 and 3 from meaning anything outside the table that declares
+them.
 
 A negative `z-index` inside a component's own `isolation` context — the sigil's
 backing shape — is not a layer and is not listed. It is invisible outside the

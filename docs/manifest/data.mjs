@@ -44,6 +44,12 @@ not measured from it.`,
       '.axi-table__rank',
       '.axi-table__rank--top',
       '.axi-table__who',
+      '.axi-table__scroll',
+      '.axi-table--sticky',
+      '.axi-table--pinned',
+      '.axi-table--dense',
+      '.axi-table__cell--sorted',
+      '.axi-table__sort',
     ],
     summary: 'A ranked list of rows inside a panel. Rows are separated by rules rather than outlined or blocked, because the panel is the raised thing and the table is its interior.',
     rules: [8],
@@ -51,7 +57,25 @@ not measured from it.`,
     notes: `Numbers are set right-aligned and names left-aligned on the element
 itself, not left to every consumer to remember. \`.axi-table__rank--top\` is
 the only fill a table ever gets, and only for a real podium position - a row
-number stays outlined.`,
+number stays outlined.
+
+A table wider or taller than the panel holding it goes in an
+\`.axi-table__scroll\` and takes the modifiers it needs: \`--sticky\` keeps the
+head in place, \`--pinned\` keeps the first column in place, \`--dense\` steps
+the padding and type down for twenty columns instead of four. Both freezing
+modifiers switch the table to separate borders, because a collapsed table hands
+its cell borders to the table element and a border owned by the table scrolls
+away with it - a sticky head under \`collapse\` loses the line that makes it a
+lid. There is no scrolled-under state: the head's edge is drawn whether
+anything has moved beneath it or not.
+
+Mark the sorted column with \`aria-sort\` on the \`<th>\` - the attribute a
+screen reader needs anyway, rather than a class saying the same thing twice -
+and \`.axi-table__cell--sorted\` on that column's cells, which is the one part
+CSS cannot work out for itself. Where the sort is something the reader can
+change, wrap the heading in an \`.axi-table__sort\` button - a heading that
+responds to a click but not to a keyboard is a column nobody tabbing through
+the page can sort.`,
     examples: [
       {
         title: 'A ranked table',
@@ -77,6 +101,31 @@ number stays outlined.`,
       </tr>
     </tbody>
   </table>
+</div>`,
+      },
+      {
+        title: 'Scrolled, pinned and dense',
+        note: 'Scroll sideways: the head and the first column stay. Damage is the sorted column',
+        html: `<div class="axi-panel" style="--axi-panel-pad: 0;">
+  <div class="axi-table__scroll" style="max-height: 148px;">
+    <table class="axi-table axi-table--sticky axi-table--pinned axi-table--dense">
+      <thead>
+        <tr>
+          <th>Player</th>
+          <th aria-sort="descending">Damage</th><th>Down contrib.</th><th>Cleanses</th>
+          <th>Strips</th><th>Stability</th><th>Alacrity</th><th>Quickness</th>
+          <th>Dist. to tag</th><th>Deaths</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><td>Skoll.4183</td><td class="axi-table__cell--sorted">412,908</td><td>38</td><td>1,204</td><td>311</td><td>18.4%</td><td>62.1%</td><td>71.0%</td><td>418</td><td>2</td></tr>
+        <tr><td>Renna.9021</td><td class="axi-table__cell--sorted">377,140</td><td>31</td><td>988</td><td>274</td><td>21.7%</td><td>59.8%</td><td>68.3%</td><td>502</td><td>4</td></tr>
+        <tr><td>Oakvale.5567</td><td class="axi-table__cell--sorted">344,602</td><td>29</td><td>1,451</td><td>190</td><td>16.2%</td><td>64.4%</td><td>66.9%</td><td>377</td><td>1</td></tr>
+        <tr><td>Bracken.7712</td><td class="axi-table__cell--sorted">301,885</td><td>24</td><td>742</td><td>408</td><td>29.1%</td><td>55.0%</td><td>70.2%</td><td>611</td><td>3</td></tr>
+        <tr><td>Marrow.3098</td><td class="axi-table__cell--sorted">288,043</td><td>22</td><td>1,673</td><td>122</td><td>12.8%</td><td>66.7%</td><td>64.1%</td><td>340</td><td>5</td></tr>
+      </tbody>
+    </table>
+  </div>
 </div>`,
       },
     ],

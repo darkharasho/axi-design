@@ -1879,6 +1879,93 @@ textarea.axi-input {
 }
 .axi-table__rank--top { background: var(--axi-accent); color: var(--axi-accent-ink); }
 
+/* A table too wide and too tall for the panel holding it: twenty numeric
+   columns against forty players, scrolled in both directions. Rule 8 still
+   decides what every line means - the head is a lid at the control step, the
+   rows are hairlines - and the only new thing here is that the lid and the
+   row's name have to stay put while the numbers move under them.
+
+   `border-collapse: separate` is load-bearing, not housekeeping. A collapsed
+   table hoists its cell borders onto the table itself, and a border owned by
+   the table scrolls away with it, so a sticky head drawn under `collapse`
+   loses the very line that makes it a lid. Separate borders stay with the
+   cell that declared them. Each modifier sets it, so either works alone.
+
+   Note what is NOT here. No block: an edge that has to hold under scrolling
+   is a border, and a block in this language is an offset rectangle, which is
+   not the shape of the top of a column. No scrolled-under state either - the
+   head's edge is drawn whether anything has moved beneath it or not, so there
+   is nothing for scrolling to reveal. */
+/* The isolation is the reason the three z-indexes below can be 1, 2 and 3:
+   they are resolved in here and cannot compete with the page stack. See the
+   layer table in docs/RULES.md. */
+.axi-table__scroll { overflow: auto; isolation: isolate; }
+/* The head stays. */
+.axi-table--sticky { border-collapse: separate; border-spacing: 0; }
+.axi-table--sticky thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  /* The float surface, not the raised one, and this is the whole reason
+     --axi-surface-float exists: rows travel behind both of these, and a glass
+     theme's ordinary surfaces are alpha, so a head at --axi-surface-raised
+     would have numbers sliding through it. Opaque is not a look here, it is
+     the requirement. */
+  background: var(--axi-surface-float);
+  border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
+}
+/* The first column stays. It holds the row's name, and a name scrolled out of
+   sight makes every number left of it anonymous - which is the whole reason a
+   wide table is readable at all. Its edge is the cut the head carries, turned
+   ninety degrees. */
+.axi-table--pinned { border-collapse: separate; border-spacing: 0; }
+.axi-table--pinned :is(thead, tbody) :is(th, td):first-child {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--axi-surface-float);
+  border-right: var(--axi-border-control) solid var(--axi-ink-line);
+}
+/* The corner belongs to both and has to outrank both. */
+.axi-table--sticky.axi-table--pinned thead th:first-child { z-index: 3; }
+/* Twenty columns do not get a leaderboard's padding. The type steps down with
+   them; everything else about the table is unchanged, which is the point of
+   its being a modifier rather than a second table. */
+.axi-table--dense th { padding: 0 7px 6px; }
+.axi-table--dense td { padding: 5px 7px; font: var(--axi-t-micro); }
+/* The sorted column, named with the attribute a screen reader already needs
+   in order to announce it. A class beside `aria-sort` would be a second
+   source of truth for one fact. The mark is ink on the head and its edge -
+   not a fill down the column, which is rule 2's tinted-everything failure
+   applied to the one column you are trying to read. */
+.axi-table th[aria-sort] {
+  color: var(--axi-accent);
+  border-bottom-color: var(--axi-accent);
+}
+/* CSS cannot reach "the cells under the sorted head", so the consumer marks
+   them. Full-strength text against the column's dimmed neighbours. */
+.axi-table__cell--sorted { color: var(--axi-text); }
+/* A sortable heading is a button, because sorting is an action and a <th> you
+   can click but not tab to is a column the keyboard cannot sort. It inherits
+   everything and adds nothing, so a heading looks the same whether it sorts or
+   not - the only thing that marks a sorted column is aria-sort above. */
+.axi-table__sort {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 6px;
+  width: 100%;
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  color: inherit;
+  letter-spacing: inherit;
+  text-transform: inherit;
+  cursor: pointer;
+}
+.axi-table th:first-child .axi-table__sort { justify-content: flex-start; }
+
 /* ---------- meter ---------- */
 /* Rule 9: a proportion is a length. The track is the ground, the fill is the
    value, and the fill is one ink at full strength - a tinted or faded bar is
