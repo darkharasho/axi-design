@@ -75,7 +75,18 @@ and \`.axi-table__cell--sorted\` on that column's cells, which is the one part
 CSS cannot work out for itself. Where the sort is something the reader can
 change, wrap the heading in an \`.axi-table__sort\` button - a heading that
 responds to a click but not to a keyboard is a column nobody tabbing through
-the page can sort.`,
+the page can sort.
+
+Where picking a row drives something else - a detail pane, a chart, a second
+table - mark it with \`aria-current\` on the \`<tr>\`, again the attribute the
+announcement already needs. The row takes the float step rather than the raised
+one, because hovering a row raises it already and a selection drawn at the same
+step is indistinguishable from the row under the cursor; that is the wall every
+consumer who hand-writes this state runs into, and the hue they reach for next is
+rule 2's tinted-everything failure arrived at honestly. It gets no accent and no
+leading edge: the accent is one claim per screen and the pane the selection
+drives usually spends it, and an edge would want a border reserved on every cell
+of every row, which is the grid of boxes rule 8 refuses.`,
     examples: [
       {
         title: 'A ranked table',

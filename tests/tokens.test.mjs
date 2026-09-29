@@ -1006,3 +1006,50 @@ describe('a link is one object, in or out of prose', () => {
     expect(hover.sel).toMatch(/\.axi-link:where\(:hover\)/)
   })
 })
+
+// A picked row has to be told apart from the row under the cursor, and the
+// table is the one component where those two states land on the same box. Every
+// consumer who hand-wrote this reached for a hue once they hit that, so the
+// check is that the two states are drawn at DIFFERENT neutral steps rather than
+// that either of them is any particular value.
+describe('a picked row is not the hovered row', () => {
+  const css = stripComments(read('data.css'))
+  const bodyOf = (needle) => {
+    const m = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(([, sel]) => sel.includes(needle))
+    return m ? m[2] : null
+  }
+  const fill = (body) => (body.match(/background:\s*var\((--axi-surface[a-z-]*)\)/) || [])[1]
+
+  const hover = () => bodyOf('tbody tr:hover :is(td, th)')
+  const current = () => bodyOf('tbody tr[aria-current] :is(td, th)')
+
+  it('draws both states', () => {
+    expect(hover(), 'no hover rule').toBeTruthy()
+    expect(current(), 'no aria-current rule').toBeTruthy()
+  })
+
+  it('draws them at two different steps', () => {
+    expect(fill(current())).toBeTruthy()
+    expect(fill(hover())).toBeTruthy()
+    expect(fill(current())).not.toBe(fill(hover()))
+  })
+
+  it('picks the step beyond hover, not one behind it', () => {
+    // Selection is a held state and hover is a transient one, so selection is
+    // the one that comes further forward.
+    const RAMP = ['--axi-surface', '--axi-surface-raised', '--axi-surface-float']
+    expect(RAMP.indexOf(fill(current()))).toBeGreaterThan(RAMP.indexOf(fill(hover())))
+  })
+
+  it('does not spend the accent on it', () => {
+    expect(current()).not.toMatch(/--axi-accent/)
+  })
+
+  it('holds the row up while the cursor is over it', () => {
+    // Without this the bare hover rule, equal in weight and later in the file,
+    // would pull a selected row back down to the hover step on mouseover.
+    const held = bodyOf('tbody tr[aria-current]:hover :is(td, th)')
+    expect(held, 'no selected-and-hovered rule').toBeTruthy()
+    expect(fill(held)).toBe(fill(current()))
+  })
+})

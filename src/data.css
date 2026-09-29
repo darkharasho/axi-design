@@ -133,6 +133,35 @@
   color: var(--axi-text);
 }
 /* The measured value in a row, as opposed to its supporting numbers. */
+/* A row that is the one currently shown somewhere else -- a detail pane, a
+   chart, a second table. `aria-current`, for the same reason `aria-sort` above
+   carries the sorted column and `.axi-rail__item[aria-current]` carries the
+   chosen place: the attribute a screen reader already needs in order to announce
+   the row is the whole fact, and a class beside it would be a second source of
+   truth for one thing.
+
+   The fill is the float step, not the raised one, and the reason is the hover
+   directly above: hovering a row ALREADY raises it, so a selection drawn at the
+   raised step is indistinguishable from the row under the cursor -- and every
+   consumer who has hand-written this state has hit that and reached for a hue
+   instead, which is rule 2's tinted-everything failure arrived at honestly.
+   Hover is a transient lift and selection is a held one, so selection sits one
+   step beyond it and hovering a selected row must not pull it back down.
+
+   No accent, and no leading edge either. The accent is for one claim per screen
+   and a selected row spends it on something a detail pane usually spends again;
+   an edge would need a border reserved on every cell of every row, which is the
+   grid-of-boxes rule 8 refuses. The attachment is the one-surface-many-elements
+   case, same as the hover. */
+.axi-table tbody tr[aria-current] :is(td, th) {
+  background: var(--axi-surface-float);
+  background-attachment: fixed;
+  color: var(--axi-text);
+}
+.axi-table tbody tr[aria-current]:hover :is(td, th) {
+  background: var(--axi-surface-float);
+  background-attachment: fixed;
+}
 .axi-table__num { color: var(--axi-text); }
 /* A name cell: an icon, a diamond or a rank beside the label. */
 .axi-table__who { display: flex; align-items: center; gap: 9px; }
