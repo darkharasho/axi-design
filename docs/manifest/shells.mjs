@@ -399,7 +399,7 @@ name.`,
     name: 'Tabs',
     layer: 'shells',
     classes: ['.axi-tabs'],
-    summary: 'Top-level navigation in a masthead. The current tab is filled and blocked; the rest are transparent until hovered.',
+    summary: 'Top-level navigation, in a masthead or standing on its own. The current tab is filled and blocked; the rest are transparent until hovered.',
     rules: [],
     knobs: [],
     notes: `The current tab gets the same treatment as a pressed pill, because it
@@ -409,8 +409,13 @@ screen reader is told.
 
 Each tab carries a control-weight border in \`transparent\` at rest, which
 hover fills in from the rule ramp: the border is always there, so nothing
-shifts by 3px when the cursor arrives. \`margin-left: auto\` pushes the set to
-the end of the masthead.`,
+shifts by 3px when the cursor arrives.
+
+Tabs are anchors or buttons, interchangeably: a strip that moves between URLs
+is links, and a strip inside an application that swaps a view in place is
+buttons. Inside \`.axi-mast\`, \`margin-left: auto\` pushes the set to the end of
+the masthead; that margin is scoped to the masthead, so a strip spanning a
+view on its own starts where its container does.`,
     examples: [
       {
         title: 'A nav with one current tab',
@@ -419,6 +424,15 @@ the end of the masthead.`,
   <a href="#">Components</a>
   <a href="#">Rules</a>
   <a href="#">Theming</a>
+</nav>`,
+      },
+      {
+        title: 'The same strip as buttons, for a view swapped in place',
+        html: `<nav class="axi-tabs">
+  <button type="button" aria-current="page">Dashboard</button>
+  <button type="button">Stats</button>
+  <button type="button">History</button>
+  <button type="button">Settings</button>
 </nav>`,
       },
     ],

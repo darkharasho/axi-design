@@ -48,18 +48,32 @@
   color: var(--axi-text-faint);
   letter-spacing: .09em; text-transform: uppercase;
 }
-.axi-tabs { display: flex; gap: 8px; margin-left: auto; }
-.axi-tabs a {
+/* Anchors and buttons both. A strip that moves between URLs is made of links;
+   a strip inside an application that swaps a view in place is made of buttons,
+   and they look the same because they answer the same question. A button also
+   arrives carrying the UA's own font, fill and cursor, which an anchor does
+   not, so those three are cleared here rather than left to the consumer. */
+.axi-tabs { display: flex; gap: 8px; }
+/* The auto margin belongs to the masthead, not to the strip: it is a statement
+   about where the tabs sit in that row, and a strip standing on its own -
+   spanning a view instead of ending a header - has nothing to push away from. */
+.axi-mast .axi-tabs { margin-left: auto; }
+.axi-tabs a,
+.axi-tabs button {
   padding: 8px 16px;
   font: 800 13.5px/1 var(--axi-sans);
   color: var(--axi-text-dim); text-decoration: none;
+  background: none;
+  cursor: pointer;
   border: var(--axi-border-control) solid transparent;
   border-radius: var(--axi-radius-sm);
 }
-.axi-tabs a:hover { color: var(--axi-text); border-color: var(--axi-rule); }
+.axi-tabs a:hover,
+.axi-tabs button:hover { color: var(--axi-text); border-color: var(--axi-rule); }
 /* The current tab is filled and blocked - the same treatment a pressed pill
    gets, because it is the same idea: this one is on. */
-.axi-tabs a[aria-current="page"] {
+.axi-tabs a[aria-current="page"],
+.axi-tabs button[aria-current="page"] {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
   border-color: var(--axi-ink-line);
@@ -379,7 +393,8 @@
 
 @media (max-width: 640px) {
   .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }
-  .axi-tabs { margin-left: 0; width: 100%; overflow-x: auto; }
+  .axi-mast .axi-tabs { margin-left: 0; }
+  .axi-tabs { width: 100%; overflow-x: auto; }
   /* The offset blocks eat horizontal room a phone does not have, so the panel
      step drops to the control step here rather than to an invented number.
      The card's hover has to come down with it - left alone it kept deepening
