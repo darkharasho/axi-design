@@ -138,6 +138,9 @@ not "what does the system look like". Everything else is
 | `--axi-check-size` | the size of an `.axi-check` or `.axi-radio` box | `22px` | `<input type="checkbox" class="axi-check" style="--axi-check-size: 16px">` |
 | `--axi-check-fill` | the fill a checked `.axi-check` takes, and the colour of a checked `.axi-radio`'s diamond | `var(--axi-accent)` | `<input type="checkbox" class="axi-check" style="--axi-check-fill: var(--axi-danger)">` |
 | `--axi-textarea-h` | the minimum height of a `<textarea class="axi-input">` | `90px` | `<textarea class="axi-input" style="--axi-textarea-h: 200px">` |
+| `--axi-well-pad` | the padding inside an `.axi-well` | `10px` | `<div class="axi-well" style="--axi-well-pad: 18px">` |
+| `--axi-rail-w` | an `.axi-rail`'s width, for labels longer than the default holds | `208px` | `<aside class="axi-rail" style="--axi-rail-w: 260px">` |
+| `--axi-rail-pad` | the padding inside an `.axi-rail` | `10px` | `<aside class="axi-rail" style="--axi-rail-pad: 6px">` |
 | `--axi-avatar-size` | the size of an `.axi-avatar` square | `40px` | `<span class="axi-avatar" style="--axi-avatar-size: 28px">MS</span>` |
 | `--axi-modal-width` | the maximum width of an `.axi-modal`, before the viewport clamp | `560px` | `<dialog class="axi-modal" style="--axi-modal-width: 760px">` |
 | `--axi-card-strip` | the colour of `.axi-card--strip`'s top strip | `var(--axi-accent)` | `<a class="axi-card axi-card--strip" style="--axi-card-strip: var(--axi-ok)">` |

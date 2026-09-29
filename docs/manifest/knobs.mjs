@@ -54,6 +54,24 @@ export const KNOBS = [
     example: '<textarea class="axi-input" style="--axi-textarea-h: 200px">',
   },
   {
+    name: '--axi-well-pad',
+    sets: 'the padding inside an `.axi-well`',
+    fallback: '`10px`',
+    example: '<div class="axi-well" style="--axi-well-pad: 18px">',
+  },
+  {
+    name: '--axi-rail-w',
+    sets: "an `.axi-rail`'s width, for labels longer than the default holds",
+    fallback: '`208px`',
+    example: '<aside class="axi-rail" style="--axi-rail-w: 260px">',
+  },
+  {
+    name: '--axi-rail-pad',
+    sets: 'the padding inside an `.axi-rail`',
+    fallback: '`10px`',
+    example: '<aside class="axi-rail" style="--axi-rail-pad: 6px">',
+  },
+  {
     name: '--axi-avatar-size',
     sets: 'the size of an `.axi-avatar` square',
     fallback: '`40px`',

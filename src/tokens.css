@@ -39,6 +39,28 @@
      --axi-ink-on-fill below, on the other side of the same token. */
   --axi-ground-deep: var(--axi-ink-line);
   --axi-rule: #3a4250;            /* internal rules, inside an outlined panel */
+  /* --- the well --- */
+  /* A field sunk INTO a surface rather than raised off one: a table picker's
+     list, a bar's trough, a column of cards standing on the page. The language
+     had no name for it, and every consumer that needed one reached for a second
+     .axi-panel inside the first - two identical fills parted by a line, which
+     reads as one field with a stray rule through it.
+
+     Two tokens because a well is the exact inverse of a panel on both counts.
+     The fill is a SUBTRACTION from whatever is behind it, not a colour of its
+     own: spelled as --axi-ground it is right in this theme, where surfaces are
+     opaque and the page really is what shows through a hole in one, and wrong
+     in a glass theme, where an opaque page colour inside a translucent pane is
+     a black patch rather than a recess. A theme restates it as a darkening at
+     alpha and the panel's own tint carries through.
+
+     The line is --axi-rule and not --axi-ink-line, because ink only reads
+     against a fill lighter than itself. Every outline in this language is
+     near-black on the assumption of a ground the lines can be darker than; a
+     well IS at ground level, so an ink edge round one is a black line on a
+     black field. Raised takes ink, sunk takes the rule. */
+  --axi-well-fill: var(--axi-ground);
+  --axi-well-line: var(--axi-rule);
   --axi-text: #f4f6f9;
   --axi-text-dim: #a7b0be;
   --axi-text-faint: #7c8695;

@@ -139,4 +139,48 @@ of their own.`,
       },
     ],
   },
+  {
+    id: 'well',
+    name: 'Well',
+    layer: 'layout',
+    classes: ['.axi-well'],
+    summary: "The panel's inverse: a field sunk into the surface around it rather than raised off it. Ground fill, the internal rule for an edge, and no block.",
+    rules: [3],
+    knobs: ['--axi-well-pad'],
+    notes: `Rule 3 gives the language two steps up off the page. This is the step
+*down*, and it exists because every consumer that needed one reached for a
+second \`.axi-panel\` inside the first - two identical fills parted by a line,
+which reads as one field with a stray rule through it rather than as two
+objects.
+
+Both of a well's departures from a panel follow from the same fact. Its edge is
+\`--axi-rule\` and not \`--axi-ink-line\`, because ink only reads against a fill
+lighter than itself and a well is at ground level - an ink outline round one is
+a black line on a black field. And it carries no block, because a recess casts
+nothing.
+
+Its fill is \`--axi-well-fill\`, which defaults to the ground. That default is a
+subtraction rather than a colour: a hole in an opaque panel really does show
+the page, but an opaque page colour inside a *translucent* pane is a black
+patch rather than a recess, so a glass theme restates it as a darkening at
+alpha and lets the pane's own tint carry through.
+
+Reach for a well wherever the content standing in it brings its own edges: a
+picker list beside a table, a column of cards, a trough a meter fills.`,
+    examples: [
+      {
+        title: 'A well inside a panel',
+        note: 'The picker is sunk, the cards in it are raised',
+        html: `<div class="axi-panel">
+  <p class="axi-eyebrow">Sections</p>
+  <div class="axi-well">
+    <div class="axi-stack" style="--axi-stack-gap: 8px">
+      <div class="axi-card"><p class="axi-card__title">Offense</p></div>
+      <div class="axi-card"><p class="axi-card__title">Defense</p></div>
+    </div>
+  </div>
+</div>`,
+      },
+    ],
+  },
 ]
