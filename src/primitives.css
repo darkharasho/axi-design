@@ -114,7 +114,12 @@ button.axi-panel--tile:hover,
   padding: var(--axi-btn-pad, 12px 20px);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* Flat on its container, which is --axi-well-fill and not the page colour -
+     the argument is in src/tokens.css at that token. A button at rest carries
+     no block: it is level with the panel holding it and lifts on hover, so the
+     resting fill is the level's, and --axi-btn--primary below is the one that
+     rests raised and fills with the accent instead. */
+  background: var(--axi-well-fill);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   letter-spacing: var(--axi-ls-label);
@@ -197,7 +202,8 @@ button.axi-panel--tile:hover,
   padding: var(--axi-pill-pad, 12px 20px);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* The button's fill for the button's reason - see .axi-btn above. */
+  background: var(--axi-well-fill);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   letter-spacing: var(--axi-ls-label);
@@ -391,7 +397,10 @@ button.axi-panel--tile:hover,
 .axi-input {
   width: 100%;
   padding: var(--axi-input-pad, 11px 12px);
-  background: var(--axi-ground);
+  /* A field is the recessed thing in any bar it sits in - .axi-kbd's comment
+     below leans on exactly that - so it takes the level's fill. See
+     --axi-well-fill in src/tokens.css. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   color: var(--axi-text);
@@ -426,14 +435,15 @@ button.axi-panel--tile:hover,
    `em`, not `px`: this lands in body copy and in 10px captions alike, and a
    literal that does not track the text around it reads as a different voice.
 
-   It sits on --axi-ground where .axi-kbd sits on --axi-surface, and the
+   It sits on --axi-well-fill where .axi-kbd sits on --axi-surface, and the
    reason is already written down one rule below: a key is raised off what it
-   is printed on, and a quoted literal is sunk into it. */
+   is printed on, and a quoted literal is sunk into it. It said --axi-ground
+   for as long as sunk and the page were the same colour; see that token. */
 .axi-code,
 .axi-prose code {
   font-family: var(--axi-mono);
   font-size: .88em;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   color: var(--axi-text);
   border: var(--axi-border-hairline) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
@@ -473,7 +483,10 @@ button.axi-panel--tile:hover,
   padding: 10px 30px 10px 9px;
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background-color: var(--axi-ground);
+  /* The field's fill, because a closed select is a field - see .axi-input. The
+     longhand stays: a caret rides in background-image and the shorthand would
+     reset it. */
+  background-color: var(--axi-well-fill);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   font-size: 12.5px;
@@ -532,8 +545,12 @@ button.axi-panel--tile:hover,
     letter-spacing: var(--axi-ls-label);
     text-transform: uppercase;
   }
+  /* A row under the cursor sinks rather than lighting up, so the hover is the
+     level's fill - and this popover is filled with --axi-surface-raised, which
+     a theme may take translucent, so an opaque row here is the black patch
+     --axi-well-fill exists to prevent. Same for the picker's rows below. */
   .axi-select option:hover, .axi-select option:focus {
-    background: var(--axi-ground); color: var(--axi-text);
+    background: var(--axi-well-fill); color: var(--axi-text);
   }
   /* The page-wide focus ring sits 2px outside its element; inside a picker
      that is 2px into the neighbouring row, so pull it back in. */
@@ -632,7 +649,7 @@ button.axi-panel--tile:hover,
   font-weight: 900;
 }
 .axi-picker__opt:hover, .axi-picker__opt:focus {
-  background: var(--axi-ground); color: var(--axi-text);
+  background: var(--axi-well-fill); color: var(--axi-text);
 }
 /* The page-wide focus ring sits 2px outside its element; inside a popover
    this tight that is 2px into the neighbouring row, so pull it back in. */
@@ -647,7 +664,8 @@ button.axi-panel--tile:hover,
    who wants round avatars sets --axi-radius-sm and gets rounded controls
    everywhere - which is the honest version of the request.
    Flat: outlined, no block. An avatar is content inside a panel, the same as
-   .axi-stat and .axi-table__rank, not a thing raised off it. */
+   .axi-stat and .axi-table__rank, not a thing raised off it - which is what
+   --axi-well-fill below is saying, and all three now say it the same way. */
 .axi-avatar {
   width: var(--axi-avatar-size, 40px);
   height: var(--axi-avatar-size, 40px);
@@ -655,7 +673,7 @@ button.axi-panel--tile:hover,
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   color: var(--axi-text-dim);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);

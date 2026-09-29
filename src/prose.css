@@ -48,9 +48,12 @@
 
 /* .axi-prose code is declared beside .axi-code in primitives.css: one rule,
    both selectors, because they are one object. */
+/* A code block and a quote are both fields sunk into the prose around them,
+   so both take --axi-well-fill rather than the page colour - the reason is
+   written out at .axi-stat in src/data.css. */
 .axi-prose pre {
   margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   box-shadow: var(--axi-shadow-control);
@@ -61,7 +64,7 @@
   margin: 0 0 18px;
   padding: 11px 13px;
   border-left: var(--axi-border-panel) solid var(--axi-accent);
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
 }
 .axi-prose blockquote p { margin: 0; font-style: italic; }

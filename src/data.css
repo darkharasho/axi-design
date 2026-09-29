@@ -15,10 +15,18 @@
    an outline and no block - it is content, not something raised off the
    surface it sits on. The number stays in --axi-text unless it has a real
    state: rule 5 applies to a figure exactly as it applies to a chip, and a
-   tile coloured for emphasis is decoration impersonating status. */
+   tile coloured for emphasis is decoration impersonating status.
+
+   Flat on the ground is the WELL's fill and not the page's. A tile is a recess
+   cut into the panel holding it, which is the same shape .axi-well names, and
+   spelled --axi-ground it stops being a recess the moment a theme makes that
+   panel translucent: an opaque page colour inside a pane of glass is a black
+   patch. The outline stays the ink line rather than following the well's,
+   because a tile is cut into a SURFACE and an ink edge still has something to
+   be darker than there. Same split in .axi-meter and .axi-plot below. */
 .axi-stat {
   padding: 12px 14px;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
 }
@@ -105,7 +113,8 @@
   display: grid; place-items: center;
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* Flat in the row, like the tile above and the avatar it stands beside. */
+  background: var(--axi-well-fill);
   font: var(--axi-t-micro);
   color: var(--axi-text-faint);
 }
@@ -209,7 +218,8 @@
 .axi-meter {
   display: flex;
   height: var(--axi-meter-h, 12px);
-  background: var(--axi-ground);
+  /* The trough is a recess, so it takes the well's fill - see .axi-stat. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   overflow: hidden;
@@ -325,7 +335,8 @@
 .axi-plot {
   position: relative;
   height: var(--axi-plot-h, 180px);
-  background-color: var(--axi-ground);
+  /* A frame cut into the panel, not laid on the page - see .axi-stat. */
+  background-color: var(--axi-well-fill);
   background-image: repeating-linear-gradient(
     to top,
     var(--axi-rule) 0 var(--axi-border-hairline),

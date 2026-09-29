@@ -872,7 +872,10 @@ describe('a quoted literal is one object, in or out of prose', () => {
 
   it('is sunk into its surface, where the key it sits beside is raised off one', () => {
     const shared = rules.find(({ sel }) => !/pre\s+code/.test(sel))
-    expect(shared.body).toMatch(/background:\s*var\(--axi-ground\)/)
+    // Sunk is --axi-well-fill, not --axi-ground. This asserted the page colour
+    // for as long as the two were the same value, which is the conflation that
+    // turned every flat control into an opaque patch under a glass theme.
+    expect(shared.body).toMatch(/background:\s*var\(--axi-well-fill\)/)
     const kbd = [...css.matchAll(/\.axi-kbd\s*\{([^}]*)\}/g)][0]
     expect(kbd, 'no .axi-kbd rule found').toBeTruthy()
     expect(kbd[1]).toMatch(/background:\s*var\(--axi-surface\)/)

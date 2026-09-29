@@ -391,7 +391,8 @@
   padding: 7px 8px; border-radius: var(--axi-radius-sm);
   font-size: 13px; font-weight: 600; color: var(--axi-text-dim); cursor: pointer;
 }
-.axi-menu__pop label:hover { background: var(--axi-ground); color: var(--axi-text); }
+/* A hovered row sinks - the same fill the select's and the picker's rows use. */
+.axi-menu__pop label:hover { background: var(--axi-well-fill); color: var(--axi-text); }
 .axi-menu__pop input { margin: 3px 0 0; }
 
 /* ---------- command palette ---------- */
@@ -505,7 +506,7 @@
 .axi-palette__trigger {
   display: flex; align-items: center; width: 100%; overflow: hidden;
   padding: 0 10px 0 0;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   color: var(--axi-text-dim);
@@ -689,7 +690,8 @@
   width: 32px; height: 32px;
   display: grid; place-items: center;
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* A control flat on the drawer's head - see --axi-well-fill in tokens. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   color: var(--axi-text-dim);
   font-size: 15px; font-weight: 900; cursor: pointer;
@@ -777,7 +779,8 @@
   margin: 0;
   padding: 11px 13px;
   border-left: var(--axi-border-panel) solid var(--axi-accent);
-  background: var(--axi-ground);
+  /* Sunk into the prose around it, so the well's fill - see .axi-stat. */
+  background: var(--axi-well-fill);
   border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
 }
 .axi-quote :where(p) { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }

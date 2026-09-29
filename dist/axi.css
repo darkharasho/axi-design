@@ -84,7 +84,26 @@
      against a fill lighter than itself. Every outline in this language is
      near-black on the assumption of a ground the lines can be darker than; a
      well IS at ground level, so an ink edge round one is a black line on a
-     black field. Raised takes ink, sunk takes the rule. */
+     black field. Raised takes ink, sunk takes the rule.
+
+     And what the fill names is not the .axi-well class - it is the level. A
+     button at rest, a field, a select, a checkbox, an avatar, a rank, a code
+     span, a hovered row in a popover: not one of them is raised off what holds
+     it, and every one of them was spelled --axi-ground, because on a theme
+     whose surfaces are opaque "flat on its container" and "the page colour"
+     are the same colour. They stop being the same colour the instant a theme
+     makes the container translucent, which is how the whole set went black at
+     once and why this is written here rather than fourteen times downstream.
+     Above this level is --axi-surface (.axi-kbd is the one control in the
+     language that is genuinely raised, and says so). Below it is --axi-ground
+     proper, which now means the page and only the page: body, the sheet, the
+     window, the masthead - the things content scrolls under, which need real
+     opacity and not a subtraction. Everything between the two is this token.
+
+     The LINE does not come along. --axi-well-line is for a well cut into the
+     page, where there is nothing left for ink to be darker than; a control is
+     cut into a SURFACE and its ink edge still has a fill above it to read
+     against. Every component below keeps --axi-ink-line. */
   --axi-well-fill: var(--axi-ground);
   --axi-well-line: var(--axi-rule);
   --axi-text: #f4f6f9;
@@ -388,7 +407,12 @@ button.axi-panel--tile:hover,
   padding: var(--axi-btn-pad, 12px 20px);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* Flat on its container, which is --axi-well-fill and not the page colour -
+     the argument is in src/tokens.css at that token. A button at rest carries
+     no block: it is level with the panel holding it and lifts on hover, so the
+     resting fill is the level's, and --axi-btn--primary below is the one that
+     rests raised and fills with the accent instead. */
+  background: var(--axi-well-fill);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   letter-spacing: var(--axi-ls-label);
@@ -471,7 +495,8 @@ button.axi-panel--tile:hover,
   padding: var(--axi-pill-pad, 12px 20px);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* The button's fill for the button's reason - see .axi-btn above. */
+  background: var(--axi-well-fill);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   letter-spacing: var(--axi-ls-label);
@@ -665,7 +690,10 @@ button.axi-panel--tile:hover,
 .axi-input {
   width: 100%;
   padding: var(--axi-input-pad, 11px 12px);
-  background: var(--axi-ground);
+  /* A field is the recessed thing in any bar it sits in - .axi-kbd's comment
+     below leans on exactly that - so it takes the level's fill. See
+     --axi-well-fill in src/tokens.css. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   color: var(--axi-text);
@@ -700,14 +728,15 @@ button.axi-panel--tile:hover,
    `em`, not `px`: this lands in body copy and in 10px captions alike, and a
    literal that does not track the text around it reads as a different voice.
 
-   It sits on --axi-ground where .axi-kbd sits on --axi-surface, and the
+   It sits on --axi-well-fill where .axi-kbd sits on --axi-surface, and the
    reason is already written down one rule below: a key is raised off what it
-   is printed on, and a quoted literal is sunk into it. */
+   is printed on, and a quoted literal is sunk into it. It said --axi-ground
+   for as long as sunk and the page were the same colour; see that token. */
 .axi-code,
 .axi-prose code {
   font-family: var(--axi-mono);
   font-size: .88em;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   color: var(--axi-text);
   border: var(--axi-border-hairline) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
@@ -747,7 +776,10 @@ button.axi-panel--tile:hover,
   padding: 10px 30px 10px 9px;
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background-color: var(--axi-ground);
+  /* The field's fill, because a closed select is a field - see .axi-input. The
+     longhand stays: a caret rides in background-image and the shorthand would
+     reset it. */
+  background-color: var(--axi-well-fill);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   font-size: 12.5px;
@@ -806,8 +838,12 @@ button.axi-panel--tile:hover,
     letter-spacing: var(--axi-ls-label);
     text-transform: uppercase;
   }
+  /* A row under the cursor sinks rather than lighting up, so the hover is the
+     level's fill - and this popover is filled with --axi-surface-raised, which
+     a theme may take translucent, so an opaque row here is the black patch
+     --axi-well-fill exists to prevent. Same for the picker's rows below. */
   .axi-select option:hover, .axi-select option:focus {
-    background: var(--axi-ground); color: var(--axi-text);
+    background: var(--axi-well-fill); color: var(--axi-text);
   }
   /* The page-wide focus ring sits 2px outside its element; inside a picker
      that is 2px into the neighbouring row, so pull it back in. */
@@ -906,7 +942,7 @@ button.axi-panel--tile:hover,
   font-weight: 900;
 }
 .axi-picker__opt:hover, .axi-picker__opt:focus {
-  background: var(--axi-ground); color: var(--axi-text);
+  background: var(--axi-well-fill); color: var(--axi-text);
 }
 /* The page-wide focus ring sits 2px outside its element; inside a popover
    this tight that is 2px into the neighbouring row, so pull it back in. */
@@ -921,7 +957,8 @@ button.axi-panel--tile:hover,
    who wants round avatars sets --axi-radius-sm and gets rounded controls
    everywhere - which is the honest version of the request.
    Flat: outlined, no block. An avatar is content inside a panel, the same as
-   .axi-stat and .axi-table__rank, not a thing raised off it. */
+   .axi-stat and .axi-table__rank, not a thing raised off it - which is what
+   --axi-well-fill below is saying, and all three now say it the same way. */
 .axi-avatar {
   width: var(--axi-avatar-size, 40px);
   height: var(--axi-avatar-size, 40px);
@@ -929,7 +966,7 @@ button.axi-panel--tile:hover,
   display: grid;
   place-items: center;
   overflow: hidden;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   color: var(--axi-text-dim);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
@@ -994,7 +1031,9 @@ button.axi-panel--tile:hover,
   height: var(--axi-check-size, 22px);
   display: inline-grid;
   place-items: center;
-  background: var(--axi-ground);
+  /* An empty box is a hole you put a mark in, so the level's fill - see
+     --axi-well-fill in src/tokens.css. :checked below replaces it outright. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   /* The text-sized step, not the control-sized one - see --axi-radius-xs in
      src/tokens.css for why a 22px box cannot take a corner scaled for a 36px
@@ -1494,7 +1533,8 @@ textarea.axi-input {
   padding: 7px 8px; border-radius: var(--axi-radius-sm);
   font-size: 13px; font-weight: 600; color: var(--axi-text-dim); cursor: pointer;
 }
-.axi-menu__pop label:hover { background: var(--axi-ground); color: var(--axi-text); }
+/* A hovered row sinks - the same fill the select's and the picker's rows use. */
+.axi-menu__pop label:hover { background: var(--axi-well-fill); color: var(--axi-text); }
 .axi-menu__pop input { margin: 3px 0 0; }
 
 /* ---------- command palette ---------- */
@@ -1608,7 +1648,7 @@ textarea.axi-input {
 .axi-palette__trigger {
   display: flex; align-items: center; width: 100%; overflow: hidden;
   padding: 0 10px 0 0;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   color: var(--axi-text-dim);
@@ -1792,7 +1832,8 @@ textarea.axi-input {
   width: 32px; height: 32px;
   display: grid; place-items: center;
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* A control flat on the drawer's head - see --axi-well-fill in tokens. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   color: var(--axi-text-dim);
   font-size: 15px; font-weight: 900; cursor: pointer;
@@ -1880,7 +1921,8 @@ textarea.axi-input {
   margin: 0;
   padding: 11px 13px;
   border-left: var(--axi-border-panel) solid var(--axi-accent);
-  background: var(--axi-ground);
+  /* Sunk into the prose around it, so the well's fill - see .axi-stat. */
+  background: var(--axi-well-fill);
   border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
 }
 .axi-quote :where(p) { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }
@@ -2170,10 +2212,18 @@ textarea.axi-input {
    an outline and no block - it is content, not something raised off the
    surface it sits on. The number stays in --axi-text unless it has a real
    state: rule 5 applies to a figure exactly as it applies to a chip, and a
-   tile coloured for emphasis is decoration impersonating status. */
+   tile coloured for emphasis is decoration impersonating status.
+
+   Flat on the ground is the WELL's fill and not the page's. A tile is a recess
+   cut into the panel holding it, which is the same shape .axi-well names, and
+   spelled --axi-ground it stops being a recess the moment a theme makes that
+   panel translucent: an opaque page colour inside a pane of glass is a black
+   patch. The outline stays the ink line rather than following the well's,
+   because a tile is cut into a SURFACE and an ink edge still has something to
+   be darker than there. Same split in .axi-meter and .axi-plot below. */
 .axi-stat {
   padding: 12px 14px;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
 }
@@ -2260,7 +2310,8 @@ textarea.axi-input {
   display: grid; place-items: center;
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
-  background: var(--axi-ground);
+  /* Flat in the row, like the tile above and the avatar it stands beside. */
+  background: var(--axi-well-fill);
   font: var(--axi-t-micro);
   color: var(--axi-text-faint);
 }
@@ -2364,7 +2415,8 @@ textarea.axi-input {
 .axi-meter {
   display: flex;
   height: var(--axi-meter-h, 12px);
-  background: var(--axi-ground);
+  /* The trough is a recess, so it takes the well's fill - see .axi-stat. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   overflow: hidden;
@@ -2480,7 +2532,8 @@ textarea.axi-input {
 .axi-plot {
   position: relative;
   height: var(--axi-plot-h, 180px);
-  background-color: var(--axi-ground);
+  /* A frame cut into the panel, not laid on the page - see .axi-stat. */
+  background-color: var(--axi-well-fill);
   background-image: repeating-linear-gradient(
     to top,
     var(--axi-rule) 0 var(--axi-border-hairline),
@@ -2650,9 +2703,12 @@ textarea.axi-input {
 
 /* .axi-prose code is declared beside .axi-code in primitives.css: one rule,
    both selectors, because they are one object. */
+/* A code block and a quote are both fields sunk into the prose around them,
+   so both take --axi-well-fill rather than the page colour - the reason is
+   written out at .axi-stat in src/data.css. */
 .axi-prose pre {
   margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   box-shadow: var(--axi-shadow-control);
@@ -2663,7 +2719,7 @@ textarea.axi-input {
   margin: 0 0 18px;
   padding: 11px 13px;
   border-left: var(--axi-border-panel) solid var(--axi-accent);
-  background: var(--axi-ground);
+  background: var(--axi-well-fill);
   border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
 }
 .axi-prose blockquote p { margin: 0; font-style: italic; }

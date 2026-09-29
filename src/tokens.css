@@ -80,7 +80,26 @@
      against a fill lighter than itself. Every outline in this language is
      near-black on the assumption of a ground the lines can be darker than; a
      well IS at ground level, so an ink edge round one is a black line on a
-     black field. Raised takes ink, sunk takes the rule. */
+     black field. Raised takes ink, sunk takes the rule.
+
+     And what the fill names is not the .axi-well class - it is the level. A
+     button at rest, a field, a select, a checkbox, an avatar, a rank, a code
+     span, a hovered row in a popover: not one of them is raised off what holds
+     it, and every one of them was spelled --axi-ground, because on a theme
+     whose surfaces are opaque "flat on its container" and "the page colour"
+     are the same colour. They stop being the same colour the instant a theme
+     makes the container translucent, which is how the whole set went black at
+     once and why this is written here rather than fourteen times downstream.
+     Above this level is --axi-surface (.axi-kbd is the one control in the
+     language that is genuinely raised, and says so). Below it is --axi-ground
+     proper, which now means the page and only the page: body, the sheet, the
+     window, the masthead - the things content scrolls under, which need real
+     opacity and not a subtraction. Everything between the two is this token.
+
+     The LINE does not come along. --axi-well-line is for a well cut into the
+     page, where there is nothing left for ink to be darker than; a control is
+     cut into a SURFACE and its ink edge still has a fill above it to read
+     against. Every component below keeps --axi-ink-line. */
   --axi-well-fill: var(--axi-ground);
   --axi-well-line: var(--axi-rule);
   --axi-text: #f4f6f9;

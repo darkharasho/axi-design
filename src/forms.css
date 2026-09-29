@@ -34,7 +34,9 @@
   height: var(--axi-check-size, 22px);
   display: inline-grid;
   place-items: center;
-  background: var(--axi-ground);
+  /* An empty box is a hole you put a mark in, so the level's fill - see
+     --axi-well-fill in src/tokens.css. :checked below replaces it outright. */
+  background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   /* The text-sized step, not the control-sized one - see --axi-radius-xs in
      src/tokens.css for why a 22px box cannot take a corner scaled for a 36px
