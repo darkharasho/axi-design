@@ -132,8 +132,8 @@ through. \`--axi-surface-float\` is the surface for that case, and
 it.
 
 \`--tile\` is for a panel standing in a grid of its own kind rather than alone
-in the page. It drops the border and the block one step, to the control
-weight, so a row of six does not read as six page regions arguing with the
+in the page. It drops the border, the block and the corner one step, to the
+control weight, so a row of six does not read as six page regions arguing with the
 page that holds them - and because the ramp has two steps, a plain
 \`.axi-panel\` among tiles outranks them. That is how a grid of readings says
 "this one is first" without a hue: the accent is not available for it anyway,

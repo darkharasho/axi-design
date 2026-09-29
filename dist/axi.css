@@ -321,6 +321,13 @@ a { color: inherit; }
 .axi-panel--tile {
   border-width: var(--axi-border-control);
   box-shadow: var(--axi-shadow-control);
+  /* The control radius, not the panel's. A tile has already said it is
+     control-sized by taking the control border and the control block, and
+     --axi-radius's own note says control-sized surfaces read the small step -
+     so inheriting .axi-panel's corner was the one place the tile disagreed
+     with itself. Both are 0 in this theme, which is exactly why it had to be
+     fixed by reading the token rather than by looking at it. */
+  border-radius: var(--axi-radius-sm);
   padding: var(--axi-panel-pad, 12px);
 }
 /* A tile you can press moves under the press, the way every other control in
