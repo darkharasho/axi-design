@@ -88,7 +88,19 @@
    tab treatment: no tab padding, no tab weight, and faint until the cursor is
    on it. Two classes to outrank `.axi-tabs button`, which is one class and one
    element and would otherwise win on source order alone. */
-.axi-tabs__tab { display: inline-flex; align-items: center; }
+/* A document title is arbitrarily long, so the label truncates rather than
+   pushing the close control off the strip. Both boxes need min-width: 0 - a
+   flex item's default min-width is its content, so without it the label simply
+   refuses to shrink and the ellipsis never appears. The consumer sets the width
+   it wants to hold on .axi-tabs__tab. */
+.axi-tabs__tab { display: inline-flex; align-items: center; min-width: 0; }
+.axi-tabs__tab > a:first-child,
+.axi-tabs__tab > button:first-child {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .axi-tabs .axi-tabs__close {
   padding: 0 6px;
   font: var(--axi-t-micro);
