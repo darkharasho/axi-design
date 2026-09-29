@@ -878,3 +878,25 @@ describe('a quoted literal is one object, in or out of prose', () => {
     expect(kbd[1]).toMatch(/background:\s*var\(--axi-surface\)/)
   })
 })
+
+// The well is the one form in the language used at two scales, and until now
+// only one of them had a class - the other was a sentence in a comment telling
+// every consumer to write the same declaration inline. This holds the modifier
+// to exactly that declaration: a reading-scale well differs from a page-scale
+// one in its radius and in nothing else, so a second property appearing here
+// means the modifier has started to be a different component.
+describe('the well has a class for each of the two scales it is used at', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+  const body = () => (/\.axi-well--sm\s*\{([^}]*)\}/.exec(css) || [])[1]
+
+  it('sets the control radius and only the radius', () => {
+    expect(body(), 'no .axi-well--sm rule found').toBeTruthy()
+    const decls = body().split(';').map((d) => d.trim()).filter(Boolean)
+    expect(decls).toEqual(['--axi-well-radius: var(--axi-radius-sm)'])
+  })
+
+  it('leaves the base well on the panel-scale radius', () => {
+    const base = /\.axi-well\s*\{([^}]*)\}/.exec(css)
+    expect(base[1]).toMatch(/border-radius:\s*var\(--axi-well-radius,\s*var\(--axi-radius\)\)/)
+  })
+})

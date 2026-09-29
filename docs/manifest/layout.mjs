@@ -193,7 +193,7 @@ off the element.`,
     id: 'well',
     name: 'Well',
     layer: 'layout',
-    classes: ['.axi-well'],
+    classes: ['.axi-well', '.axi-well--sm'],
     summary: "The panel's inverse: a field sunk into the surface around it rather than raised off it. Ground fill, the internal rule for an edge, and no block.",
     rules: [3],
     knobs: ['--axi-well-pad', '--axi-well-radius'],
@@ -216,8 +216,28 @@ patch rather than a recess, so a glass theme restates it as a darkening at
 alpha and lets the pane's own tint carry through.
 
 Reach for a well wherever the content standing in it brings its own edges: a
-picker list beside a table, a column of cards, a trough a meter fills.`,
+picker list beside a table, a column of cards, a trough a meter fills.
+
+A well is the one form here used at two scales - a field the size of a page
+column, and a recess the size of a single reading - and \`--sm\` is the second
+one. At reading scale the panel radius is the wrong one; it is the radius
+everything else that small already declines. The modifier sets that and nothing
+else, because the two scales differ in their corner and in nothing else: a small
+well still holds objects carrying their own padding, so \`--axi-well-pad\` is
+still how you say anything about its inside.`,
     examples: [
+      {
+        title: 'The two scales, side by side',
+        note: 'The page-column well takes the panel radius; the reading-scale one declines it',
+        html: `<div class="axi-row" style="--axi-row-gap: 12px; align-items: stretch">
+  <div class="axi-well" style="flex: 1">
+    <p class="axi-eyebrow">Page scale</p>
+  </div>
+  <div class="axi-well axi-well--sm" style="flex: 1">
+    <p class="axi-eyebrow">Reading scale</p>
+  </div>
+</div>`,
+      },
       {
         title: 'A well inside a panel',
         note: 'The picker is sunk, the cards in it are raised',

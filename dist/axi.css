@@ -371,6 +371,17 @@ button.axi-panel--tile:hover,
   padding: var(--axi-well-pad, 10px);
 }
 
+/* The reading-scale well, which the comment above describes and this language
+   then made every consumer spell out by hand. Saying `--axi-radius-sm` inline
+   is fine for the handful of instances that comment imagined; the first real
+   consumer to be counted had fifty, and fifty inline style attributes is the
+   thing a class exists to prevent. The same argument produced .axi-btn--sm.
+
+   Only the radius, because that is the only thing that changes: a recess the
+   size of a single reading still holds objects that carry their own padding, so
+   the pad knob is still the right way to say anything else. */
+.axi-well--sm { --axi-well-radius: var(--axi-radius-sm); }
+
 /* ---------- button ---------- */
 .axi-btn {
   display: inline-flex; align-items: center; gap: 8px;
