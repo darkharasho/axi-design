@@ -353,3 +353,40 @@ describe('applyTheme', () => {
     expect(el.attrs.has('data-axi-theme')).toBe(false)
   })
 })
+
+// --axi-ground-image is a comma-separated list of three gradients under the
+// glass theme, and the `background` shorthand only accepts a colour in its
+// FINAL layer. `background: var(--axi-ground) var(--axi-ground-image)` puts the
+// colour in the first layer, which makes the whole declaration invalid and
+// drops it - leaving the element with no fill at all. That shipped once, in
+// .axi-sheet, and nothing in this suite noticed: the CSS parses, the token
+// resolves, and only a browser computing the value shows the loss.
+//
+// The rule is the one base.css already follows for body: read the image token
+// with the background-image longhand, never the shorthand.
+describe('the ground image token', () => {
+  const SRC = resolve(process.cwd(), 'src')
+  const css = readFileSync(resolve(SRC, 'shells.css'), 'utf8') +
+    readFileSync(resolve(SRC, 'base.css'), 'utf8') +
+    readFileSync(resolve(SRC, 'primitives.css'), 'utf8') +
+    readFileSync(resolve(SRC, 'layout.css'), 'utf8') +
+    readFileSync(resolve(SRC, 'data.css'), 'utf8') +
+    readFileSync(resolve(SRC, 'feedback.css'), 'utf8') +
+    readFileSync(resolve(SRC, 'forms.css'), 'utf8')
+
+  const declarations = (text) =>
+    [...text.replace(/\/\*[\s\S]*?\*\//g, '').matchAll(/([a-z-]+)\s*:\s*([^;}]*--axi-ground-image[^;}]*)/g)]
+
+  it('is only ever read through the background-image longhand', () => {
+    for (const [, prop] of declarations(css)) expect(prop).toBe('background-image')
+  })
+
+  it('finds the declarations it is meant to guard', () => {
+    expect(declarations(css).length).toBeGreaterThan(1)
+  })
+
+  it('fails on the shorthand form that shipped broken', () => {
+    const bad = declarations('.x { background: var(--axi-ground) var(--axi-ground-image); }')
+    expect(bad.map(([, p]) => p)).toEqual(['background'])
+  })
+})

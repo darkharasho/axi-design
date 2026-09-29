@@ -1673,9 +1673,15 @@ textarea.axi-input {
    Which is why it paints the ground's IMAGE as well as the ground's colour. A
    sheet is the page for as long as it is open, and a theme that lights the
    page from a few directions would otherwise have that light blink off every
-   time a reader opened one, then back on when they closed it. `background` in
-   the shorthand, so a theme leaving --axi-ground-image as `none` still gets a
-   clean flat fill and no stray layer.
+   time a reader opened one, then back on when they closed it.
+
+   The two longhands, the same pair `body` uses, and NOT the `background`
+   shorthand: --axi-ground-image is a comma-separated list of three gradients
+   under the glass theme, and the shorthand only accepts a colour in its final
+   layer. `background: <colour> <three gradients>` puts the colour in the first
+   layer, which makes the whole declaration invalid and drops it - a sheet with
+   no fill at all, over a live page. It is exactly the trap the token block
+   warns about two tokens up, in the other direction.
 
    No filter either, for the same reason the window has none: there is nothing
    to see through to. The two knobs are the only things a consumer genuinely
@@ -1694,7 +1700,8 @@ textarea.axi-input {
   flex-direction: column;
   overflow-x: hidden;
   overflow-y: auto;
-  background: var(--axi-ground) var(--axi-ground-image);
+  background-color: var(--axi-ground);
+  background-image: var(--axi-ground-image);
   padding: var(--axi-sheet-pad, 12px 16px);
 }
 /* The heading the sheet opened with, divided from the body by a rule. Rule 8:
