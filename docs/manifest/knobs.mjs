@@ -66,6 +66,18 @@ export const KNOBS = [
     example: '<button class="axi-btn" style="--axi-btn-size: 10px">',
   },
   {
+    name: '--axi-pill-pad',
+    sets: 'the padding inside an `.axi-pill`. The same scale and the same two named steps as the button, because a pill is a button that holds a state',
+    fallback: '`12px 20px`',
+    example: '<button class="axi-pill" style="--axi-pill-pad: 3px 7px">',
+  },
+  {
+    name: '--axi-pill-size',
+    sets: "an `.axi-pill`'s text size, which travels with its padding",
+    fallback: '`13px`',
+    example: '<button class="axi-pill" style="--axi-pill-size: 10px">',
+  },
+  {
     name: '--axi-input-pad',
     sets: 'the padding inside an `.axi-input`, for a field that is furniture in a header rather than a control on a page',
     fallback: '`11px 12px`',

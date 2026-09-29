@@ -798,3 +798,43 @@ describe('a pressable chip changes no colour', () => {
     expect(bodies).toMatch(/transform\s*:\s*translate\(/)
   })
 })
+
+// The pill and the button share one scale, and the sharing is the point: the
+// only thing a pill has that a button does not is a state, so two of them
+// carrying the same label must be the same shape. They were not - the pill sat
+// at 10px/9px against the button's 12px/20px, its sides less than half - and
+// nothing in either rule said they were meant to match, which is exactly how
+// they drifted. This holds them in step.
+describe('a pill is a button that holds a state, so it is the same shape', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+
+  const knob = (name) => {
+    const m = new RegExp(`var\\(${name.replace(/[-]/g, '\\-')},\\s*([^)]*)\\)`).exec(css)
+    return m && m[1].trim()
+  }
+  const step = (selector, knobName) => {
+    const rule = new RegExp(`${selector.replace(/[-.]/g, (c) => '\\' + c)}\\s*\\{([^}]*)\\}`).exec(css)
+    if (!rule) return null
+    const m = new RegExp(`${knobName.replace(/[-]/g, '\\-')}:\\s*([^;]*)`).exec(rule[1])
+    return m && m[1].trim()
+  }
+
+  it('shares the default padding and label size', () => {
+    // Fails loudly rather than quietly comparing null to null.
+    expect(knob('--axi-btn-pad'), 'no --axi-btn-pad fallback found').toBeTruthy()
+    expect(knob('--axi-pill-pad')).toBe(knob('--axi-btn-pad'))
+    expect(knob('--axi-btn-size'), 'no --axi-btn-size fallback found').toBeTruthy()
+    expect(knob('--axi-pill-size')).toBe(knob('--axi-btn-size'))
+  })
+
+  for (const s of ['sm', 'xs']) {
+    it(`--${s} sets the same padding and size on both`, () => {
+      const btnPad = step(`.axi-btn--${s}`, '--axi-btn-pad')
+      expect(btnPad, `.axi-btn--${s} not found`).toBeTruthy()
+      expect(step(`.axi-pill--${s}`, '--axi-pill-pad')).toBe(btnPad)
+      const btnSize = step(`.axi-btn--${s}`, '--axi-btn-size')
+      expect(btnSize, `.axi-btn--${s} sets no size`).toBeTruthy()
+      expect(step(`.axi-pill--${s}`, '--axi-pill-size')).toBe(btnSize)
+    })
+  }
+})

@@ -235,10 +235,10 @@ stays correct.`,
     id: 'pill',
     name: 'Pill',
     layer: 'primitives',
-    classes: ['.axi-pill'],
+    classes: ['.axi-pill', '.axi-pill--sm', '.axi-pill--xs'],
     summary: 'A filter toggle. Pressed, it fills with the colour of the thing it filters to, so the control reads as that thing rather than as a generic "selected".',
     rules: [4],
-    knobs: ['--axi-pill-fill'],
+    knobs: ['--axi-pill-fill', '--axi-pill-pad', '--axi-pill-size'],
     notes: `A pill says which of several filters you chose; a switch says what
 state one thing is in. State lives in \`aria-pressed\`, not in a modifier
 class, so the accessibility tree and the appearance cannot disagree.
@@ -246,7 +246,13 @@ class, so the accessibility tree and the appearance cannot disagree.
 component, which is what lets a consumer set it on the pill or on any
 ancestor. A pressed pill already rests on a block, so hovering it deepens
 that block rather than sliding it - the pressed-and-hovered case is spelled
-out in the stylesheet because without it source order decided the answer.`,
+out in the stylesheet because without it source order decided the answer.
+
+It stands on the button's scale, with the button's two named steps and the same
+numbers in them. The only thing a pill has that a button does not is a state, so
+two of them carrying the same label have no business being different shapes -
+and they were, the pill's sides measuring less than half the button's. Anything
+holding a row of both wants them interchangeable.`,
     examples: [
       {
         title: 'A row of severity filters',
@@ -257,6 +263,22 @@ out in the stylesheet because without it source order decided the answer.`,
   <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-ok)">Low</button>
   <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-warn)">Elevated</button>
   <button class="axi-pill" aria-pressed="true" type="button" style="--axi-pill-fill: var(--axi-danger)">High</button>
+</div>`,
+      },
+      {
+        title: 'The two steps, beside the button they share a scale with',
+        note: 'A pill and a button at the same step are the same shape; only the state differs',
+        html: `<div class="axi-row" style="--axi-row-gap: 8px">
+  <button class="axi-btn">Button</button>
+  <button class="axi-pill" aria-pressed="true" type="button">Pill</button>
+</div>
+<div class="axi-row" style="--axi-row-gap: 8px">
+  <button class="axi-btn axi-btn--sm">Button sm</button>
+  <button class="axi-pill axi-pill--sm" aria-pressed="true" type="button">Pill sm</button>
+</div>
+<div class="axi-row" style="--axi-row-gap: 8px">
+  <button class="axi-btn axi-btn--xs">Button xs</button>
+  <button class="axi-pill axi-pill--xs" aria-pressed="true" type="button">Pill xs</button>
 </div>`,
       },
     ],

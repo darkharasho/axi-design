@@ -448,19 +448,30 @@ button.axi-panel--tile:hover,
    as a generic "selected". Consumers set that colour with --axi-pill-fill,
    on the pill or on any ancestor - it is read through a fallback and never
    declared on the component, which is what keeps both placements working. */
+/* On the button's scale, and deliberately the same numbers. The only thing a
+   pill has that a button does not is a state, so two of them carrying the same
+   13px uppercase label have no reason to be different shapes - and they were:
+   measured at 12px/20px against 10px/9px, the pill's sides less than half the
+   button's, 43px tall against 39px. Side by side that reads as two components
+   rather than one component holding a state. The steps below are the button's
+   steps verbatim for the same reason, and a test holds the two in step. */
 .axi-pill {
   display: inline-flex; align-items: center; gap: 6px;
-  padding: 10px 9px;
+  padding: var(--axi-pill-pad, 12px 20px);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   background: var(--axi-ground);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   letter-spacing: var(--axi-ls-label);
+  /* After the `font` shorthand, which sets 13px and would otherwise reset it. */
+  font-size: var(--axi-pill-size, 13px);
   text-transform: uppercase;
   cursor: pointer;
   transition: transform .1s, box-shadow .1s;
 }
+.axi-pill--sm { --axi-pill-pad: 8px 13px; --axi-pill-size: 12px; }
+.axi-pill--xs { --axi-pill-pad: 5px 9px;  --axi-pill-size: 11px; }
 /* :where() for the same reason the button's hover has it - the brighten is
    what a pill that has not been told its colour falls back to, not an override
    of one that has. See rule 6's addendum. */
