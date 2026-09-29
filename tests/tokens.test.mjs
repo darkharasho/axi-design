@@ -677,3 +677,91 @@ describe('the float surface reaches every surface that floats', () => {
     }
   })
 })
+
+// Rule 6's addendum, as arithmetic rather than prose. The ink and edge layers
+// live last in the cascade and weigh one class each, which is what lets a
+// consumer write `class="axi-btn axi-ink-danger"` and have it land. A component
+// rule that sets the same property at two classes takes it back, and a
+// pseudo-class counts: `.axi-btn:hover` is two, so the danger button read plain
+// white under the cursor for as long as the ink layer has existed. Nothing told
+// anybody - both rules are correct in isolation, and the failure only appears
+// while the pointer is down on the element.
+//
+// Only the generic pressables are judged. A rail item's selected colour, a
+// palette row's cursor colour and a pressed pill's fill-contrast ink are the
+// state's whole meaning, so an ink reaching them would be the bug instead; they
+// are named in RULES.md as staying at full weight, and their absence from this
+// list is the same decision written twice.
+describe('a generic control does not out-rank the ink layer it sits under', () => {
+  const GENERIC = ['.axi-btn', '.axi-pill']
+  // The properties the ink and edge utilities set, and nothing else - a state
+  // rule is free to restate background, shadow or transform at any weight.
+  const INKED = /(^|[\s;])(color|border-color)\s*:/
+
+  // Specificity of the class column only, which is all that matters against a
+  // one-class utility. :where() contributes nothing, which is the fix under
+  // test, so its contents come out first.
+  const classWeight = (selector) => {
+    const bare = selector.replace(/:where\([^()]*\)/g, '')
+    return (
+      (bare.match(/\.[\w-]+/g) || []).length +
+      (bare.match(/\[[^\]]*\]/g) || []).length +
+      (bare.match(/:(?!:)[\w-]+/g) || []).length
+    )
+  }
+
+  // A state on the SAME element as the component class: `.axi-btn:hover`, not
+  // `.axi-btn .axi-icon`. A descendant rule cannot be overruled by an ink on
+  // the ancestor and is a different question.
+  const sameElementStates = (css, base) => {
+    const esc = base.replace(/[.\-]/g, '\\$&')
+    const re = new RegExp(`([^{},]*${esc}(?![\\w-])[^{},]*)\\{([^}]*)\\}`, 'g')
+    return [...css.matchAll(re)]
+      .map(([, sel, body]) => [sel.trim(), body])
+      .filter(([sel]) => !/\s|>|\+|~/.test(sel.replace(/\([^()]*\)/g, '')))
+      .filter(([, body]) => INKED.test(body))
+  }
+
+  // `--primary` rests on the accent block, so its colour is that fill's
+  // contrast pair rather than a default. An ink reaching it would put a status
+  // colour on the accent and cost the label its legibility, which is rule 5's
+  // reason for the chip. Same for a pressed pill.
+  const CONTRAST_PAIRS = /--primary|\[aria-pressed="true"\]/
+
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+
+  for (const base of GENERIC) {
+    it(`${base}'s state rules leave the ink layer reachable`, () => {
+      const rules = sameElementStates(css, base)
+      // If the parser stops finding rules the guard is inert, not passing.
+      expect(rules.length, `${base} has no inked rule of its own`).toBeGreaterThan(0)
+      const overweight = rules
+        .filter(([sel]) => !CONTRAST_PAIRS.test(sel))
+        .filter(([sel]) => classWeight(sel) > 1)
+        .map(([sel]) => sel)
+      expect(overweight).toEqual([])
+    })
+  }
+
+  it('fails a state rule that takes the colour back, and passes the :where() form', () => {
+    const bad = '.axi-btn:hover { color: var(--axi-text); }'
+    const good = '.axi-btn:where(:hover) { color: var(--axi-text); }'
+    const weigh = (css) =>
+      sameElementStates(css, '.axi-btn')
+        .filter(([sel]) => classWeight(sel) > 1)
+        .map(([sel]) => sel)
+    expect(weigh(bad)).toEqual(['.axi-btn:hover'])
+    expect(weigh(good)).toEqual([])
+  })
+
+  it('judges the element, not its descendants or its siblings', () => {
+    // A descendant rule is out of scope even at three classes...
+    expect(
+      sameElementStates('.axi-btn:hover .axi-icon { color: red; }', '.axi-btn'),
+    ).toEqual([])
+    // ...and a rule that sets no ink is out of scope at any weight.
+    expect(
+      sameElementStates('.axi-btn:hover:focus { transform: none; }', '.axi-btn'),
+    ).toEqual([])
+  })
+})

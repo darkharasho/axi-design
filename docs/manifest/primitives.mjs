@@ -3,10 +3,18 @@ export default [
     id: 'btn',
     name: 'Button',
     layer: 'primitives',
-    classes: ['.axi-btn', '.axi-btn--primary', '.axi-btn--ghost', '.axi-btn--dashed'],
+    classes: [
+      '.axi-btn',
+      '.axi-btn--primary',
+      '.axi-btn--ghost',
+      '.axi-btn--dashed',
+      '.axi-btn--sm',
+      '.axi-btn--xs',
+      '.axi-btn--icon',
+    ],
     summary: 'The control everything else is measured against: an outlined box at the control weight that gains its block under the cursor. One button per view is the primary.',
     rules: [3, 4],
-    knobs: [],
+    knobs: ['--axi-btn-pad', '--axi-btn-size'],
     aliases: ['button'],
     notes: `A default button rests flat and draws its 3px block for the first time
 on hover, which is why the lift reads as a lift. \`--primary\` is the one
@@ -15,7 +23,22 @@ block to 6px instead - translating alone would move element and block
 together and leave the lower-right edge exactly where it was, which reads as
 the button growing. \`--ghost\` and \`--dashed\` drop the fill to sit inside a
 surface that has already chosen one; dashed is the language's "add
-something" affordance.`,
+something" affordance.
+
+There are three sizes because one was a fiction. A button that only comes at
+20px sides is the right size for a page's main action and the wrong size for
+every dense place an app has - a filter beside 11px type, a toolbar, a row of
+controls in a card header - and a consumer who needs one of those spells its
+own padding and font-size in utilities, at which point the button is only
+borrowing the border. \`--sm\` and \`--xs\` step both numbers together, the way
+\`.axi-table--dense\` does, so "the small one" is a thing you can say rather
+than a pair of values you have to pick.
+
+\`--icon\` is different in kind: not a size the language was missing but one it
+had wrong. An icon-only button has no label to pad around, so the sides meant
+for one produced a wide rectangle around a single glyph - which the icon page's
+own "Alone in a button" example showed, uncommented, for as long as it has
+existed.`,
     examples: [
       {
         title: 'The four buttons',
@@ -28,6 +51,24 @@ something" affordance.`,
       {
         title: 'A button carrying a count',
         html: `<button class="axi-btn axi-btn--dashed" type="button">Filters <span class="axi-badge-count">3</span></button>`,
+      },
+      {
+        title: 'The three sizes, and the icon-only one',
+        note: 'The padding and the type step together; --icon drops the sides a label was paying for',
+        html: `<button class="axi-btn" type="button">Default</button>
+<button class="axi-btn axi-btn--sm" type="button">Small</button>
+<button class="axi-btn axi-btn--xs" type="button">Extra small</button>
+<button class="axi-btn axi-btn--icon" type="button" aria-label="Close">
+  <svg class="axi-icon" aria-hidden="true"><use href="#axi-x"/></svg>
+</button>`,
+      },
+      {
+        title: 'A button that has been told what it means',
+        note: 'The ink survives the cursor - the hover brighten is a fallback, not an override',
+        html: `<button class="axi-btn axi-btn--sm axi-ink-danger axi-edge-danger" type="button">
+  <svg class="axi-icon" aria-hidden="true"><use href="#axi-trash"/></svg>
+  Delete
+</button>`,
       },
     ],
   },

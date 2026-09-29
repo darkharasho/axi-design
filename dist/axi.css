@@ -374,13 +374,15 @@ button.axi-panel--tile:hover,
 /* ---------- button ---------- */
 .axi-btn {
   display: inline-flex; align-items: center; gap: 8px;
-  padding: 12px 20px;
+  padding: var(--axi-btn-pad, 12px 20px);
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
   background: var(--axi-ground);
   color: var(--axi-text-dim);
   font: var(--axi-t-label);
   letter-spacing: var(--axi-ls-label);
+  /* After the `font` shorthand, which sets 13px and would otherwise reset it. */
+  font-size: var(--axi-btn-size, 13px);
   text-transform: uppercase;
   text-decoration: none;
   cursor: pointer;
@@ -388,8 +390,18 @@ button.axi-panel--tile:hover,
 }
 /* Hover lifts. Nothing in this language fades or glows: the block deepens and
    the element moves against it, which reads instantly even in peripheral
-   vision and costs no colour. */
-.axi-btn:hover {
+   vision and costs no colour.
+
+   :where() around the state, not decoration. `.axi-btn:hover` weighs two
+   classes, so it beat the ink layer's one and a button written
+   `class="axi-btn axi-ink-danger"` went from danger red to plain white under
+   the cursor - the verdict disappearing at the moment the reader reaches for
+   it. That is rule 6's "a component may not out-rank its own modifiers" with
+   a pseudo-class doing the out-ranking instead of an element, and it wants the
+   same fix. The dim-to-plain brighten still happens: it is the fallback now,
+   not an override, so it applies to exactly the buttons that have not been
+   told what colour they are. */
+.axi-btn:where(:hover) {
   color: var(--axi-text);
   box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
@@ -402,13 +414,33 @@ button.axi-panel--tile:hover,
 /* The one button that rests with a block already under it, so the generic
    hover's translate alone would move element and block together and leave the
    lower-right edge where it started - the "grows rather than lifts" failure
-   rule 4 warns about. It lifts the way a panel does: the block deepens too. */
+   rule 4 warns about. It lifts the way a panel does: the block deepens too.
+
+   Not wrapped in :where() the way the generic hover is: this colour is the
+   accent fill's contrast pair, not a default a consumer might mean to replace.
+   An ink reaching it would put a status colour on top of the accent block and
+   the label would stop being legible, which is rule 5's reason for the chip. */
 .axi-btn--primary:hover {
   color: var(--axi-accent-ink);
   box-shadow: var(--axi-shadow-control-hover);
 }
 .axi-btn--ghost { background: transparent; }
 .axi-btn--dashed { background: transparent; border-style: dashed; }
+/* Three sizes, because one was a fiction. A language that ships a single
+   button leaves every dense place in an app - a filter beside 11px type, a
+   toolbar, a row of controls in a card header - to spell its own padding and
+   font-size in utilities, and at that point the button is only borrowing the
+   border. The steps are named rather than left to the knobs for the same
+   reason .axi-table--dense is: a consumer saying "this is the small one"
+   should not have to pick the numbers, and the numbers should move together
+   when they move.
+   The icon step is the one the language got wrong rather than omitted. An
+   icon-only button has no label to pad around, so the 20px sides meant for
+   one produced a wide rectangle around a single glyph - visible in this
+   language's own gallery, in the example titled "Alone in a button". */
+.axi-btn--sm   { --axi-btn-pad: 8px 13px; --axi-btn-size: 12px; }
+.axi-btn--xs   { --axi-btn-pad: 5px 9px;  --axi-btn-size: 11px; }
+.axi-btn--icon { --axi-btn-pad: 7px; }
 
 /* ---------- pill ---------- */
 /* A filter toggle. Its pressed state fills with whatever colour the consumer
@@ -429,7 +461,10 @@ button.axi-panel--tile:hover,
   cursor: pointer;
   transition: transform .1s, box-shadow .1s;
 }
-.axi-pill:hover {
+/* :where() for the same reason the button's hover has it - the brighten is
+   what a pill that has not been told its colour falls back to, not an override
+   of one that has. See rule 6's addendum. */
+.axi-pill:where(:hover) {
   color: var(--axi-text);
   box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
@@ -439,11 +474,14 @@ button.axi-panel--tile:hover,
   color: var(--axi-accent-ink);
   box-shadow: var(--axi-shadow-control);
 }
-/* Spelled out rather than left to source order: `.axi-pill:hover` and
-   `.axi-pill[aria-pressed="true"]` have identical specificity, so without this
-   rule a pressed pill under the cursor kept its pressed block while still
-   taking the hover's translate - a slide, not a lift, decided by which rule
-   happened to come last in the file. A pressed pill keeps its fill and lifts. */
+/* Spelled out rather than left to the cascade. This was originally about equal
+   specificity - the two rules weighed the same, so which one a pressed pill
+   under the cursor took was decided by file order. The hover's :where() ended
+   the tie in the pressed rule's favour, and made this rule matter more rather
+   than less: `transform` is set only by the hover, so a pressed pill would take
+   its own fill and block from the higher-weight rule while still taking the
+   hover's translate - a slide, not a lift, which is the failure rule 4 names.
+   A pressed pill keeps its fill and lifts. */
 .axi-pill[aria-pressed="true"]:hover {
   background: var(--axi-pill-fill, var(--axi-accent));
   color: var(--axi-accent-ink);

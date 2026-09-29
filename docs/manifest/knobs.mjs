@@ -54,6 +54,18 @@ export const KNOBS = [
     example: '<textarea class="axi-input" style="--axi-textarea-h: 200px">',
   },
   {
+    name: '--axi-btn-pad',
+    sets: 'the padding inside an `.axi-btn`. The three named steps set it for you; reach for the knob only for a size they do not cover',
+    fallback: '`12px 20px`',
+    example: '<button class="axi-btn" style="--axi-btn-pad: 3px 7px">',
+  },
+  {
+    name: '--axi-btn-size',
+    sets: "an `.axi-btn`'s text size, which travels with its padding",
+    fallback: '`13px`',
+    example: '<button class="axi-btn" style="--axi-btn-size: 10px">',
+  },
+  {
     name: '--axi-input-pad',
     sets: 'the padding inside an `.axi-input`, for a field that is furniture in a header rather than a control on a page',
     fallback: '`11px 12px`',

@@ -138,6 +138,8 @@ not "what does the system look like". Everything else is
 | `--axi-check-size` | the size of an `.axi-check` or `.axi-radio` box | `22px` | `<input type="checkbox" class="axi-check" style="--axi-check-size: 16px">` |
 | `--axi-check-fill` | the fill a checked `.axi-check` takes, and the colour of a checked `.axi-radio`'s diamond | `var(--axi-accent)` | `<input type="checkbox" class="axi-check" style="--axi-check-fill: var(--axi-danger)">` |
 | `--axi-textarea-h` | the minimum height of a `<textarea class="axi-input">` | `90px` | `<textarea class="axi-input" style="--axi-textarea-h: 200px">` |
+| `--axi-btn-pad` | the padding inside an `.axi-btn`. The three named steps set it for you; reach for the knob only for a size they do not cover | `12px 20px` | `<button class="axi-btn" style="--axi-btn-pad: 3px 7px">` |
+| `--axi-btn-size` | an `.axi-btn`'s text size, which travels with its padding | `13px` | `<button class="axi-btn" style="--axi-btn-size: 10px">` |
 | `--axi-input-pad` | the padding inside an `.axi-input`, for a field that is furniture in a header rather than a control on a page | `11px 12px` | `<input class="axi-input" style="--axi-input-pad: 7px 12px">` |
 | `--axi-input-size` | an `.axi-input`'s text size, which travels with its padding | `14px` | `<input class="axi-input" style="--axi-input-size: 13px">` |
 | `--axi-well-pad` | the padding inside an `.axi-well` | `10px` | `<div class="axi-well" style="--axi-well-pad: 18px">` |

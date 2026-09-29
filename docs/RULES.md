@@ -260,12 +260,27 @@ there is no object, only a mark.
 
 They live in `src/utilities.css`, last in the cascade, which is how a single
 class overrules the component it sits inside without `!important`. That places
-an obligation on components in the other direction: **a component's base rules
-may not out-rank its own modifiers.** A rule written `.axi-table td` weighs a
-class and a type, so it silently defeats both `.axi-table__num` and any ink a
-consumer puts on the cell — the fix is `:where()` around the element, which
-spends no specificity. Where a component holds a consumer's content, wrap the
-element part.
+an obligation on components in the other direction: **a component's base and
+state rules may not out-rank its own modifiers.** A rule written `.axi-table td`
+weighs a class and a type, so it silently defeats both `.axi-table__num` and any
+ink a consumer puts on the cell — the fix is `:where()` around the element,
+which spends no specificity. Where a component holds a consumer's content, wrap
+the element part.
+
+A pseudo-class does the same arithmetic. `.axi-btn:hover` weighs two classes, so
+a button written `class="axi-btn axi-ink-danger"` was danger red at rest and
+plain white under the cursor: the verdict vanishing at the moment the reader
+reaches for it. Where a state rule restates a colour the consumer might have
+meant to set — a generic control's hover brighten, which applies to whatever has
+not been told what it is — wrap the state: `.axi-btn:where(:hover)`. The
+brighten becomes the fallback it always was.
+
+Two things this does not apply to. A colour that *is* the state's meaning stays
+at full weight, because there is nothing for an ink to add and an ink reaching it
+would be wrong: a selected rail item, a palette's cursor row, a pressed pill. And
+a colour that is a fill's contrast pair — `.axi-btn--primary`'s accent ink — stays
+too, because an ink there would put a status colour on the accent block and cost
+the label its legibility, which is rule 5's reason for the chip.
 
 ## 7. The diamond is the family motif
 
