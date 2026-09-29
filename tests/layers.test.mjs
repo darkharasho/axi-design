@@ -52,3 +52,37 @@ describe('the layer stack', () => {
     expect(declaredLayers('/* see z-index: 999 */ .a { z-index: 40; }')).toEqual(new Set([40]))
   })
 })
+
+// A placement modifier has to cancel BOTH halves of the base class's
+// placement, or it leaves a claim the element cannot honour. .axi-tooltip
+// declares `position: fixed` and `z-index: 70`; .axi-tooltip--flow says the
+// box is laid out by whoever owns its wrapper, so a `z-index` left behind
+// would assert layer 70 on a static box - inert, and a lie to the next
+// reader. This is a rule about the pair, not about either value.
+describe('a placement modifier cancels the placement it modifies', () => {
+  const body = (css, selector) =>
+    css.replace(/\/\*[\s\S]*?\*\//g, '').match(
+      new RegExp(`(^|[},])\\s*${selector.replace(/[.\-]/g, '\\$&')}\\s*\\{([^}]*)\\}`, 'm'),
+    )?.[2] ?? ''
+
+  const PAIRS = [['.axi-tooltip', '.axi-tooltip--flow']]
+
+  for (const [base, modifier] of PAIRS) {
+    it(`${modifier} answers every placement property ${base} sets`, () => {
+      const css = sources()
+      const set = (sel) =>
+        new Set([...body(css, sel).matchAll(/(^|[\s;])(position|z-index)\s*:/g)].map((m) => m[2]))
+      const baseProps = set(base)
+      expect(baseProps.size).toBeGreaterThan(1)
+      expect([...baseProps].filter((p) => !set(modifier).has(p))).toEqual([])
+    })
+  }
+
+  // Both polarities: a modifier answering only half must fail.
+  it('fails a modifier that leaves a layer behind', () => {
+    const css = '.x { position: fixed; z-index: 70; } .x--flow { position: static; }'
+    const props = (sel) =>
+      new Set([...body(css, sel).matchAll(/(^|[\s;])(position|z-index)\s*:/g)].map((m) => m[2]))
+    expect([...props('.x')].filter((p) => !props('.x--flow').has(p))).toEqual(['z-index'])
+  })
+})

@@ -1540,6 +1540,31 @@ textarea.axi-input {
    left/top or inset the placement needs); this only changes which box those
    offsets are measured from. */
 .axi-tooltip--anchored { position: absolute; }
+/* The third placement, and the one the base class cannot express: the box is
+   laid out by whoever owns its wrapper, and this element positions itself not
+   at all. Charting libraries are the case that forces it - recharts renders
+   custom tooltip content inside a wrapper it has already placed and
+   transformed - but the shape is general: any library that hands you a slot
+   and puts the slot where it wants it.
+
+   Worth saying why the base class LOOKS like it already works here, because
+   it does, and for a reason that will not hold. A `position: fixed` box with
+   every inset auto resolves to its static position, so dropped into such a
+   wrapper it lands exactly where the wrapper is - zero drift, measurably. It
+   then scrolls with the chart only because the wrapper carries a transform,
+   which is the very containment the base class's <body> contract exists to
+   escape. Two facts hold it up, both of them someone else's: that the library
+   keeps transforming the wrapper, and that it keeps emitting positioning at
+   all. recharts drops both when its `portal` prop is set, and the failure is
+   silent - a tooltip pinned to the viewport while the chart scrolls away.
+
+   So this says the true thing instead of inheriting the accident. `static`
+   rather than `relative` because the consumer has no offsets to apply - that
+   is the whole point of the modifier - and `z-index: auto` because a layer is
+   meaningless on a static box and layer 70 would only be a claim it cannot
+   honour. */
+.axi-tooltip--flow { position: static; z-index: auto; }
+
 /* A tooltip carrying a sentence rather than a value. nowrap is right for a
    reading - a number that breaks across two lines is harder to read than one
    that runs past its trigger - and wrong for prose, which needs a width from

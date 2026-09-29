@@ -287,7 +287,7 @@ marked without a class.`,
     id: 'tooltip',
     name: 'Tooltip',
     layer: 'primitives',
-    classes: ['.axi-tooltip', '.axi-tooltip--anchored', '.axi-tooltip--wrap'],
+    classes: ['.axi-tooltip', '.axi-tooltip--anchored', '.axi-tooltip--flow', '.axi-tooltip--wrap'],
     summary: 'One line of text on the darkest surface in the language, so it reads over anything it lands on. The box is the language\'s; the coordinates are the consumer\'s.',
     rules: [4],
     knobs: [],
@@ -307,14 +307,23 @@ hover lift carries the tooltip along instead of stranding it. The consumer
 still supplies the offsets - a positioned trigger and the left/top the
 placement needs - and the \`<body>\` contract does not apply.
 
+\`--flow\` is the third placement: the box is laid out by whoever owns its
+wrapper, and it positions itself not at all. A charting library is the case
+that forces it - recharts places and transforms a wrapper and renders your
+content inside it - and the base class deceives here, because a fixed box with
+auto insets lands at its static position and so appears to work perfectly. It
+scrolls with the chart only because that wrapper is transformed, which is the
+containment the \`<body>\` contract exists to escape; set recharts' \`portal\`
+prop and the positioning vanishes along with the failure's visibility.
+
 \`--wrap\` is for a tooltip carrying a sentence instead of a reading. nowrap is
 right for a value, which is harder to read broken across two lines than run
 past its trigger, and wrong for prose; pair it with a width.`,
     examples: [
       {
         title: 'The box itself',
-        note: 'Dropped into the flow so the box is visible; in a real page it is appended to <body> and positioned by script',
-        html: `<span class="axi-tooltip" style="position: static; display: inline-block">Launching (inferred)</span>`,
+        note: 'Using --flow, which is what this example always needed: in a real page the base class is appended to <body> and positioned by script',
+        html: `<span class="axi-tooltip axi-tooltip--flow" style="display: inline-block">Launching (inferred)</span>`,
       },
       {
         title: 'Anchored, wrapping',
