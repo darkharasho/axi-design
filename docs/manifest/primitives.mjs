@@ -85,6 +85,7 @@ existed.`,
       '.axi-chip--ok',
       '.axi-chip--warn',
       '.axi-chip--danger',
+      '.axi-chip--action',
     ],
     summary: 'A one-word label on a thing. Filled asserts a value about it; the single outlined variant, in the cool ink, is commentary about it instead.',
     rules: [5, 6],
@@ -93,7 +94,20 @@ existed.`,
 language. The status modifiers assert, at full ink strength. \`--meta\` is the
 only outlined variant and the only one drawn in \`--axi-meta\`, the cool ink
 rule 6 keeps clear of every status meaning: that is what lets a reader tell a
-maintainer's note from a measurement before reading either word.`,
+maintainer's note from a measurement before reading either word.
+
+\`--action\` is the one modifier that changes no colour. A chip turns up holding
+a value the reader chose and can take back - the filters standing above a table
+- and that is still a chip, because "DAMAGE" is data and "Clear all" is an
+action. So it gains the hand and the block, and nothing else. A hover brighten
+would weigh the same one class as the fill modifiers and win on source order,
+putting a neutral back over a saturated ground; and there is nothing for a
+brighten to add to a filled chip. The lift is the feedback.
+
+A dismiss glyph inside a filled chip takes no colour of its own. Written with a
+neutral from the ramp it measures 1.39:1 against the accent beside a label at
+12.24:1 - not quieter, gone. \`currentColor\` is already the fill's contrast pair;
+the trap is that saying nothing looks like an omission.`,
     examples: [
       {
         title: 'Every chip at once',
@@ -111,6 +125,16 @@ maintainer's note from a measurement before reading either word.`,
   <span class="axi-chip axi-chip--warn">Beta</span>
   <span class="axi-chip">Node</span>
   <span class="axi-chip axi-chip--meta">arcdps</span>
+</div>`,
+      },
+      {
+        title: 'The filters standing above a table',
+        note: 'Each chip is a value the reader picked; the button beside them is the one thing here whose label is an action',
+        html: `<div class="axi-row" style="--axi-row-gap: 7px">
+  <button class="axi-btn axi-btn--xs">Clear all</button>
+  <button class="axi-chip axi-chip--accent axi-chip--action">Damage <span>&times;</span></button>
+  <button class="axi-chip axi-chip--accent axi-chip--action">Boon uptime <span>&times;</span></button>
+  <button class="axi-chip axi-chip--action">Unfilled, also a press <span>&times;</span></button>
 </div>`,
       },
     ],

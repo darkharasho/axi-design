@@ -569,6 +569,27 @@ button.axi-panel--tile:hover,
   color: var(--axi-meta);
 }
 
+/* A chip you press. A chip is a mark - it states a value about the thing it
+   sits on - and a mark has no cursor and does not move. But the same shape also
+   turns up holding a value the *reader* chose and can take back: the filters
+   standing above a table, one per selection, each one dismissable. That is
+   still a chip and not a button, because its label is data rather than an
+   action - "DAMAGE", not "Clear all" - and rule 5 is what tells the reader
+   which of the two they are looking at. What it is missing is only the press
+   affordances: the hand, and the block that every other pressable thing in the
+   language raises on hover.
+
+   It deliberately says nothing about colour. `.axi-chip--accent` and the three
+   status fills each set their own contrast pair at one class, and a hover
+   brighten here would weigh the same and win on source order - putting a
+   neutral back on top of a saturated fill. There is nothing for a brighten to
+   add to a filled chip anyway; the lift is the feedback. */
+.axi-chip--action { cursor: pointer; }
+.axi-chip--action:where(:hover) {
+  box-shadow: var(--axi-shadow-control);
+  transform: translate(-2px, -2px);
+}
+
 /* ---------- count badge ---------- */
 .axi-badge-count {
   display: inline-block;

@@ -211,6 +211,30 @@ A filled chip asserts a value about the thing. An outlined chip in the cool ink
 is commentary *about* the thing — a maintainer's judgment, a source, a caveat.
 A reader must be able to tell which they are looking at before reading either.
 
+A chip may be a press. `.axi-chip--action` adds the hand and the block, and
+nothing else — the label of a dismissable filter is still data ("DAMAGE"), not
+an action ("Clear all"), so this rule is what tells a reader which of the two a
+given box is, and a chip that becomes clickable must not stop looking like a
+chip.
+
+**Inside a fill, the only inks are that fill's own pair.** A filled chip, a
+pressed pill, a primary button and a current tab each set a contrast ink against
+a saturated ground, and anything nested inside them inherits that ground whether
+it reads the pair or not. A neutral from the ramp there is not quieter, it is
+gone: a consumer's dismiss glyph written `--axi-text-dim` measured **1.39:1**
+against the accent fill beside a label at 12.24:1, and `.axi-badge-count` inside
+`.axi-btn--primary` was the accent on the accent until 1.30.1. The fix in both
+cases is to say nothing — `currentColor` is already the pair — and the trap is
+that saying nothing looks like an omission while `--axi-text-dim` looks like a
+decision.
+
+This is checked by eye and not by a test, deliberately. The obvious static
+check — no descendant rule inside a fillable component may set `color` to a
+neutral — flags `.axi-tabs .axi-tabs__close`, which is correct: the tab's fill
+sits on the anchor and the close control is its *sibling*, so the faint neutral
+is against the page ground. Whether a nested element is on the fill is a fact
+about the paint chain, and a stylesheet does not contain it.
+
 The same rule governs coloured strips on cards: a strip must encode real data.
 A strip that carries "category" is decoration impersonating data, and it takes
 the first position the eye lands on.

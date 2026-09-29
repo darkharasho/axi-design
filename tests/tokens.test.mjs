@@ -765,3 +765,36 @@ describe('a generic control does not out-rank the ink layer it sits under', () =
     ).toEqual([])
   })
 })
+
+// `.axi-chip--action` turns a mark into a press, and the whole point of it is
+// what it does NOT do: it sets no colour. The fill modifiers - `--accent` and
+// the three status fills - each weigh one class and each set their own contrast
+// pair. `--action` also weighs one class, so any colour it declared would tie
+// with them and win on source order, putting a neutral back on top of a
+// saturated ground. There is also nothing for a brighten to add to a filled
+// chip. Both reasons point the same way, and neither is visible from the rule
+// itself - hence this guard.
+describe('a pressable chip changes no colour', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+
+  const actionRules = () =>
+    [...css.matchAll(/([^{}]*\.axi-chip--action[^{}]*)\{([^}]*)\}/g)]
+      .map(([, sel, body]) => [sel.trim(), body])
+
+  it('declares no colour on any .axi-chip--action rule', () => {
+    const rules = actionRules()
+    // If the parser stops finding the rules the guard is inert, not passing.
+    expect(rules.length, 'no .axi-chip--action rule found at all').toBeGreaterThan(0)
+    const coloured = rules
+      .filter(([, body]) => /(^|[\s;])(color|background|background-color|border-color)\s*:/.test(body))
+      .map(([sel]) => sel)
+    expect(coloured).toEqual([])
+  })
+
+  it('still carries the press affordances it exists for', () => {
+    const bodies = actionRules().map(([, body]) => body).join(';')
+    expect(bodies).toMatch(/cursor\s*:\s*pointer/)
+    expect(bodies).toMatch(/box-shadow\s*:\s*var\(--axi-shadow-control\)/)
+    expect(bodies).toMatch(/transform\s*:\s*translate\(/)
+  })
+})
