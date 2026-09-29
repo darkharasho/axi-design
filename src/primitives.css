@@ -257,6 +257,27 @@
   color: var(--axi-accent); font-weight: 900; pointer-events: none;
 }
 
+/* ---------- keyboard key ---------- */
+/* A key on the keyboard, named in the interface: the Esc that closes a
+   palette, the Ctrl K that opens it. Drawn as a small control rather than as a
+   label, because what it depicts is a thing you press - so it takes the
+   control edge and the control radius, and every consumer that has a shortcut
+   to show stops having to invent a box for it.
+
+   It sits on --axi-surface, not --axi-ground: a key is raised out of whatever
+   it is printed on, and the fields and bars these appear in are already the
+   recessed thing. */
+.axi-kbd {
+  display: inline-block;
+  padding: 2px 5px;
+  background: var(--axi-surface);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  color: var(--axi-text-dim);
+  font: 700 10px/1 var(--axi-sans);
+  white-space: nowrap;
+}
+
 /* ---------- select ---------- */
 /* The closed box is ours everywhere: strip the native control and draw the
    caret, so a select sits alongside the other controls as just another

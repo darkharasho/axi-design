@@ -212,6 +212,37 @@ It sits at the same measure as the input, so give the wrapper the width.`,
     ],
   },
   {
+    id: 'kbd',
+    name: 'Keyboard key',
+    layer: 'primitives',
+    classes: ['.axi-kbd'],
+    summary: 'A key on the keyboard, named in the interface. Drawn as a small control, because what it depicts is a thing you press.',
+    rules: [3, 5],
+    knobs: [],
+    notes: `The Esc that closes a palette, the Ctrl K that opens it. Before this
+existed, every consumer with a shortcut to show drew its own box for it, which
+is how an app ends up with two spellings of a key in the same view.
+
+It takes the control edge and the control radius, so a key is visibly the same
+kind of object as a button. Its fill is \`--axi-surface\`, not
+\`--axi-ground\`: a key stands out of what it is printed on, and the bars and
+fields these appear in are already the recessed thing.
+
+Use the \`<kbd>\` element - one per key, or one for a chord written as
+\`Ctrl K\`. The class draws a box and takes no view on which.`,
+    examples: [
+      {
+        title: 'A shortcut and a chord',
+        html: `<div class="axi-row" style="align-items: center">
+  <span class="axi-eyebrow">Close</span>
+  <kbd class="axi-kbd">Esc</kbd>
+  <span class="axi-eyebrow">Search</span>
+  <kbd class="axi-kbd">Ctrl K</kbd>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'notice',
     name: 'Notice',
     layer: 'primitives',

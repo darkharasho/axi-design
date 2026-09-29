@@ -28,6 +28,20 @@
   --axi-ground-image: none;
   --axi-surface: #222731;         /* a panel raised off the page */
   --axi-surface-raised: #2b313d;  /* a chip or popover raised off a panel */
+  /* The fill for a surface that FLOATS over content which scrolls behind it: a
+     command palette, a menu popover, a modal. Holds --axi-surface, because for
+     a theme whose panels are opaque a floating panel is just a panel and there
+     is nothing to decide.
+
+     It exists for the theme whose panels are not. A translucent pane is legible
+     standing still on the page and stops being legible the moment a table
+     scrolls under it - the text it is carrying now has text behind it. The blur
+     that was supposed to rescue that is not something a language can promise:
+     backdrop-filter is unavailable or switched off on whole platforms, and
+     where it is missing the alpha is the only thing left. So the float gets its
+     own token, and a theme that goes translucent restates it near-opaque
+     without giving up the tint on everything that merely sits still. */
+  --axi-surface-float: var(--axi-surface);
   --axi-ink-line: #0c0e12;        /* the outline every raised element is drawn with */
   /* The tone a shape is made of when it is made of the line ink rather than
      outlined in it - the tooltip, the titlebar strip, the switch's slug. Holds

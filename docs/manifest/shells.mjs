@@ -276,6 +276,96 @@ the popover.`,
     ],
   },
   {
+    id: 'palette',
+    name: 'Command palette',
+    layer: 'shells',
+    classes: [
+      '.axi-palette', '.axi-palette__panel', '.axi-palette__bar', '.axi-palette__filters',
+      '.axi-palette__count', '.axi-palette__list', '.axi-palette__section', '.axi-palette__group',
+      '.axi-palette__row', '.axi-palette__meta', '.axi-palette__empty',
+      '.axi-palette__trigger', '.axi-palette__mark', '.axi-palette__label',
+    ],
+    summary: 'Everything in the app, reachable by typing its name. A field with a grouped list under it, near the top of the screen, driven from the keyboard.',
+    rules: [3, 5],
+    knobs: ['--axi-palette-w', '--axi-palette-top'],
+    aliases: ['commandk', 'quickopen'],
+    notes: `Deliberately not \`.axi-modal\`. A modal is a \`<dialog>\` with a
+head, a body and a foot, and it asks you a question; a palette has no question
+and no buttons. It also sits near the top of the screen rather than centred,
+because the list has to be able to grow downward without moving the field you
+are typing into.
+
+Put \`.axi-palette\` on the same element as \`.axi-scrim\`: the scrim
+already knows what darkening the page looks like, and spelling that a second
+time here is one more place for a theme to be restated in only one of them.
+\`.axi-palette\` adds the layout and nothing else.
+
+The panel is \`--axi-surface-float\`, not \`--axi-surface\`. Whatever the app
+was showing is still behind it and still scrolling, which is the case that
+token exists for - under a translucent theme a palette drawn on the ordinary
+surface has the page's text running through its own.
+
+**The cursor is not the hover.** A palette is driven from the keyboard, so the
+row Enter would take is filled with the accent outright, while hover is the
+quieter raised-surface wash. Both are visible at once, they answer different
+questions, and the filled one wins on sight. Set \`data-active\` on the cursor
+row and keep it scrolled into view; the arrow keys, the cap on the list and the
+count are the consumer's.
+
+One \`.axi-palette__section\` per group, each opening with a
+\`.axi-palette__group\` heading. The section is a named part rather than
+whatever wrapper the consumer happened to use, so the rule between groups is
+stated as a parting between sections instead of guessed at from structure.
+
+\`.axi-palette__trigger\` is the way in, and it is drawn as the field it opens
+- same ground, same edge, same magnifier at the head - so opening the palette
+reads as the control growing rather than as a different object arriving. It
+keeps a field's fill because what it stands for is somewhere to type, and takes
+a button's answer to the cursor because it is still a thing you press.`,
+    examples: [
+      {
+        title: 'The way in',
+        html: `<button class="axi-palette__trigger" type="button" style="max-width: 320px">
+  <span class="axi-palette__mark"><svg class="axi-icon"><use href="#axi-search"/></svg></span>
+  <span class="axi-palette__label">Search sections, metrics, players</span>
+  <kbd class="axi-kbd">Ctrl K</kbd>
+</button>`,
+      },
+      {
+        title: 'Open, with the cursor on the second row',
+        note: 'Shown inline rather than fixed so the page can hold it; a real one is the scrim over the whole viewport',
+        html: `<div class="axi-palette" style="position: relative; --axi-palette-top: 12px; background: var(--axi-scrim)">
+  <div class="axi-palette__panel" style="--axi-palette-w: 420px">
+    <div class="axi-palette__bar">
+      <div class="axi-search">
+        <span class="axi-search__icon" aria-hidden="true"><svg class="axi-icon"><use href="#axi-search"/></svg></span>
+        <label class="axi-sr-only" for="palette-demo-q">Search</label>
+        <input class="axi-input" id="palette-demo-q" value="dam">
+      </div>
+      <div class="axi-palette__filters">
+        <button class="axi-pill" type="button" aria-pressed="true">Sections</button>
+        <button class="axi-pill" type="button">Metrics</button>
+        <button class="axi-pill" type="button">Players</button>
+        <span class="axi-palette__count">3 of 11</span>
+      </div>
+    </div>
+    <div class="axi-palette__list">
+      <div class="axi-palette__section">
+        <div class="axi-palette__group">Sections</div>
+        <button class="axi-palette__row" type="button">Damage<span class="axi-palette__meta">Offense</span></button>
+        <button class="axi-palette__row" type="button" data-active>Damage taken<span class="axi-palette__meta">Defense</span></button>
+      </div>
+      <div class="axi-palette__section">
+        <div class="axi-palette__group">Metrics</div>
+        <button class="axi-palette__row" type="button">Damage per second<span class="axi-palette__meta">Offense</span></button>
+      </div>
+    </div>
+  </div>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'toolbar',
     name: 'Toolbar',
     layer: 'shells',

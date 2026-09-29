@@ -120,6 +120,18 @@ export const KNOBS = [
     example: '<div class="axi-page axi-page--narrow" style="--axi-page-pad: 0">',
   },
   {
+    name: '--axi-palette-w',
+    sets: "the widest an `.axi-palette__panel` gets (it fills the room below that)",
+    fallback: '`560px`',
+    example: '<div class="axi-palette__panel" style="--axi-palette-w: 720px">',
+  },
+  {
+    name: '--axi-palette-top',
+    sets: 'how far down the screen an `.axi-palette` opens',
+    fallback: '`12vh`',
+    example: '<div class="axi-scrim axi-palette" style="--axi-palette-top: 6vh">',
+  },
+  {
     name: '--axi-menu-width',
     sets: 'width of `.axi-menu__pop`',
     fallback: '`310px`',

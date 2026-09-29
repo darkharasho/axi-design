@@ -149,6 +149,8 @@ not "what does the system look like". Everything else is
 | `--axi-stack-gap` | gap between `.axi-stack` children | `12px` | `<div class="axi-stack" style="--axi-stack-gap: 20px">` |
 | `--axi-panel-pad` | `.axi-panel`'s own padding | `26px` | `<div class="axi-panel" style="--axi-panel-pad: 14px">` |
 | `--axi-page-pad` | `.axi-page`'s horizontal gutter | `var(--axi-gutter)` | `<div class="axi-page axi-page--narrow" style="--axi-page-pad: 0">` |
+| `--axi-palette-w` | the widest an `.axi-palette__panel` gets (it fills the room below that) | `560px` | `<div class="axi-palette__panel" style="--axi-palette-w: 720px">` |
+| `--axi-palette-top` | how far down the screen an `.axi-palette` opens | `12vh` | `<div class="axi-scrim axi-palette" style="--axi-palette-top: 6vh">` |
 | `--axi-menu-width` | width of `.axi-menu__pop` | `310px` | `<div class="axi-menu__pop" style="--axi-menu-width: 380px">` |
 | `--axi-drawer-width` | width of `.axi-drawer` (capped at `100vw`) | `560px` | `<aside class="axi-drawer" style="--axi-drawer-width: 720px">` |
 | `--axi-series` | the ink a meter fill, bar, plot line or `.axi-diamond--series` is drawn in | `var(--axi-accent)` | `<span class="axi-meter__fill" style="--axi-series: var(--axi-ok)">` |
