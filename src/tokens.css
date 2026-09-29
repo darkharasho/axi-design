@@ -27,9 +27,15 @@
      wedge of colour. The ground stays a colour. This is the page's light. */
   --axi-ground-image: none;
   --axi-surface: #222731;         /* a panel raised off the page */
-  --axi-surface-raised: #2b313d;  /* a chip or popover raised off a panel */
-  /* The fill for a surface that FLOATS over content which scrolls behind it: a
-     command palette, a menu popover, a modal. Holds --axi-surface, because for
+  /* A chip, a hover, a table head - something raised off a panel that is part
+     of the page rather than over it. It said "a chip or popover" until the
+     popovers moved to the float: what they were borrowing was opacity, which
+     this token cannot promise under a translucent theme. */
+  --axi-surface-raised: #2b313d;
+  /* The fill for a surface that FLOATS over content which scrolls behind it:
+     the command palette, the menu and picker popovers, the modal, the drawer,
+     the toast, and any .axi-panel--float or .axi-rail--float a consumer
+     declares. Holds --axi-surface, because for
      a theme whose panels are opaque a floating panel is just a panel and there
      is nothing to decide.
 

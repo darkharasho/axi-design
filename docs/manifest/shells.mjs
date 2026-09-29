@@ -177,7 +177,10 @@ Its head holds the title and never scrolls; \`__body\` is the scrolling
 region. \`__close\` is a control, so it lifts like one - the only thing in the
 drawer that does. Visibility is the \`hidden\` attribute rather than a
 modifier class, so nothing can show the drawer while leaving it out of the
-accessibility tree.`,
+accessibility tree.
+
+Its fill is \`--axi-surface-float\` on two counts: the page is live beside it,
+and \`__body\` scrolls inside it.`,
     examples: [
       {
         title: 'A detail drawer',
@@ -244,7 +247,7 @@ the drawer; that wiring is the consumer's.`,
     rules: [3],
     knobs: ['--axi-menu-width'],
     aliases: ['dropdown'],
-    notes: `The popover is drawn at rule 3's panel weight on the raised surface,
+    notes: `The popover is drawn at rule 3's panel weight on the float surface,
 because it floats above everything else on the page and the heavier step is
 what says so. The trigger is an ordinary \`.axi-btn\` carrying
 \`aria-expanded\` and \`aria-controls\`; this class only styles the panel it
@@ -255,7 +258,14 @@ root stacking context, so a toolbar scrolled under the sticky masthead would
 otherwise open its menu behind it. Labels inside it need no class of their
 own; a checkbox does, now that \`.axi-check\` exists as the styled path for
 one - a bare \`<input type="checkbox">\` renders as unstyled OS chrome inside
-the popover.`,
+the popover.
+
+The fill is \`--axi-surface-float\`, not \`--axi-surface-raised\`. Raised was
+the only word for "higher than a panel" before the float token existed, but
+height is carried by the border and the block - the modal is the highest
+surface in the language and sits on the plain fill. What raised was really
+lending a popover was opacity, and opacity is the one thing a translucent
+theme takes away.`,
     examples: [
       {
         title: 'An open filter menu',
@@ -714,6 +724,19 @@ alternative was giving up \`<dialog>\` and hand-rolling a focus trap.
 The head and foot are divided from the body by rules rather than outlines:
 they are parts of one raised thing.
 
+The surface is \`--axi-surface-float\`. A modal is the strongest case that
+token has: the entire app is behind it, and a scrim does not rescue a
+\`.42\`-alpha pane on a platform where the blur is unavailable.
+
+**If you already own an overlay stack,** put \`.axi-modal\` on a \`<div>\` and
+\`.axi-scrim\` on the element behind it. The surface, the weight and the block
+are all in the class and none of them want a \`<dialog>\`; \`::backdrop\` simply
+never matches, which is why the scrim is a separate element here rather than a
+pseudo. What you give up is the paragraph above - the focus trap, the
+inertness, Esc, the top layer - and that is a real cost, not a formality. Take
+this path when the app already has the z-index order and the trap, not to
+avoid \`showModal()\`.
+
 Give the heading an \`id\` and point the dialog's \`aria-labelledby\` at it, or
 the dialog announces with no name at all.`,
     examples: [
@@ -812,7 +835,10 @@ attribute and every toast this markup ships is invisible to anyone not
 looking at the screen.
 
 A toast is control weight, not panel: four panels stacked over the page is a
-wall.
+wall. Its fill is \`--axi-surface-float\` all the same - weight and opacity are
+different questions, and a toast is the one floating thing the reader did not
+open and cannot hold still, so whatever is under it is mid-scroll by
+definition.
 
 The region lives at layer 60 - above the drawer, below the tooltip. See the
 layer stack in the rules.`,

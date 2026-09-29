@@ -407,7 +407,12 @@ offset block, the OS's own selection colour - which is rule 3 broken by a box
 we do not own. The fix is to stop asking the OS to draw it.
 
 The popover carries the *panel* weight, not the control weight, because it is
-a raised surface rather than a control. It is never narrower than the box it
+a raised surface rather than a control, and its fill is
+\`--axi-surface-float\` - the list is over the page, which is the case that
+token exists for. It said \`--axi-surface-raised\` until the popovers moved:
+raised was the only word for "higher than a panel" before the float existed,
+but height is carried by the border and the block, and what raised was really
+lending here was opacity a translucent theme takes away. It is never narrower than the box it
 came out of: a list that shrinks to its text is a list that has moved, and the
 eye has to find the column again.
 
