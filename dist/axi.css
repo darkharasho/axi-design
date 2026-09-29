@@ -578,6 +578,17 @@ button.axi-panel--tile:hover,
   color: var(--axi-accent-ink);
   font: var(--axi-t-micro);
 }
+/* The one placement where the badge's own fill is the fill it is sitting on.
+   .axi-btn--primary is the accent, and so is the badge, so the count went
+   invisible - not dim, gone. Inverted rather than given a third colour: the
+   same two values the other way round is the only pairing rule 5 leaves, since
+   a status hue here would say something about the count that is not true.
+   Found by a consumer, which had written this rule itself against its own
+   class name because the language had no answer. */
+.axi-btn--primary .axi-badge-count {
+  background: var(--axi-accent-ink);
+  color: var(--axi-accent);
+}
 
 /* ---------- diamond ---------- */
 /* The family motif: a rotated outlined square. Used as a bullet, a status dot

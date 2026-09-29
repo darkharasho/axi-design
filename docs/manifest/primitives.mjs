@@ -50,7 +50,9 @@ existed.`,
       },
       {
         title: 'A button carrying a count',
-        html: `<button class="axi-btn axi-btn--dashed" type="button">Filters <span class="axi-badge-count">3</span></button>`,
+        note: 'On the primary the badge inverts, because its own fill is the fill it is sitting on',
+        html: `<button class="axi-btn axi-btn--dashed" type="button">Filters <span class="axi-badge-count">3</span></button>
+<button class="axi-btn axi-btn--primary" type="button">Add <span class="axi-badge-count">3</span></button>`,
       },
       {
         title: 'The three sizes, and the icon-only one',
