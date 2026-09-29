@@ -67,8 +67,14 @@
 /* `thead th`, not `th`. A row's name is a `<th scope="row">` - that is what
    tells a screen reader which cell labels the row - and it is a name, not a
    column heading: uppercase micro type down the first column would shout every
-   row's label at the reader. A row header takes the cell treatment below. */
-.axi-table thead th {
+   row's label at the reader. A row header takes the cell treatment below.
+
+   The element part is wrapped in :where() so this rule weighs one class, not a
+   class and a type. A base rule that out-ranks the component's own modifiers is
+   a base rule nothing can correct: at (0,1,1) this beat `.axi-table__num` and
+   every ink class a consumer could put on a cell, so the column that carries
+   the measured value was silently still the dim one. */
+.axi-table :where(thead th) {
   padding: 0 10px 10px;
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);
@@ -76,8 +82,7 @@
   color: var(--axi-text-faint);
   border-bottom: var(--axi-border-control) solid var(--axi-rule);
 }
-.axi-table td,
-.axi-table tbody th {
+.axi-table :where(td, tbody th) {
   padding: 9px 10px;
   font: var(--axi-t-small);
   font-weight: 700;

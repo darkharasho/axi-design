@@ -1183,7 +1183,11 @@ textarea.axi-input {
   font-size: 14px; font-weight: 900;
   border: var(--axi-border-control) solid var(--axi-ink-line);
 }
-.axi-notice p { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
+/* :where() around the element, here and on the card's and the quote's copy,
+   for the reason spelled out over `.axi-table :where(thead th)` in data.css: a
+   slot that holds a consumer's words must not out-rank the ink the consumer
+   puts on them. */
+.axi-notice :where(p) { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
 .axi-notice b { color: var(--axi-accent); font-weight: 800; }
 
 /* ---------- toolbar ---------- */
@@ -1452,7 +1456,7 @@ textarea.axi-input {
   color: var(--axi-text-faint);
   letter-spacing: .08em; text-transform: uppercase;
 }
-.axi-card p { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
+.axi-card :where(p) { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
 /* Pushed to the bottom so that in an equalised grid row every card's meta
    strip lands on the same line and the rules read as continuous across the
    grid. The cost is empty space on cards with less content. */
@@ -1515,7 +1519,7 @@ textarea.axi-input {
   background: var(--axi-ground);
   border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
 }
-.axi-quote p { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }
+.axi-quote :where(p) { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }
 .axi-quote cite {
   display: block; margin-top: 7px;
   font-style: normal; font-size: 11.5px; font-weight: 700;
@@ -1845,8 +1849,14 @@ textarea.axi-input {
 /* `thead th`, not `th`. A row's name is a `<th scope="row">` - that is what
    tells a screen reader which cell labels the row - and it is a name, not a
    column heading: uppercase micro type down the first column would shout every
-   row's label at the reader. A row header takes the cell treatment below. */
-.axi-table thead th {
+   row's label at the reader. A row header takes the cell treatment below.
+
+   The element part is wrapped in :where() so this rule weighs one class, not a
+   class and a type. A base rule that out-ranks the component's own modifiers is
+   a base rule nothing can correct: at (0,1,1) this beat `.axi-table__num` and
+   every ink class a consumer could put on a cell, so the column that carries
+   the measured value was silently still the dim one. */
+.axi-table :where(thead th) {
   padding: 0 10px 10px;
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);
@@ -1854,8 +1864,7 @@ textarea.axi-input {
   color: var(--axi-text-faint);
   border-bottom: var(--axi-border-control) solid var(--axi-rule);
 }
-.axi-table td,
-.axi-table tbody th {
+.axi-table :where(td, tbody th) {
   padding: 9px 10px;
   font: var(--axi-t-small);
   font-weight: 700;
@@ -2311,3 +2320,59 @@ textarea.axi-input {
 }
 
 .axi-prose img { max-width: 100%; height: auto; border-radius: var(--axi-radius-sm); }
+
+/* --- utilities.css --- */
+/* axi design language - utilities.
+   Two families of single-purpose class, and the file is last in the cascade
+   because that is the whole point of it: a utility has to be able to overrule
+   the component it sits inside, and it is not allowed to buy that with
+   !important or with a padded selector.
+
+   Why the language needs them at all. Rules 5 and 6 draw a distinction the
+   reader is expected to make at a glance - a filled status against a cool ink
+   that is commentary - and until now the only way to say either was to be a
+   component that said it for you. Real markup is full of places that are not
+   components: a number in a sentence, a word in a legend, a value beside a
+   label. An app with no way to say "this reading is bad" in those places will
+   reach for a colour literal, and at that moment the theme stops reaching it.
+   So the language names the meanings, and the app spends them by name.
+
+   What they deliberately are not. An ink sets colour and nothing else - no
+   size, no weight, no spacing, no surface - and an edge sets border-colour
+   without asserting that there is a border. Neither is a shorthand for a
+   component: a status that belongs to a whole object still wants the chip or
+   the cap that rule 5 describes, because an object's verdict should be a shape
+   the eye finds, not a recoloured word inside it. These are for the marks
+   inside those shapes.
+
+   And there is no fill family. Under rule 2 colour at partial opacity over the
+   ground is not available, and an opaque status fill behind arbitrary text is a
+   chip - which the language already ships. A surface stays a surface token. */
+
+/* The five meanings. Ordered as rule 5 orders them: the three statuses, then
+   the cool ink that is not a status, then the accent - which means "the thing
+   you picked" and never "good". */
+.axi-ink-ok { color: var(--axi-ok); }
+.axi-ink-warn { color: var(--axi-warn); }
+.axi-ink-danger { color: var(--axi-danger); }
+.axi-ink-meta { color: var(--axi-meta); }
+.axi-ink-accent { color: var(--axi-accent); }
+
+/* The three neutral steps. `plain` rather than `text` so that reading the class
+   list does not suggest it does something to the text other than ink it, and so
+   the three read as one scale. */
+.axi-ink-plain { color: var(--axi-text); }
+.axi-ink-dim { color: var(--axi-text-dim); }
+.axi-ink-faint { color: var(--axi-text-faint); }
+
+/* Edges. `rule` and `line` are the two neutral weights of meaning, not of
+   width: --axi-rule is the quiet separator inside a surface, --axi-ink-line the
+   full ink a raised thing is outlined in. Width stays with whoever drew the
+   border. */
+.axi-edge-ok { border-color: var(--axi-ok); }
+.axi-edge-warn { border-color: var(--axi-warn); }
+.axi-edge-danger { border-color: var(--axi-danger); }
+.axi-edge-meta { border-color: var(--axi-meta); }
+.axi-edge-accent { border-color: var(--axi-accent); }
+.axi-edge-rule { border-color: var(--axi-rule); }
+.axi-edge-line { border-color: var(--axi-ink-line); }

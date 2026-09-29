@@ -243,6 +243,30 @@ see is a slug floating in the card.
 meaning. It is the only ink guaranteed not to mean "how bad is this" — which is
 what makes it readable as commentary at a glance.
 
+### Saying a meaning outside a component
+
+Rules 5 and 6 are about marks, not only about components. A number inside a
+sentence, a word in a legend, a value beside its label — each of these can be a
+status or can be commentary, and a reader is entitled to see which. So the five
+meanings are available as inks: `.axi-ink-ok`, `.axi-ink-warn`,
+`.axi-ink-danger`, `.axi-ink-meta`, `.axi-ink-accent`, with the three neutral
+steps as `.axi-ink-plain`, `.axi-ink-dim` and `.axi-ink-faint`, and the same
+list again as `.axi-edge-*` for a border's colour.
+
+An ink colours a mark. It is not a way to skip the chip or the status cap, which
+are what rule 5 asks for when the verdict belongs to a whole object: a shape the
+eye finds beats a recoloured word inside a paragraph. Reach for an ink when
+there is no object, only a mark.
+
+They live in `src/utilities.css`, last in the cascade, which is how a single
+class overrules the component it sits inside without `!important`. That places
+an obligation on components in the other direction: **a component's base rules
+may not out-rank its own modifiers.** A rule written `.axi-table td` weighs a
+class and a type, so it silently defeats both `.axi-table__num` and any ink a
+consumer puts on the cell — the fix is `:where()` around the element, which
+spends no specificity. Where a component holds a consumer's content, wrap the
+element part.
+
 ## 7. The diamond is the family motif
 
 A 45°-rotated outlined square. Bullet, status dot, language marker, and scaled

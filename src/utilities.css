@@ -1,0 +1,54 @@
+/* axi design language - utilities.
+   Two families of single-purpose class, and the file is last in the cascade
+   because that is the whole point of it: a utility has to be able to overrule
+   the component it sits inside, and it is not allowed to buy that with
+   !important or with a padded selector.
+
+   Why the language needs them at all. Rules 5 and 6 draw a distinction the
+   reader is expected to make at a glance - a filled status against a cool ink
+   that is commentary - and until now the only way to say either was to be a
+   component that said it for you. Real markup is full of places that are not
+   components: a number in a sentence, a word in a legend, a value beside a
+   label. An app with no way to say "this reading is bad" in those places will
+   reach for a colour literal, and at that moment the theme stops reaching it.
+   So the language names the meanings, and the app spends them by name.
+
+   What they deliberately are not. An ink sets colour and nothing else - no
+   size, no weight, no spacing, no surface - and an edge sets border-colour
+   without asserting that there is a border. Neither is a shorthand for a
+   component: a status that belongs to a whole object still wants the chip or
+   the cap that rule 5 describes, because an object's verdict should be a shape
+   the eye finds, not a recoloured word inside it. These are for the marks
+   inside those shapes.
+
+   And there is no fill family. Under rule 2 colour at partial opacity over the
+   ground is not available, and an opaque status fill behind arbitrary text is a
+   chip - which the language already ships. A surface stays a surface token. */
+
+/* The five meanings. Ordered as rule 5 orders them: the three statuses, then
+   the cool ink that is not a status, then the accent - which means "the thing
+   you picked" and never "good". */
+.axi-ink-ok { color: var(--axi-ok); }
+.axi-ink-warn { color: var(--axi-warn); }
+.axi-ink-danger { color: var(--axi-danger); }
+.axi-ink-meta { color: var(--axi-meta); }
+.axi-ink-accent { color: var(--axi-accent); }
+
+/* The three neutral steps. `plain` rather than `text` so that reading the class
+   list does not suggest it does something to the text other than ink it, and so
+   the three read as one scale. */
+.axi-ink-plain { color: var(--axi-text); }
+.axi-ink-dim { color: var(--axi-text-dim); }
+.axi-ink-faint { color: var(--axi-text-faint); }
+
+/* Edges. `rule` and `line` are the two neutral weights of meaning, not of
+   width: --axi-rule is the quiet separator inside a surface, --axi-ink-line the
+   full ink a raised thing is outlined in. Width stays with whoever drew the
+   border. */
+.axi-edge-ok { border-color: var(--axi-ok); }
+.axi-edge-warn { border-color: var(--axi-warn); }
+.axi-edge-danger { border-color: var(--axi-danger); }
+.axi-edge-meta { border-color: var(--axi-meta); }
+.axi-edge-accent { border-color: var(--axi-accent); }
+.axi-edge-rule { border-color: var(--axi-rule); }
+.axi-edge-line { border-color: var(--axi-ink-line); }

@@ -16,8 +16,11 @@ import { ICON_ENTRIES } from '../docs/manifest/icons.mjs'
 // forms.css follows primitives.css because `textarea.axi-input` restyles a
 // primitive defined there; feedback.css follows data.css because
 // `.axi-meter--busy` modifies a data component. A later file may restyle an
-// earlier one, never the reverse.
-export const ORDER = ['tokens.css', 'base.css', 'primitives.css', 'forms.css', 'layout.css', 'shells.css', 'data.css', 'feedback.css', 'prose.css']
+// earlier one, never the reverse. utilities.css is last, and for a stronger
+// reason than convenience: an ink class exists in order to overrule the
+// component it sits inside, and being last is how it does that at one class
+// of specificity instead of with !important.
+export const ORDER = ['tokens.css', 'base.css', 'primitives.css', 'forms.css', 'layout.css', 'shells.css', 'data.css', 'feedback.css', 'prose.css', 'utilities.css']
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 

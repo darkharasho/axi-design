@@ -264,7 +264,11 @@
   font-size: 14px; font-weight: 900;
   border: var(--axi-border-control) solid var(--axi-ink-line);
 }
-.axi-notice p { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
+/* :where() around the element, here and on the card's and the quote's copy,
+   for the reason spelled out over `.axi-table :where(thead th)` in data.css: a
+   slot that holds a consumer's words must not out-rank the ink the consumer
+   puts on them. */
+.axi-notice :where(p) { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
 .axi-notice b { color: var(--axi-accent); font-weight: 800; }
 
 /* ---------- toolbar ---------- */
@@ -533,7 +537,7 @@
   color: var(--axi-text-faint);
   letter-spacing: .08em; text-transform: uppercase;
 }
-.axi-card p { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
+.axi-card :where(p) { margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim); }
 /* Pushed to the bottom so that in an equalised grid row every card's meta
    strip lands on the same line and the rules read as continuous across the
    grid. The cost is empty space on cards with less content. */
@@ -596,7 +600,7 @@
   background: var(--axi-ground);
   border-radius: 0 var(--axi-radius-sm) var(--axi-radius-sm) 0;
 }
-.axi-quote p { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }
+.axi-quote :where(p) { margin: 0; font-size: 13px; font-style: italic; color: var(--axi-text-dim); line-height: 1.5; }
 .axi-quote cite {
   display: block; margin-top: 7px;
   font-style: normal; font-size: 11.5px; font-weight: 700;
