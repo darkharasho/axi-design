@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest'
-import { readFileSync } from 'node:fs'
+import { readFileSync, readdirSync } from 'node:fs'
 import { resolve } from 'node:path'
 import { ORDER } from '../scripts/build.mjs'
 
@@ -1007,49 +1007,82 @@ describe('a link is one object, in or out of prose', () => {
   })
 })
 
-// A picked row has to be told apart from the row under the cursor, and the
-// table is the one component where those two states land on the same box. Every
-// consumer who hand-wrote this reached for a hue once they hit that, so the
-// check is that the two states are drawn at DIFFERENT neutral steps rather than
-// that either of them is any particular value.
-describe('a picked row is not the hovered row', () => {
+// A picked row has to be told apart from the row under the cursor, and the table
+// is the one component where those two states land on the same box.
+//
+// The first version of this rule filled the selection from --axi-surface-float on
+// the theory that it was the step past --axi-surface-raised. It is not: it is a
+// promise of OPACITY for things over content, and the themes prove it -- the
+// default theme sets it EQUAL to --axi-surface and glass sets it darker than
+// --axi-surface-raised, so the selection was invisible in one theme and a step
+// backwards in the other. The check that let it through compared token NAMES
+// against a ramp written into the test, which is the vacuous-guard failure in its
+// purest form: it asserted the author's assumption rather than the themes.
+//
+// So the check now reads the themes. The mark is the leading edge, and what has
+// to hold is that it is an edge and not a fill -- see .axi-rail__nav--quiet,
+// which reached the same answer for the same reason.
+describe('a picked row is marked by its edge, not by a step no theme has', () => {
   const css = stripComments(read('data.css'))
-  const bodyOf = (needle) => {
-    const m = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(([, sel]) => sel.includes(needle))
-    return m ? m[2] : null
-  }
-  const fill = (body) => (body.match(/background:\s*var\((--axi-surface[a-z-]*)\)/) || [])[1]
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+  const bodyOf = (needle) => (rules.find((r) => r.sel.includes(needle)) || {}).body
 
-  const hover = () => bodyOf('tbody tr:hover :is(td, th)')
   const current = () => bodyOf('tbody tr[aria-current] :is(td, th)')
+  const edge = () => bodyOf('tbody tr[aria-current] > :is(td, th):first-child')
+  const reserve = () => bodyOf(':where(tbody tr) > :where(td, th):first-child')
 
-  it('draws both states', () => {
-    expect(hover(), 'no hover rule').toBeTruthy()
-    expect(current(), 'no aria-current rule').toBeTruthy()
+  it('draws the selection and its edge', () => {
+    expect(current(), 'no aria-current fill rule').toBeTruthy()
+    expect(edge(), 'no aria-current edge rule').toBeTruthy()
   })
 
-  it('draws them at two different steps', () => {
-    expect(fill(current())).toBeTruthy()
-    expect(fill(hover())).toBeTruthy()
-    expect(fill(current())).not.toBe(fill(hover()))
+  it('marks it with the accent on the leading edge', () => {
+    expect(edge()).toMatch(/border-inline-start-color:\s*var\(--axi-accent\)/)
   })
 
-  it('picks the step beyond hover, not one behind it', () => {
-    // Selection is a held state and hover is a transient one, so selection is
-    // the one that comes further forward.
-    const RAMP = ['--axi-surface', '--axi-surface-raised', '--axi-surface-float']
-    expect(RAMP.indexOf(fill(current()))).toBeGreaterThan(RAMP.indexOf(fill(hover())))
+  it('reserves that border on every body row, so lighting it costs no reflow', () => {
+    expect(reserve(), 'no reserved leading border').toBeTruthy()
+    expect(reserve()).toMatch(/border-inline-start:\s*var\(--axi-border-control\) solid transparent/)
   })
 
-  it('does not spend the accent on it', () => {
+  it('lights only the leading edge, never boxes the row', () => {
+    // Rule 8 refuses an outline around a row; one edge is a mark.
+    expect(edge()).not.toMatch(/border-(top|bottom|inline-end)-color:\s*var\(--axi-accent\)/)
+    expect(edge()).not.toMatch(/border:\s/)
+  })
+
+  it('does not try to out-fill the hover, because no theme has a step for it', () => {
+    // Both states sit on the raised step on purpose. If this ever diverges, the
+    // themes below are what decides whether the new value is visible at all.
+    const hover = bodyOf('tbody tr:hover :is(td, th)')
+    const fill = (b) => (b.match(/background:\s*var\((--axi-surface[a-z-]*)\)/) || [])[1]
+    expect(fill(current())).toBe(fill(hover))
+  })
+
+  it('is not drawn from a token the themes disagree about the direction of', () => {
+    // The measurement the first version of this rule skipped. Read
+    // --axi-surface-float out of the default and out of every shipped theme and
+    // it does not keep a consistent side of --axi-surface-raised: the default
+    // aliases it straight to --axi-surface, and glass sets it darker and nearly
+    // opaque. It is a promise about opacity, not a rung on the neutral ramp, so
+    // nothing that needs to read as "one step further forward" may be drawn
+    // from it.
+    const defaults = read('tokens.css')
+    expect(defaults).toMatch(/--axi-surface-float:\s*var\(--axi-surface\)/)
+
+    const themed = readdirSync(resolve('themes'))
+      .filter((f) => f.endsWith('.json'))
+      .map((f) => JSON.parse(readFileSync(resolve('themes', f), 'utf8')).tokens || {})
+      .filter((t) => t['--axi-surface-float'])
+    expect(themed.length, 'no themed --axi-surface-float to check').toBeGreaterThan(0)
+    for (const t of themed) {
+      expect(t['--axi-surface-float']).not.toBe(t['--axi-surface-raised'])
+    }
+
+    expect(current()).not.toMatch(/--axi-surface-float/)
+  })
+
+  it('does not spend the accent twice', () => {
     expect(current()).not.toMatch(/--axi-accent/)
-  })
-
-  it('holds the row up while the cursor is over it', () => {
-    // Without this the bare hover rule, equal in weight and later in the file,
-    // would pull a selected row back down to the hover step on mouseover.
-    const held = bodyOf('tbody tr[aria-current]:hover :is(td, th)')
-    expect(held, 'no selected-and-hovered rule').toBeTruthy()
-    expect(fill(held)).toBe(fill(current()))
   })
 })

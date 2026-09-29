@@ -140,27 +140,35 @@
    the row is the whole fact, and a class beside it would be a second source of
    truth for one thing.
 
-   The fill is the float step, not the raised one, and the reason is the hover
-   directly above: hovering a row ALREADY raises it, so a selection drawn at the
-   raised step is indistinguishable from the row under the cursor -- and every
-   consumer who has hand-written this state has hit that and reached for a hue
-   instead, which is rule 2's tinted-everything failure arrived at honestly.
-   Hover is a transient lift and selection is a held one, so selection sits one
-   step beyond it and hovering a selected row must not pull it back down.
+   The MARK is the leading edge, not the fill, and that is the whole design. The
+   hover directly above already raises a row, so any selection drawn as a fill
+   has to find a neutral step that hover is not using -- and there isn't one. The
+   ramp a theme is guaranteed to give is ground, surface, surface-raised; the
+   fourth token, --axi-surface-float, is not a step on it at all but a promise of
+   OPACITY for things that sit over content, which is why the default theme sets
+   it equal to --axi-surface and glass sets it darker than --axi-surface-raised.
+   A selection filled from it is invisible in one theme and a step backwards in
+   the other. This is the trap the token's name invites and the reason this
+   comment says so: float is an axis, not a rung.
 
-   No accent, and no leading edge either. The accent is for one claim per screen
-   and a selected row spends it on something a detail pane usually spends again;
-   an edge would need a border reserved on every cell of every row, which is the
-   grid-of-boxes rule 8 refuses. The attachment is the one-surface-many-elements
-   case, same as the hover. */
+   So selection and hover share the raised fill and are told apart by the edge,
+   the same answer and the same reasoning as `.axi-rail__nav--quiet`. The first
+   cell of every body row reserves a transparent control-weight border for it, so
+   lighting the edge costs no reflow -- again exactly what `.axi-rail__item`
+   does. One edge is a mark; rule 8's refusal is of a BOX around a row, which is
+   what turns a list of numbers into a grid.
+
+   The attachment is the one-surface-many-elements case, same as the hover. */
+.axi-table :where(tbody tr) > :where(td, th):first-child {
+  border-inline-start: var(--axi-border-control) solid transparent;
+}
 .axi-table tbody tr[aria-current] :is(td, th) {
-  background: var(--axi-surface-float);
+  background: var(--axi-surface-raised);
   background-attachment: fixed;
   color: var(--axi-text);
 }
-.axi-table tbody tr[aria-current]:hover :is(td, th) {
-  background: var(--axi-surface-float);
-  background-attachment: fixed;
+.axi-table tbody tr[aria-current] > :is(td, th):first-child {
+  border-inline-start-color: var(--axi-accent);
 }
 .axi-table__num { color: var(--axi-text); }
 /* A name cell: an icon, a diamond or a rank beside the label. */

@@ -79,14 +79,18 @@ the page can sort.
 
 Where picking a row drives something else - a detail pane, a chart, a second
 table - mark it with \`aria-current\` on the \`<tr>\`, again the attribute the
-announcement already needs. The row takes the float step rather than the raised
-one, because hovering a row raises it already and a selection drawn at the same
-step is indistinguishable from the row under the cursor; that is the wall every
-consumer who hand-writes this state runs into, and the hue they reach for next is
-rule 2's tinted-everything failure arrived at honestly. It gets no accent and no
-leading edge: the accent is one claim per screen and the pane the selection
-drives usually spends it, and an edge would want a border reserved on every cell
-of every row, which is the grid of boxes rule 8 refuses.`,
+announcement already needs.
+
+The mark is the row's leading edge, not its fill, and the reason is worth
+knowing: hovering a row already raises it, and there is no neutral step left for
+a selection to take. The ramp a theme guarantees is ground, surface,
+surface-raised; \`--axi-surface-float\` looks like a fourth rung and is not one -
+it promises OPACITY for things sitting over content, which is why the default
+theme aliases it to \`--axi-surface\` and glass sets it darker than
+\`--axi-surface-raised\`. So selection and hover share the raised fill and are
+told apart by an accent edge on the first cell, which every body row reserves as
+a transparent control-weight border so that lighting it costs no reflow. One edge
+is a mark; the box around a row is what rule 8 refuses.`,
     examples: [
       {
         title: 'A ranked table',
