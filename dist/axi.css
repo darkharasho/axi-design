@@ -2473,8 +2473,29 @@ textarea.axi-input {
   border-inline-start-color: var(--axi-accent);
 }
 .axi-table__num { color: var(--axi-text); }
-/* A name cell: an icon, a diamond or a rank beside the label. */
-.axi-table__who { display: flex; align-items: center; gap: 9px; }
+/* A name cell: an icon, a diamond or a rank beside the label.
+
+   The label truncates and the mark does not. A name is arbitrarily long - a
+   skill called "Chapter 4: Scorched Aftermath" measured 417px against a 183px
+   column - and with nothing said, a flex row lets it spill across its
+   neighbours rather than shrink. The same reasoning as the comment on
+   .axi-tabs__tab, and the same pair of requirements: min-width: 0 on the
+   container AND on the shrinking child, because a flex item's default
+   min-width is its content, so the ellipsis never appears without both.
+
+   Selected by element, not by a class the consumer adds: which child is the
+   icon and which is the label is visible in the markup, and asking every
+   consumer to label it invites exactly the omission this rule exists to fix.
+   The `flex: none` on the mark is the load-bearing half - without it the icon
+   squashes toward zero before the text gives up any room at all. */
+.axi-table__who { display: flex; align-items: center; gap: 9px; min-width: 0; }
+.axi-table__who > :where(img, svg) { flex: none; }
+.axi-table__who > :where(span, a, div, p) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 /* Rank is the only fill a table gets, and only where the position is real -
    a podium, not a row number. An outlined rank is the ordinary case. */
 .axi-table__rank {
@@ -2552,6 +2573,25 @@ textarea.axi-input {
    its being a modifier rather than a second table. */
 .axi-table--dense thead th { padding: 0 7px 6px; }
 .axi-table--dense :is(td, tbody th) { padding: 5px 7px; font: var(--axi-t-micro); }
+/* Proportional columns, for a table inside a pane rather than a page.
+
+   `width: 100%` is a floor, not a cap. Under the default auto layout the
+   columns size to their content, and because every cell here is `nowrap`,
+   content wins: a three-column table measured 581px inside a 360px pane.
+   A page-width table absorbs that, and .axi-table__scroll turns it into a
+   horizontal scrollbar on purpose. A table sharing a 480px pane with a
+   selector list has neither option - it needs the columns to divide the room
+   it has, which is what a grid's `fr` gives for free and is the reason
+   hand-built tables in panes were grids.
+
+   The consumer sets the proportions in a <colgroup>, because they are facts
+   about one table's columns and nothing here can know them.
+
+   Cells get the clip, not just the ellipsis: fixed layout makes a cell
+   narrower than its content the normal case rather than the exception, and
+   an unclipped cell paints over the column beside it. */
+.axi-table--fixed { table-layout: fixed; }
+.axi-table--fixed :where(td, th) { overflow: hidden; text-overflow: ellipsis; }
 /* The sorted column, named with the attribute a screen reader already needs
    in order to announce it. A class beside `aria-sort` would be a second
    source of truth for one fact. The mark is ink on the head and its edge -

@@ -1086,3 +1086,80 @@ describe('a picked row is marked by its edge, not by a step no theme has', () =>
     expect(current()).not.toMatch(/--axi-accent/)
   })
 })
+
+// An ellipsis takes three declarations, not one, and the two that do the work
+// are easy to leave off - `text-overflow` alone is inert, and on a flex child
+// so is `overflow: hidden` without `min-width: 0`. Both omissions fail
+// silently: the text simply paints across whatever is beside it. So the checks
+// here are derived from the stylesheet rather than from a list written here.
+// Every rule that asks for an ellipsis is found by reading the CSS, and each
+// one has to carry what an ellipsis actually requires.
+describe('an ellipsis is three declarations, and the silent two are checked', () => {
+  const RULES = () =>
+    ORDER.flatMap((name) => {
+      const css = stripComments(read(name))
+      return [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({
+        file: name,
+        sel: sel.trim().replace(/\s+/g, ' '),
+        body,
+      }))
+    })
+
+  const ellipsisRules = () => RULES().filter((r) => /text-overflow:\s*ellipsis/.test(r.body))
+
+  it('finds the ellipsis rules to check', () => {
+    // If this ever reads 0 the two checks below pass vacuously, which is the
+    // failure mode the 1.37.0 ramp guard shipped with.
+    expect(ellipsisRules().length).toBeGreaterThan(3)
+  })
+
+  it('clips wherever it ellipsises - text-overflow alone does nothing', () => {
+    const inert = ellipsisRules()
+      .filter((r) => !/overflow:\s*hidden/.test(r.body))
+      .map((r) => `${r.file} ${r.sel}`)
+    expect(inert).toEqual([])
+  })
+
+  it('lets the box shrink wherever it is a flex child, or the ellipsis never appears', () => {
+    // A flex item's default min-width is its content, so a child rule that
+    // clips without min-width: 0 clips a box that never got narrower than its
+    // text. Only child selectors are judged: a rule on a block element in
+    // normal flow shrinks without being asked.
+    const unshrinkable = ellipsisRules()
+      .filter((r) => r.sel.includes('>'))
+      .filter((r) => !/min-width:\s*0/.test(r.body))
+      .map((r) => `${r.file} ${r.sel}`)
+    expect(unshrinkable).toEqual([])
+  })
+})
+
+describe('a table in a pane divides the room it has', () => {
+  const css = stripComments(read('data.css'))
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+  const bodyOf = (needle) => (rules.find((r) => r.sel.includes(needle)) || {}).body
+
+  it('offers a fixed layout, because width: 100% is a floor and the cells are nowrap', () => {
+    expect(bodyOf('.axi-table--fixed'), 'no fixed-layout modifier').toBeTruthy()
+    expect(bodyOf('.axi-table--fixed')).toMatch(/table-layout:\s*fixed/)
+  })
+
+  it('states no column widths itself - those are one table\'s facts, set in a colgroup', () => {
+    const fixed = rules.filter((r) => r.sel.includes('axi-table--fixed'))
+    for (const r of fixed) expect(r.body).not.toMatch(/(^|[\s;])width:/)
+  })
+
+  it('shrinks the label in a name cell and not the mark beside it', () => {
+    // The pair that made this necessary: a 417px skill name in a 183px column.
+    // `flex: none` on the mark is the load-bearing half - without it the icon
+    // squashes toward zero before the text gives up any room.
+    const label = bodyOf('.axi-table__who > :where(span')
+    const mark = bodyOf('.axi-table__who > :where(img, svg)')
+    expect(label, 'no truncating label rule in the name cell').toBeTruthy()
+    expect(label).toMatch(/text-overflow:\s*ellipsis/)
+    expect(mark, 'nothing protects the mark from shrinking').toBeTruthy()
+    expect(mark).toMatch(/flex:\s*none/)
+    const container = (rules.find((r) => r.sel === '.axi-table__who') || {}).body
+    expect(container, 'no bare .axi-table__who rule').toBeTruthy()
+    expect(container).toMatch(/min-width:\s*0/)
+  })
+})

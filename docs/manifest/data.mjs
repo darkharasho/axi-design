@@ -48,6 +48,7 @@ not measured from it.`,
       '.axi-table--sticky',
       '.axi-table--pinned',
       '.axi-table--dense',
+      '.axi-table--fixed',
       '.axi-table__cell--sorted',
       '.axi-table__sort',
     ],
@@ -68,6 +69,17 @@ its cell borders to the table element and a border owned by the table scrolls
 away with it - a sticky head under \`collapse\` loses the line that makes it a
 lid. There is no scrolled-under state: the head's edge is drawn whether
 anything has moved beneath it or not.
+
+A table sharing a pane with something else takes \`--fixed\` instead, and sets
+its column proportions in a \`<colgroup>\`. \`width: 100%\` is a floor, not a
+cap: under the default auto layout the columns size to their content, and
+because every cell is \`nowrap\`, content wins - a three-column table measures
+581px inside a 360px pane. A page-width table absorbs that, and
+\`.axi-table__scroll\` turns it into a horizontal scrollbar on purpose; a table
+beside a selector list has neither option and needs the columns to divide the
+room it has. Under \`--fixed\` a cell narrower than its content is the normal
+case, so cells clip and ellipsise, and a name cell's label truncates while the
+icon beside it keeps its size.
 
 Mark the sorted column with \`aria-sort\` on the \`<th>\` - the attribute a
 screen reader needs anyway, rather than a class saying the same thing twice -
@@ -138,6 +150,34 @@ is a mark; the box around a row is what rule 8 refuses.`,
         <tr><td>Oakvale.5567</td><td class="axi-table__cell--sorted">344,602</td><td>29</td><td>1,451</td><td>190</td><td>16.2%</td><td>64.4%</td><td>66.9%</td><td>377</td><td>1</td></tr>
         <tr><td>Bracken.7712</td><td class="axi-table__cell--sorted">301,885</td><td>24</td><td>742</td><td>408</td><td>29.1%</td><td>55.0%</td><td>70.2%</td><td>611</td><td>3</td></tr>
         <tr><td>Marrow.3098</td><td class="axi-table__cell--sorted">288,043</td><td>22</td><td>1,673</td><td>122</td><td>12.8%</td><td>66.7%</td><td>64.1%</td><td>340</td><td>5</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>`,
+      },
+      {
+        title: 'Sharing a pane',
+        note: 'Fixed columns, proportions in a colgroup. The long skill name truncates; the icon beside it does not',
+        html: `<div class="axi-panel" style="--axi-panel-pad: 0; max-width: 360px;">
+  <div class="axi-table__scroll" style="max-height: 148px;">
+    <table class="axi-table axi-table--fixed axi-table--sticky">
+      <colgroup><col style="width: 57%;"><col style="width: 23%;"><col style="width: 20%;"></colgroup>
+      <thead>
+        <tr><th>Skill</th><th aria-sort="descending">Damage</th><th>% Total</th></tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td><span class="axi-table__who"><span class="axi-table__rank">1</span> <span>Chapter 4: Scorched Aftermath of the Eternal Vigil</span></span></td>
+          <td class="axi-table__cell--sorted">412,908</td><td>41.2%</td>
+        </tr>
+        <tr>
+          <td><span class="axi-table__who"><span class="axi-table__rank">2</span> <span>Ghastly Breach</span></span></td>
+          <td class="axi-table__cell--sorted">188,204</td><td>18.8%</td>
+        </tr>
+        <tr>
+          <td><span class="axi-table__who"><span class="axi-table__rank">3</span> <span>Grasping Dead</span></span></td>
+          <td class="axi-table__cell--sorted">96,551</td><td>9.6%</td>
+        </tr>
       </tbody>
     </table>
   </div>
