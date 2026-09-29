@@ -1842,7 +1842,11 @@ textarea.axi-input {
 .axi-table td { text-align: right; white-space: nowrap; }
 .axi-table th:first-child,
 .axi-table td:first-child { text-align: left; }
-.axi-table th {
+/* `thead th`, not `th`. A row's name is a `<th scope="row">` - that is what
+   tells a screen reader which cell labels the row - and it is a name, not a
+   column heading: uppercase micro type down the first column would shout every
+   row's label at the reader. A row header takes the cell treatment below. */
+.axi-table thead th {
   padding: 0 10px 10px;
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);
@@ -1850,7 +1854,8 @@ textarea.axi-input {
   color: var(--axi-text-faint);
   border-bottom: var(--axi-border-control) solid var(--axi-rule);
 }
-.axi-table td {
+.axi-table td,
+.axi-table tbody th {
   padding: 9px 10px;
   font: var(--axi-t-small);
   font-weight: 700;
@@ -1861,7 +1866,7 @@ textarea.axi-input {
    hovering a row is not a status, and forty rows that each flash a colour on
    the way past the one you want is the tinted-everything failure rule 2 is
    about. */
-.axi-table tbody tr:hover td { background: var(--axi-surface-raised); color: var(--axi-text); }
+.axi-table tbody tr:hover :is(td, th) { background: var(--axi-surface-raised); color: var(--axi-text); }
 /* The measured value in a row, as opposed to its supporting numbers. */
 .axi-table__num { color: var(--axi-text); }
 /* A name cell: an icon, a diamond or a rank beside the label. */
@@ -1931,8 +1936,8 @@ textarea.axi-input {
 /* Twenty columns do not get a leaderboard's padding. The type steps down with
    them; everything else about the table is unchanged, which is the point of
    its being a modifier rather than a second table. */
-.axi-table--dense th { padding: 0 7px 6px; }
-.axi-table--dense td { padding: 5px 7px; font: var(--axi-t-micro); }
+.axi-table--dense thead th { padding: 0 7px 6px; }
+.axi-table--dense :is(td, tbody th) { padding: 5px 7px; font: var(--axi-t-micro); }
 /* The sorted column, named with the attribute a screen reader already needs
    in order to announce it. A class beside `aria-sort` would be a second
    source of truth for one fact. The mark is ink on the head and its edge -
