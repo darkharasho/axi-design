@@ -28,6 +28,15 @@
      fit is genuinely called for. */
   padding: var(--axi-panel-pad, 26px);
 }
+/* A panel that floats over moving content rather than sitting in the page: a
+   readout pinned to a chart, a popover over a scrolling table. Same object,
+   same everything else; the one thing that changes is the surface it is
+   printed on. --axi-surface is a translucent tint under a theme like glass,
+   which reads as a pane only while what is behind it holds still - the moment
+   the content scrolls, it shows through the panel. --axi-surface-float is the
+   surface for exactly that case. Says the same thing .axi-rail--float says,
+   on the other surface that needs it. */
+.axi-panel--float { background: var(--axi-surface-float); }
 
 /* ---------- well ---------- */
 /* The panel's inverse: a field sunk into the surface around it rather than

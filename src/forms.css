@@ -36,7 +36,10 @@
   place-items: center;
   background: var(--axi-ground);
   border: var(--axi-border-control) solid var(--axi-ink-line);
-  border-radius: var(--axi-radius-sm);
+  /* The text-sized step, not the control-sized one - see --axi-radius-xs in
+     src/tokens.css for why a 22px box cannot take a corner scaled for a 36px
+     button. */
+  border-radius: var(--axi-radius-xs);
   cursor: pointer;
 }
 /* The mark is always in the DOM and revealed with opacity rather than being

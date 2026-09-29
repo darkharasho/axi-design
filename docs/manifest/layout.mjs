@@ -109,7 +109,7 @@ leaves a trailing margin behind.`,
     id: 'panel',
     name: 'Panel',
     layer: 'layout',
-    classes: ['.axi-panel'],
+    classes: ['.axi-panel', '.axi-panel--float'],
     summary: 'The raised surface every larger component is built on, and the canonical panel weight: a 4px ink outline and a hard 6px block.',
     rules: [3],
     knobs: ['--axi-panel-pad'],
@@ -121,7 +121,15 @@ loosens a single instance without a modifier class.
 
 A panel is the raised thing, which means what goes *inside* it usually is
 not: a table, a meter and a plot all sit flat in a panel and carry no block
-of their own.`,
+of their own.
+
+\`--float\` is for a panel over moving content rather than one in the page - a
+readout pinned to a chart, a popover over a scrolling table. Under a theme
+like glass \`--axi-surface\` is a translucent tint, which reads as a pane only
+while what is behind it holds still; the moment the content scrolls it shows
+through. \`--axi-surface-float\` is the surface for that case, and
+\`.axi-rail--float\` says the same thing about the other surface that needs
+it.`,
     examples: [
       {
         title: 'Two panels, one tightened',
@@ -134,6 +142,20 @@ of their own.`,
   <div class="axi-panel" style="flex: 1 1 240px; --axi-panel-pad: 13px">
     <p class="axi-eyebrow">Panel — tighter</p>
     <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Set --axi-panel-pad: 13px on the instance.</p>
+  </div>
+</div>`,
+      },
+      {
+        title: 'Floating',
+        note: 'Switch to the glass theme to see the difference: the default panel goes translucent, the floating one stays a surface',
+        html: `<div class="axi-row" style="--axi-row-gap: 12px; align-items: stretch">
+  <div class="axi-panel" style="flex: 1 1 240px; --axi-panel-pad: 13px">
+    <p class="axi-eyebrow">Panel — in the page</p>
+    <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Content behind it holds still, so a tint is fine.</p>
+  </div>
+  <div class="axi-panel axi-panel--float" style="flex: 1 1 240px; --axi-panel-pad: 13px">
+    <p class="axi-eyebrow">Panel — floating</p>
+    <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Content scrolls behind it, so the surface has to be opaque.</p>
   </div>
 </div>`,
       },

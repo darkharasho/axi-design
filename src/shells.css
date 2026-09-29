@@ -467,6 +467,22 @@
   white-space: nowrap;
   pointer-events: none;
 }
+/* Positioned by the thing it describes rather than by the cursor. The <body>
+   contract above is what position: fixed costs; a tooltip that belongs to one
+   trigger can be a child of it instead, and then it wants the trigger's
+   coordinate space. Rule 4's transformed ancestor is the reason fixed cannot
+   live there - absolute is anchored to exactly that ancestor, so a hover lift
+   carries the tooltip with it instead of stranding it.
+
+   The consumer supplies the offsets (a `position: relative` trigger and the
+   left/top or inset the placement needs); this only changes which box those
+   offsets are measured from. */
+.axi-tooltip--anchored { position: absolute; }
+/* A tooltip carrying a sentence rather than a value. nowrap is right for a
+   reading - a number that breaks across two lines is harder to read than one
+   that runs past its trigger - and wrong for prose, which needs a width from
+   the consumer to wrap inside. */
+.axi-tooltip--wrap { white-space: normal; }
 
 /* ---------- card ---------- */
 .axi-card {

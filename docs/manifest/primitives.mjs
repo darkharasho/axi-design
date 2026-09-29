@@ -287,23 +287,41 @@ marked without a class.`,
     id: 'tooltip',
     name: 'Tooltip',
     layer: 'primitives',
-    classes: ['.axi-tooltip'],
+    classes: ['.axi-tooltip', '.axi-tooltip--anchored', '.axi-tooltip--wrap'],
     summary: 'One line of text on the darkest surface in the language, so it reads over anything it lands on. The box is the language\'s; the coordinates are the consumer\'s.',
     rules: [4],
     knobs: [],
-    notes: `Two contracts travel with this class, and both come out of rule 4. The
-element must be a child of \`<body>\` and never a child of the component it
+    notes: `Two contracts travel with the base class, and both come out of rule 4.
+The element must be a child of \`<body>\` and never a child of the component it
 annotates: \`position: fixed\` re-anchors to any transformed ancestor, and
 rule 4 makes every hovered ancestor transformed, so the first hover would
 move the tooltip with the thing it is pointing at. And it may never carry
 information that exists nowhere else, because a keyboard or touch reader may
 never see it. Measuring the trigger and setting \`left\`/\`top\` is the
-consumer's half; \`gallery.js\` is the reference wiring.`,
+consumer's half; \`gallery.js\` is the reference wiring.
+
+\`--anchored\` is the other half of that trade. A tooltip belonging to exactly
+one trigger can live inside it, and then \`position: absolute\` is what you
+want: it measures from the transformed ancestor rather than fighting it, so a
+hover lift carries the tooltip along instead of stranding it. The consumer
+still supplies the offsets - a positioned trigger and the left/top the
+placement needs - and the \`<body>\` contract does not apply.
+
+\`--wrap\` is for a tooltip carrying a sentence instead of a reading. nowrap is
+right for a value, which is harder to read broken across two lines than run
+past its trigger, and wrong for prose; pair it with a width.`,
     examples: [
       {
         title: 'The box itself',
         note: 'Dropped into the flow so the box is visible; in a real page it is appended to <body> and positioned by script',
         html: `<span class="axi-tooltip" style="position: static; display: inline-block">Launching (inferred)</span>`,
+      },
+      {
+        title: 'Anchored, wrapping',
+        note: 'Inside its trigger rather than appended to <body>, and carrying a sentence, so it takes both modifiers and a width',
+        html: `<span style="position: relative; display: inline-block; padding: 6px 10px; border: 1px solid var(--axi-rule)">Coverage
+  <span class="axi-tooltip axi-tooltip--anchored axi-tooltip--wrap" style="left: 0; top: calc(100% + 6px); width: 180px">Share of the fight this player was alive and within range of the tag.</span>
+</span>`,
       },
     ],
   },

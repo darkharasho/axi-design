@@ -140,6 +140,14 @@
      control-sized reads --axi-radius-sm. */
   --axi-radius: 0;
   --axi-radius-sm: 0;
+  /* The third step, for a box the size of the text beside it: a checkbox, a
+     radio. --axi-radius-sm is sized for something you press - a button, an
+     input, 36px tall - and a theme is free to set it to 10px. On a 22px
+     square 10px is most of the box: the checkbox stops being a square and
+     becomes a circle, and a circle next to rule 7's diamond radio is the one
+     shape confusion this pair exists to avoid. A theme that wants soft
+     corners sets all three. */
+  --axi-radius-xs: 0;
   /* Not a form step: a hairline used inside prose (inline code, table rules,
      the list bullet) where the two form steps above would read as too heavy
      for a line of running text. */
