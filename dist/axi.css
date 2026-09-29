@@ -906,6 +906,23 @@ textarea.axi-input {
   box-shadow: var(--axi-shadow-control);
 }
 
+/* A closable tab - a report or a document, an open thing rather than a place.
+   The label and its close control travel together, so the pair is a box and
+   the strip's gap falls between pairs instead of between a tab and its own X.
+
+   The close control is a tab's affordance and not a tab, so it opts out of the
+   tab treatment: no tab padding, no tab weight, and faint until the cursor is
+   on it. Two classes to outrank `.axi-tabs button`, which is one class and one
+   element and would otherwise win on source order alone. */
+.axi-tabs__tab { display: inline-flex; align-items: center; }
+.axi-tabs .axi-tabs__close {
+  padding: 0 6px;
+  font: var(--axi-t-micro);
+  color: var(--axi-text-faint);
+  border-color: transparent;
+}
+.axi-tabs .axi-tabs__close:hover { color: var(--axi-text); border-color: transparent; }
+
 /* ---------- notice ---------- */
 .axi-notice {
   display: flex; gap: 14px; padding: 15px 18px;

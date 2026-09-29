@@ -398,7 +398,7 @@ name.`,
     id: 'tabs',
     name: 'Tabs',
     layer: 'shells',
-    classes: ['.axi-tabs'],
+    classes: ['.axi-tabs', '.axi-tabs__tab', '.axi-tabs__close'],
     summary: 'Top-level navigation, in a masthead or standing on its own. The current tab is filled and blocked; the rest are transparent until hovered.',
     rules: [],
     knobs: [],
@@ -415,7 +415,13 @@ Tabs are anchors or buttons, interchangeably: a strip that moves between URLs
 is links, and a strip inside an application that swaps a view in place is
 buttons. Inside \`.axi-mast\`, \`margin-left: auto\` pushes the set to the end of
 the masthead; that margin is scoped to the masthead, so a strip spanning a
-view on its own starts where its container does.`,
+view on its own starts where its container does.
+
+A tab the reader can close wraps its label and its \`.axi-tabs__close\` control
+in one \`.axi-tabs__tab\`, so the strip's gap falls between tabs rather than
+between a tab and its own X. The close control is an affordance of the tab and
+not a tab itself, so it opts out of the tab treatment and stays faint until the
+cursor reaches it.`,
     examples: [
       {
         title: 'A nav with one current tab',
@@ -433,6 +439,20 @@ view on its own starts where its container does.`,
   <button type="button">Stats</button>
   <button type="button">History</button>
   <button type="button">Settings</button>
+</nav>`,
+      },
+      {
+        title: 'Closable tabs, for documents rather than places',
+        html: `<nav class="axi-tabs">
+  <button type="button">Reports</button>
+  <span class="axi-tabs__tab">
+    <button type="button" aria-current="page">Tuesday raid</button>
+    <button class="axi-tabs__close" type="button" aria-label="Close Tuesday raid"><svg class="axi-icon" aria-hidden="true"><use href="#axi-x"/></svg></button>
+  </span>
+  <span class="axi-tabs__tab">
+    <button type="button">SMC push</button>
+    <button class="axi-tabs__close" type="button" aria-label="Close SMC push"><svg class="axi-icon" aria-hidden="true"><use href="#axi-x"/></svg></button>
+  </span>
 </nav>`,
       },
     ],
