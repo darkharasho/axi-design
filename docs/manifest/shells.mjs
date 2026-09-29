@@ -208,6 +208,55 @@ and \`__body\` scrolls inside it.`,
     ],
   },
   {
+    id: 'sheet',
+    name: 'Sheet',
+    layer: 'shells',
+    classes: ['.axi-sheet', '.axi-sheet__head', '.axi-sheet__body'],
+    summary: 'One thing blown up to fill the app, with a way back out. Pinned to all four edges, so it is the ground rather than a surface over it.',
+    rules: [3, 5, 8],
+    knobs: ['--axi-sheet-top', '--axi-sheet-pad'],
+    notes: `Three names were already close and all three are wrong, which is
+why this one has its own word.
+
+Not a **modal**: that is a \`<dialog>\` in the top layer with a scrim and the
+page inert behind it. A sheet is in the page, and what it replaces is the
+view, not the reader's attention.
+
+Not a wide **drawer**: a drawer is pinned to three edges with the page live
+beside it, and that live strip is what pays for its float fill, its leading
+outline and its scrim. Widen it to the fourth edge and all three go away -
+that is a different object wearing a modifier, not a wider drawer.
+
+Not a **panel**: rule 3 outlines a raised element and rule 5 gives it a
+block, and both are claims about an edge. An element pinned to all four sides
+has no edge on screen to outline and nothing behind it to cast on. So a sheet
+carries no outline, no block and no radius.
+
+Which is also why it paints \`--axi-ground-image\` as well as
+\`--axi-ground\`: a sheet *is* the page while it is open, and a theme that
+lights the page would otherwise have that light blink off every time a reader
+opened one. Its \`__head\` is divided from the body by a rule (rule 8) doing
+the job the outline it does not have would have done - saying where the pane's
+chrome stops and its content starts. \`__body\` is the scrolling region.`,
+    examples: [
+      {
+        title: 'A section expanded to fill the app',
+        note: 'Shown in a positioned box rather than over the whole viewport',
+        html: `<div style="position: relative; height: 220px; overflow: hidden">
+  <div class="axi-sheet" style="position: absolute">
+    <div class="axi-sheet__head axi-row" style="--axi-row-gap: 9px">
+      <p class="axi-eyebrow" style="margin: 0">Damage breakdown</p>
+      <button class="axi-btn axi-btn--ghost" type="button" style="margin-left: auto" aria-label="Close">&times;</button>
+    </div>
+    <div class="axi-sheet__body" style="padding-top: 12px">
+      <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">The whole view, given over to one table. No outline, because there is no edge on screen to draw.</p>
+    </div>
+  </div>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'scrim',
     name: 'Scrim',
     layer: 'shells',

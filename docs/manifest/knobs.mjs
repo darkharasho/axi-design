@@ -162,6 +162,18 @@ export const KNOBS = [
     example: '<aside class="axi-drawer" style="--axi-drawer-width: 720px">',
   },
   {
+    name: '--axi-sheet-top',
+    sets: "where an `.axi-sheet`'s top edge sits, for an app whose own chrome starts above it",
+    fallback: '`0`',
+    example: '<div class="axi-sheet" style="--axi-sheet-top: 2.5rem">',
+  },
+  {
+    name: '--axi-sheet-pad',
+    sets: 'the padding inside an `.axi-sheet`',
+    fallback: '`12px 16px`',
+    example: '<div class="axi-sheet" style="--axi-sheet-pad: 0">',
+  },
+  {
     name: '--axi-series',
     sets: 'the ink a meter fill, bar, plot line or `.axi-diamond--series` is drawn in',
     fallback: '`var(--axi-accent)`',

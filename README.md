@@ -156,6 +156,8 @@ not "what does the system look like". Everything else is
 | `--axi-palette-top` | how far down the screen an `.axi-palette` opens | `12vh` | `<div class="axi-scrim axi-palette" style="--axi-palette-top: 6vh">` |
 | `--axi-menu-width` | width of `.axi-menu__pop` | `310px` | `<div class="axi-menu__pop" style="--axi-menu-width: 380px">` |
 | `--axi-drawer-width` | width of `.axi-drawer` (capped at `100vw`) | `560px` | `<aside class="axi-drawer" style="--axi-drawer-width: 720px">` |
+| `--axi-sheet-top` | where an `.axi-sheet`'s top edge sits, for an app whose own chrome starts above it | `0` | `<div class="axi-sheet" style="--axi-sheet-top: 2.5rem">` |
+| `--axi-sheet-pad` | the padding inside an `.axi-sheet` | `12px 16px` | `<div class="axi-sheet" style="--axi-sheet-pad: 0">` |
 | `--axi-series` | the ink a meter fill, bar, plot line or `.axi-diamond--series` is drawn in | `var(--axi-accent)` | `<span class="axi-meter__fill" style="--axi-series: var(--axi-ok)">` |
 | `--axi-meter-v` | how full one `.axi-meter__fill` is | `0%` | `<span class="axi-meter__fill" style="--axi-meter-v: 62%">` |
 | `--axi-meter-h` | height of a `.axi-meter` | `12px` | `<div class="axi-meter" style="--axi-meter-h: 18px">` |

@@ -490,6 +490,7 @@ instead of joining it.
 | Table corner | 3 | where the two cross |
 | Sticky chrome | 40 | `.axi-mast` |
 | Popovers | 41 | `.axi-menu__pop`, `.axi-picker__pop` |
+| Sheet | 45 | `.axi-sheet` |
 | Scrim | 50 | `.axi-scrim` |
 | Drawer | 51 | `.axi-drawer` |
 | Toasts | 60 | `.axi-toasts` |
