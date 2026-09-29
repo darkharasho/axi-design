@@ -703,6 +703,20 @@ whole section exists to prevent.
 The test to write is not "does `.axi-code` exist". It is "are both spellings in
 the same rule", because only the second one fails when someone splits them.
 
+This has now happened twice. `.axi-prose a` was the language's only word for a
+link, and the same consumer had fifteen hand-spelled ones — a third of them
+`<button>`s calling a desktop bridge rather than anchors at all, which is what
+made the drift concrete rather than theoretical: an `<a href>` draws its own
+underline and a `<button>` does not, so the two spellings were not merely
+allowed to come apart, they had already come apart. When you lift a
+layer-scoped style out, look for the declarations the layer was getting for
+free from its element. Those are the ones the new spelling silently loses.
+
+Two instances is a pattern, so the check belongs at the top of the list when
+adding anything: grep `src/` for the component's style living behind a layer
+prefix. If it does, it has consumers you cannot see, and they have already
+drawn their own.
+
 ### A refusal holds at every level, not just the one it was written for
 
 The rail refuses two accent fills inside itself. That is why

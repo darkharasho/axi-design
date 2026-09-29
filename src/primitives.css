@@ -450,6 +450,49 @@ button.axi-panel--tile:hover,
   padding: 1px 5px;
 }
 
+/* ---------- link ---------- */
+/* The same trap .axi-code was pulled out of, one component later. `.axi-prose
+   a` was the language's only word for a link, and it is reachable only by
+   adopting a whole typography layer - so a consumer with a "learn more" beside
+   a setting, or a docs URL in a modal footer, writes its own. One real consumer
+   had fifteen of them, hand-spelled, and a third of those were <button>s
+   calling an openExternal bridge rather than anchors at all.
+
+   Both selectors, one rule, for the reason written at .axi-code: a link in
+   rendered markdown and a link in interface copy are the same object, and the
+   last time this language spelled one object twice the two copies drifted.
+   There is a test that they stay one rule.
+
+   The underline is stated rather than inherited. An <a href> draws one by
+   default and a <button> does not, so leaving it to the user agent is exactly
+   how the two spellings would come apart - the declaration is a no-op on the
+   anchor and load-bearing on the button. Same for the background, border and
+   padding resets: they say nothing about an anchor and are the whole reason a
+   button can wear this class.
+
+   `font-family` and `font-size` inherit, but the weight does not: a link is
+   600 wherever it lands, and `font: inherit` would quietly take that away.
+
+   The hover is written `:where(:hover)` so it weighs one class and the ink
+   layer still lands on top - see rule 6's addendum. A link in a caption that
+   says `axi-link axi-ink-dim` must stay dim under the cursor, and the plain
+   `:hover` form is what made the danger button read white under one. */
+.axi-link,
+.axi-prose a {
+  padding: 0;
+  background: none;
+  border: 0;
+  font-family: inherit;
+  font-size: inherit;
+  font-weight: 600;
+  color: var(--axi-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  cursor: pointer;
+}
+.axi-link:where(:hover),
+.axi-prose a:where(:hover) { color: var(--axi-text); }
+
 /* ---------- keyboard key ---------- */
 /* A key on the keyboard, named in the interface: the Esc that closes a
    palette, the Ctrl K that opens it. Drawn as a small control rather than as a

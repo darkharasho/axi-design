@@ -330,7 +330,7 @@ Its size is in \`em\`, so a literal in body copy and a literal in a 10px
 caption each track the text around them. A fixed size would make one of them
 read as a different voice.
 
-It sits on \`--axi-ground\` where \`.axi-kbd\` sits on \`--axi-surface\`,
+It sits on \`--axi-well-fill\` where \`.axi-kbd\` sits on \`--axi-surface\`,
 and the reason is the same one written down there: a key is raised off what it
 is printed on, and a quoted literal is sunk into it.`,
     examples: [
@@ -339,6 +339,49 @@ is printed on, and a quoted literal is sunk into it.`,
         html: `<p class="axi-stack" style="max-width: 46ch">
   In Discord, run <code class="axi-code">/bridge pair</code> to link this channel.
 </p>`,
+      },
+    ],
+  },
+  {
+    id: 'link',
+    name: 'Link',
+    layer: 'primitives',
+    classes: ['.axi-link'],
+    summary: 'A word in interface copy that takes you somewhere else. The same object as a link in prose, and drawn by the same rule.',
+    rules: [6],
+    knobs: [],
+    notes: `The trap \`.axi-code\` was pulled out of, one component later.
+\`.axi-prose a\` was the only word for a link in this language, and it is
+reachable only by adopting a whole typography layer - so a consumer with a
+"learn more" beside a setting, or a docs URL in a modal footer, writes its own.
+One real consumer had fifteen, hand-spelled, and a third of those were
+\`<button>\`s calling a desktop bridge rather than anchors at all.
+
+\`.axi-link\` and \`.axi-prose a\` are one rule with two selectors, for the
+reason written at \`.axi-code\`: they are the same object, and the last time
+this language spelled one object twice the copies drifted. A test holds them in
+one rule.
+
+The underline is stated rather than left to the user agent. An \`<a href>\`
+draws one and a \`<button>\` does not, so inheriting it is precisely how the two
+spellings would come apart - the declaration does nothing on the anchor and is
+the whole thing on the button. The background, border and padding resets are
+there for the same reason, and they are why a button can wear this class at all.
+
+The face and size inherit; the weight does not. A link is 600 wherever it lands,
+and \`font: inherit\` would be shorter and would quietly drop it.
+
+Its hover is written \`:where(:hover)\` so it weighs one class and an ink
+utility still lands on top. A link in a caption that says
+\`axi-link axi-ink-dim\` has to stay dim under the cursor; the plain
+\`:hover\` form is what once made the danger button read white under one.`,
+    examples: [
+      {
+        title: 'A link in interface copy, and a quieter one beside an ink',
+        html: `<div class="axi-stack" style="max-width: 52ch">
+  <p>Reports publish to GitHub Pages. <button class="axi-link" type="button">See how it works</button></p>
+  <p class="axi-ink-dim">Or <button class="axi-link axi-ink-dim" type="button">skip for now</button></p>
+</div>`,
       },
     ],
   },
@@ -356,7 +399,7 @@ is how an app ends up with two spellings of a key in the same view.
 
 It takes the control edge and the control radius, so a key is visibly the same
 kind of object as a button. Its fill is \`--axi-surface\`, not
-\`--axi-ground\`: a key stands out of what it is printed on, and the bars and
+\`--axi-well-fill\`: a key stands out of what it is printed on, and the bars and
 fields these appear in are already the recessed thing.
 
 Use the \`<kbd>\` element - one per key, or one for a chord written as

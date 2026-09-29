@@ -693,7 +693,7 @@ describe('the float surface reaches every surface that floats', () => {
 // are named in RULES.md as staying at full weight, and their absence from this
 // list is the same decision written twice.
 describe('a generic control does not out-rank the ink layer it sits under', () => {
-  const GENERIC = ['.axi-btn', '.axi-pill']
+  const GENERIC = ['.axi-btn', '.axi-pill', '.axi-link']
   // The properties the ink and edge utilities set, and nothing else - a state
   // rule is free to restate background, shadow or transform at any weight.
   const INKED = /(^|[\s;])(color|border-color)\s*:/
@@ -715,9 +715,16 @@ describe('a generic control does not out-rank the ink layer it sits under', () =
   // the ancestor and is a different question.
   const sameElementStates = (css, base) => {
     const esc = base.replace(/[.\-]/g, '\\$&')
-    const re = new RegExp(`([^{},]*${esc}(?![\\w-])[^{},]*)\\{([^}]*)\\}`, 'g')
-    return [...css.matchAll(re)]
-      .map(([, sel, body]) => [sel.trim(), body])
+    const named = new RegExp(`(^|[^\\w-])${esc}(?![\\w-])`)
+    // Split the selector GROUP first. A rule may name this component in one
+    // arm and something else in another - `.axi-link, .axi-prose a` - and
+    // judging the group as one string both misses the component and drags an
+    // unrelated descendant selector into the verdict. This read as "no inked
+    // rule of its own" for the whole of .axi-link's first draft, which is the
+    // inert-guard failure the length check below exists to catch.
+    return [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
+      .flatMap(([, sel, body]) => sel.split(',').map((one) => [one.trim(), body]))
+      .filter(([sel]) => named.test(sel))
       .filter(([sel]) => !/\s|>|\+|~/.test(sel.replace(/\([^()]*\)/g, '')))
       .filter(([, body]) => INKED.test(body))
   }
@@ -951,5 +958,51 @@ describe('a rail nested under a spent accent marks its selection instead of fill
     const icon = /\.axi-rail__nav--quiet\s+\.axi-rail__item\[aria-current\]\s+\.axi-icon\s*\{([^}]*)\}/.exec(css)
     expect(icon, 'the quiet rail does not correct its icon ink').toBeTruthy()
     expect(icon[1]).not.toMatch(/--axi-accent-ink/)
+  })
+})
+
+
+// The second component pulled out of a layer-scoped style, and the check is the
+// same one .axi-code gets: not "does .axi-link exist" but "are both spellings
+// in the same rule", because only that fails when someone splits them.
+describe('a link is one object, in or out of prose', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+  const rules = [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim(), body }))
+    .filter(({ sel }) => /\.axi-link\b/.test(sel) || /\.axi-prose a\b/.test(sel))
+
+  const rest = () => rules.find(({ sel }) => !/:where|:hover/.test(sel))
+
+  it('declares both spellings in a single rule', () => {
+    const r = rest()
+    expect(r, 'no at-rest link rule found').toBeTruthy()
+    expect(r.sel).toMatch(/\.axi-link\s*,\s*\.axi-prose a/)
+    // And nowhere else: a second rule naming either spelling on its own is the
+    // drift this is here to prevent.
+    expect(rules.filter(({ sel }) => !/:where|:hover/.test(sel))).toHaveLength(1)
+  })
+
+  it('states the underline rather than inheriting it from the anchor', () => {
+    // The declaration does nothing on an <a> and is the whole thing on a
+    // <button>. Leaving it out is how the two spellings come apart.
+    expect(rest().body).toMatch(/text-decoration:\s*underline/)
+  })
+
+  it('resets the chrome a button brings and an anchor does not', () => {
+    for (const d of [/background:\s*none/, /border:\s*0/, /padding:\s*0/]) {
+      expect(rest().body).toMatch(d)
+    }
+  })
+
+  it('inherits the face but not the weight', () => {
+    // `font: inherit` would be shorter and would silently drop the 600.
+    expect(rest().body).not.toMatch(/font:\s*inherit/)
+    expect(rest().body).toMatch(/font-weight:\s*600/)
+  })
+
+  it('keeps its hover under the ink layer', () => {
+    const hover = rules.find(({ sel }) => /hover/.test(sel))
+    expect(hover, 'no hover rule found').toBeTruthy()
+    expect(hover.sel).toMatch(/\.axi-link:where\(:hover\)/)
   })
 })

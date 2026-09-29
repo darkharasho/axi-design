@@ -28,10 +28,9 @@
 
 .axi-prose p { margin: 0 0 16px; }
 .axi-prose strong { color: var(--axi-text); font-weight: 800; }
-/* Prose is the one place a link should announce itself: a reader scanning an
-   article is looking for them, and inheriting the body ink would hide them. */
-.axi-prose a { color: var(--axi-accent); font-weight: 600; text-underline-offset: 2px; }
-.axi-prose a:hover { color: var(--axi-text); }
+/* A link is drawn beside .axi-code in primitives.css, in one rule with
+   `.axi-link`, because a link in an article and a link in interface copy are
+   the same object. See the comment there. */
 
 .axi-prose ul, .axi-prose ol { margin: 0 0 16px; padding-left: 22px; }
 .axi-prose li { margin: 0 0 7px; }
