@@ -60,6 +60,12 @@ export const KNOBS = [
     example: '<div class="axi-well" style="--axi-well-pad: 18px">',
   },
   {
+    name: '--axi-well-radius',
+    sets: "an `.axi-well`'s corner radius, for a well used at reading scale rather than page scale",
+    fallback: '`var(--axi-radius)`',
+    example: '<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">',
+  },
+  {
     name: '--axi-rail-w',
     sets: "an `.axi-rail`'s width, for labels longer than the default holds",
     fallback: '`208px`',

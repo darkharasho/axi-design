@@ -139,6 +139,7 @@ not "what does the system look like". Everything else is
 | `--axi-check-fill` | the fill a checked `.axi-check` takes, and the colour of a checked `.axi-radio`'s diamond | `var(--axi-accent)` | `<input type="checkbox" class="axi-check" style="--axi-check-fill: var(--axi-danger)">` |
 | `--axi-textarea-h` | the minimum height of a `<textarea class="axi-input">` | `90px` | `<textarea class="axi-input" style="--axi-textarea-h: 200px">` |
 | `--axi-well-pad` | the padding inside an `.axi-well` | `10px` | `<div class="axi-well" style="--axi-well-pad: 18px">` |
+| `--axi-well-radius` | an `.axi-well`'s corner radius, for a well used at reading scale rather than page scale | `var(--axi-radius)` | `<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">` |
 | `--axi-rail-w` | an `.axi-rail`'s width, for labels longer than the default holds | `208px` | `<aside class="axi-rail" style="--axi-rail-w: 260px">` |
 | `--axi-rail-pad` | the padding inside an `.axi-rail` | `10px` | `<aside class="axi-rail" style="--axi-rail-pad: 6px">` |
 | `--axi-avatar-size` | the size of an `.axi-avatar` square | `40px` | `<span class="axi-avatar" style="--axi-avatar-size: 28px">MS</span>` |

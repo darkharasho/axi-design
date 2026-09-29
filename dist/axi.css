@@ -304,6 +304,36 @@ a { color: inherit; }
    on the other surface that needs it. */
 .axi-panel--float { background: var(--axi-surface-float); }
 
+/* A panel that stands in a grid of its own kind rather than alone on the page.
+   Same surface, one form step down: the control border and the control block,
+   so a row of six tiles does not read as six page regions arguing with the
+   page that holds them.
+
+   This is the form ramp doing work a hue would otherwise be asked to do. A
+   tile beside a tile is level; a tile beside a plain .axi-panel is outranked -
+   which is how a grid of readings says "this one is first" without spending
+   the accent on it, and the accent is not available for that anyway (it means
+   the thing you picked, and nobody picks a winner, the data does).
+
+   Padding reads the panel's own knob so a consumer overriding --axi-panel-pad
+   does not have to know which of the two it is looking at, at the tighter
+   figure a tile wants. */
+.axi-panel--tile {
+  border-width: var(--axi-border-control);
+  box-shadow: var(--axi-shadow-control);
+  padding: var(--axi-panel-pad, 12px);
+}
+/* A tile you can press moves under the press, the way every other control in
+   the language does. Keyed off what the tile already is rather than a second
+   class: a tile that is a button, a link, or a div wearing the button role has
+   said so once, and should not have to say it again for the shadow. The role
+   selector is there because it is what a pressable div in real markup actually
+   carries - the alternative is a consumer with a keyboard handler and no
+   hover, which is the worse half of the bargain. */
+a.axi-panel--tile:hover,
+button.axi-panel--tile:hover,
+.axi-panel--tile[role='button']:hover { box-shadow: var(--axi-shadow-control-hover); }
+
 /* ---------- well ---------- */
 /* The panel's inverse: a field sunk into the surface around it rather than
    raised off it. No block, because a recess casts nothing, and the rule rather
@@ -314,7 +344,13 @@ a { color: inherit; }
 .axi-well {
   background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-well-line);
-  border-radius: var(--axi-radius);
+  /* A knob rather than a fixed radius, unlike the panel's, because a well is
+     the one form in the language that is used at two scales: a field the size
+     of a page column, and a recess the size of a single reading. At reading
+     scale the large radius is the wrong one - it is the radius everything else
+     that small already declines - so those instances say --axi-radius-sm here
+     rather than reaching for a modifier or a second class. */
+  border-radius: var(--axi-well-radius, var(--axi-radius));
   /* Tighter than a panel's 26px: a well is a container for objects that carry
      their own padding, not a page margin. */
   padding: var(--axi-well-pad, 10px);

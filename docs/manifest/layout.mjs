@@ -109,7 +109,7 @@ leaves a trailing margin behind.`,
     id: 'panel',
     name: 'Panel',
     layer: 'layout',
-    classes: ['.axi-panel', '.axi-panel--float'],
+    classes: ['.axi-panel', '.axi-panel--float', '.axi-panel--tile'],
     summary: 'The raised surface every larger component is built on, and the canonical panel weight: a 4px ink outline and a hard 6px block.',
     rules: [3],
     knobs: ['--axi-panel-pad'],
@@ -129,7 +129,17 @@ like glass \`--axi-surface\` is a translucent tint, which reads as a pane only
 while what is behind it holds still; the moment the content scrolls it shows
 through. \`--axi-surface-float\` is the surface for that case, and
 \`.axi-rail--float\` says the same thing about the other surface that needs
-it.`,
+it.
+
+\`--tile\` is for a panel standing in a grid of its own kind rather than alone
+in the page. It drops the border and the block one step, to the control
+weight, so a row of six does not read as six page regions arguing with the
+page that holds them - and because the ramp has two steps, a plain
+\`.axi-panel\` among tiles outranks them. That is how a grid of readings says
+"this one is first" without a hue: the accent is not available for it anyway,
+since gold means the thing *you* picked and nobody picks a winner. A tile that
+is also a button or a link lifts under the press with no extra class, keyed
+off the element.`,
     examples: [
       {
         title: 'Two panels, one tightened',
@@ -159,6 +169,24 @@ it.`,
   </div>
 </div>`,
       },
+      {
+        title: 'A grid of tiles, one of them first',
+        note: 'Rank said with the form ramp: the winner is a plain panel among tiles, no colour spent',
+        html: `<div class="axi-row" style="--axi-row-gap: 12px; align-items: stretch">
+  <div class="axi-panel" style="flex: 1 1 150px; --axi-panel-pad: 12px">
+    <p class="axi-eyebrow">First</p>
+    <p class="axi-ink-plain" style="margin: 0; font: var(--axi-t-h3)">1,284</p>
+  </div>
+  <div class="axi-panel axi-panel--tile" style="flex: 1 1 150px">
+    <p class="axi-eyebrow">Second</p>
+    <p class="axi-ink-dim" style="margin: 0; font: var(--axi-t-h3)">1,102</p>
+  </div>
+  <div class="axi-panel axi-panel--tile" style="flex: 1 1 150px">
+    <p class="axi-eyebrow">Third</p>
+    <p class="axi-ink-dim" style="margin: 0; font: var(--axi-t-h3)">998</p>
+  </div>
+</div>`,
+      },
     ],
   },
   {
@@ -168,7 +196,7 @@ it.`,
     classes: ['.axi-well'],
     summary: "The panel's inverse: a field sunk into the surface around it rather than raised off it. Ground fill, the internal rule for an edge, and no block.",
     rules: [3],
-    knobs: ['--axi-well-pad'],
+    knobs: ['--axi-well-pad', '--axi-well-radius'],
     notes: `Rule 3 gives the language two steps up off the page. This is the step
 *down*, and it exists because every consumer that needed one reached for a
 second \`.axi-panel\` inside the first - two identical fills parted by a line,
