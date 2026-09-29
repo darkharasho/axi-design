@@ -436,3 +436,73 @@ describe('the page-level elements paint the light', () => {
     })
   }
 })
+
+// One surface, many elements. Every other themed fill in this language lands
+// on a single box - a panel, a rail, a toolbar, one hovered row of a palette -
+// and a gradient on a single box is just that box's gradient. A table is the
+// one component whose surfaces are ASSEMBLED: a sticky head is a row of `th`,
+// a pinned name column is one cell per row, a hovered row is every cell in it.
+// Each of those is one strip to the eye and N painting areas to the renderer,
+// so a themed gradient restarts inside every cell and the strip arrives as a
+// row of separately lit boxes with a seam at each boundary.
+//
+// `background-attachment: fixed` is the fix and it is not a new idea here: it
+// is what `body`, `.axi-mast` and `.axi-sheet` already do, for the reason
+// .axi-mast states at length - an element shows its SHARE of one light
+// positioned to the viewport, rather than its own private copy of it. Give the
+// cells of a strip one shared painting area and they resolve back into the one
+// surface they were always drawing.
+//
+// This is derived rather than a list of the three rules that were wrong when
+// it was written, because the rule is about a shape, not about those three:
+// any cell this language later decides to fill from a theme's surface has the
+// same problem the moment a theme makes that surface a gradient, and a theme
+// is explicitly allowed to (see the surface tokens in docs/RULES.md). The
+// check is here rather than in a table test for the same reason - it is the
+// theme contract that makes a per-cell fill unsafe.
+describe('a surface assembled from cells is painted once', () => {
+  const SRC = resolve(process.cwd(), 'src')
+  const css = readdirSync(SRC)
+    .filter((f) => f.endsWith('.css'))
+    .map((f) => `/* ${f} */\n${readFileSync(resolve(SRC, f), 'utf8')}`)
+    .join('\n')
+
+  // Flat rules only, which is all this language has outside @media - a nested
+  // block simply matches on its own and its at-rule prelude never does.
+  const rules = () =>
+    [...stripComments(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({
+      selector: sel.trim().replace(/\s+/g, ' '),
+      body,
+    }))
+
+  // `th` or `td` as an element in the selector, not as a fragment of a class
+  // name. The delimiters are what makes that distinction, so they are spelled
+  // out rather than left to \b, which is happy in the middle of a word.
+  const CELL = /(^|[\s,(>+~])(th|td)(?=$|[\s,()>+~:.[])/
+  const THEMED_FILL = /background(-color|-image)?:[^;]*var\(--axi-surface[a-z-]*\)/
+
+  const cellFills = () => rules().filter((r) => CELL.test(r.selector) && THEMED_FILL.test(r.body))
+
+  // The guard on the guard. If a refactor renames the table's parts or moves
+  // them out of src/, the loop below would pass by finding nothing at all -
+  // which is the failure mode every derived check has and the reason so many
+  // of them are quietly vacuous.
+  it('finds the cell fills it is meant to be checking', () => {
+    expect(cellFills().map((r) => r.selector)).toEqual([
+      '.axi-table tbody tr:hover :is(td, th)',
+      '.axi-table--sticky thead th',
+      '.axi-table--pinned :is(thead, tbody) :is(th, td):first-child',
+      // The one this check was not written for. A markdown table's head is the
+      // same shape as a component table's and had the same seam, and no one
+      // looking at data.css would have found it - which is the argument for
+      // deriving the set instead of listing the rules already known to be bad.
+      '.axi-prose th',
+    ])
+  })
+
+  for (const { selector, body } of cellFills()) {
+    it(`${selector} shares one painting area`, () => {
+      expect(body).toMatch(/background-attachment:\s*fixed/)
+    })
+  }
+})

@@ -76,9 +76,16 @@
   overflow: hidden;
   font-size: 13.5px;
 }
+/* A markdown table's head is a row of cells filled from a themed surface, so
+   it is the one-surface-many-elements case `.axi-table tbody tr:hover` sets
+   out in data.css, and it takes the same attachment. Nothing here is sticky,
+   which makes no difference: the seam is per-cell repetition of the gradient,
+   not anything to do with scrolling. */
 .axi-prose th {
   text-align: left; padding: 10px 12px;
-  background: var(--axi-surface-raised); color: var(--axi-text);
+  background: var(--axi-surface-raised);
+  background-attachment: fixed;
+  color: var(--axi-text);
   font: var(--axi-t-micro); letter-spacing: var(--axi-ls-micro); text-transform: uppercase;
 }
 .axi-prose td { padding: 10px 12px; border-top: var(--axi-border-hairline) solid var(--axi-rule); }

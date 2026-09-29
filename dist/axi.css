@@ -2402,8 +2402,38 @@ textarea.axi-input {
 /* The row under the cursor comes forward on the neutral ramp. Not an ink:
    hovering a row is not a status, and forty rows that each flash a colour on
    the way past the one you want is the tinted-everything failure rule 2 is
-   about. */
-.axi-table tbody tr:hover :is(td, th) { background: var(--axi-surface-raised); color: var(--axi-text); }
+   about.
+
+   ONE SURFACE, MANY ELEMENTS - the attachment below, and on the sticky head,
+   the pinned column and the prose table's head, which are the four places in
+   this language where that is the shape of the problem. Everywhere else a
+   themed fill lands on a single box: a panel, a rail, a toolbar, one hovered
+   row of a palette. A table's surfaces are ASSEMBLED. A hovered row is every
+   cell in it, a sticky head is a row of `th`, a pinned name column is one cell
+   per row - one strip to the eye and N painting areas to the renderer. A theme
+   is allowed to make any surface a gradient and glass makes all three of them
+   one, so each cell restarts the ramp and the strip arrives as a row of
+   separately lit boxes with a seam at every boundary.
+
+   Fixed is the same idiom as `body`, `.axi-mast` and `.axi-sheet`, for the
+   reason .axi-mast gives at length: an element shows its SHARE of one light
+   rather than its own private copy of it. Give the cells of a strip a shared
+   painting area and they resolve back into the one surface they were always
+   drawing. Note what the fix does NOT depend on: which box ends up shared. A
+   filtered ancestor - any panel under a glass theme, since --axi-surface-filter
+   is a backdrop-filter and establishes a containing block, the trap that
+   token's own comment points at - takes the painting area from the viewport and
+   makes it the panel's. Both are shared by every cell in the band, so both are
+   continuous; the ancestor only decides where the light sits, which is a
+   question with no wrong answer here. What is not available is the obvious
+   alternative of filling the container and leaving the cells transparent: a
+   sticky head has to carry its own fill, because a fill on `thead` stays
+   behind while the cells travel. */
+.axi-table tbody tr:hover :is(td, th) {
+  background: var(--axi-surface-raised);
+  background-attachment: fixed;
+  color: var(--axi-text);
+}
 /* The measured value in a row, as opposed to its supporting numbers. */
 .axi-table__num { color: var(--axi-text); }
 /* A name cell: an icon, a diamond or a rank beside the label. */
@@ -2453,8 +2483,14 @@ textarea.axi-input {
      --axi-surface-float exists: rows travel behind both of these, and a glass
      theme's ordinary surfaces are alpha, so a head at --axi-surface-raised
      would have numbers sliding through it. Opaque is not a look here, it is
-     the requirement. */
+     the requirement.
+
+     Opaque and a gradient, under glass, which is why the attachment is here:
+     the head is a row of cells and this is the one-surface-many-elements case
+     the hover rule explains. Nothing about the sticky positioning changes it -
+     a sticky box is still its own painting area. */
   background: var(--axi-surface-float);
+  background-attachment: fixed;
   border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
 }
 /* The first column stays. It holds the row's name, and a name scrolled out of
@@ -2466,7 +2502,10 @@ textarea.axi-input {
   position: sticky;
   left: 0;
   z-index: 1;
+  /* The same strip as the head, turned ninety degrees, so the same attachment:
+     one cell per row means forty painting areas down a single column. */
   background: var(--axi-surface-float);
+  background-attachment: fixed;
   border-right: var(--axi-border-control) solid var(--axi-ink-line);
 }
 /* The corner belongs to both and has to outrank both. */
@@ -2836,9 +2875,16 @@ textarea.axi-input {
   overflow: hidden;
   font-size: 13.5px;
 }
+/* A markdown table's head is a row of cells filled from a themed surface, so
+   it is the one-surface-many-elements case `.axi-table tbody tr:hover` sets
+   out in data.css, and it takes the same attachment. Nothing here is sticky,
+   which makes no difference: the seam is per-cell repetition of the gradient,
+   not anything to do with scrolling. */
 .axi-prose th {
   text-align: left; padding: 10px 12px;
-  background: var(--axi-surface-raised); color: var(--axi-text);
+  background: var(--axi-surface-raised);
+  background-attachment: fixed;
+  color: var(--axi-text);
   font: var(--axi-t-micro); letter-spacing: var(--axi-ls-micro); text-transform: uppercase;
 }
 .axi-prose td { padding: 10px 12px; border-top: var(--axi-border-hairline) solid var(--axi-rule); }
