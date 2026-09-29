@@ -430,6 +430,80 @@ own padding and stop being a toolbar.`,
     ],
   },
   {
+    id: 'dock',
+    name: 'Dock',
+    layer: 'shells',
+    classes: ['.axi-dock', '.axi-dock--end'],
+    summary: 'A bar that is one edge of its scroll container: a tray above a list, an action bar pinned beneath one. The horizontal counterpart to a flush rail.',
+    rules: [3],
+    knobs: ['--axi-dock-pad'],
+    notes: `Reach for a dock when the bar IS the edge, and for an
+\`.axi-toolbar\` when it is an object standing in the layout with space around
+it. The test is what happens at the two ends: a toolbar has page either side of
+it, a dock runs into the container's own edges. That is why a dock has no radius
+- a rounded corner there is a corner cut out of the page - and no offset block,
+because a block needs somewhere to fall and a dock has content on one side and
+the container's edges on the other three.
+
+**THE SURFACE IS NOT OPTIONAL.** A dock is on \`--axi-surface-float\` always,
+with no \`--float\` modifier to forget. Everything else in this language can go
+either way: a panel may sit still on the page or be pinned over a scrolling
+table, so it needs a word for which. "The content scrolls under it" is the
+definition of docking rather than a variant of it, and a translucent dock is one
+with the list showing through its own buttons wherever the blur is unavailable.
+
+**WHICH EDGE.** The default draws the border on its block-end side, because the
+border faces the content and a dock at the block-start edge has the content
+below it. \`.axi-dock--end\` is the other case, for a bar pinned beneath its
+list. Both are logical properties, so a vertical writing mode does not put the
+seam on the outside. This is the pair \`.axi-rail--flush\` still lacks: it
+assumes the leading edge, and grew from one consumer rather than two.
+
+**WHAT IT LEAVES TO YOU.** A dock says where it is, not how its contents are
+arranged or how it is held there. Put a row of controls inside it, or a head
+above a scrolling body; make it \`position: sticky\` or leave it in flow. A
+dock that answered either of those would be two objects wearing one name.`,
+    examples: [
+      {
+        title: 'A tray above the list, an action bar beneath it',
+        note: 'Both docks in one scroll container, so the seams face inward from either end',
+        html: `<div style="height: 210px; overflow-y: auto; border: var(--axi-border-panel) solid var(--axi-ink-line)">
+  <div class="axi-dock" style="position: sticky; top: 0">
+    <div style="display: flex; gap: 8px; align-items: center">
+      <span class="axi-eyebrow">Fights</span>
+      <button class="axi-btn axi-btn--ghost" type="button">All</button>
+      <button class="axi-btn axi-btn--ghost" type="button">None</button>
+    </div>
+  </div>
+  <div style="padding: 12px 16px; display: flex; flex-direction: column; gap: 8px">
+    <p>Rows scroll under both bars.</p>
+    <p>The dock is opaque so they do not read through it.</p>
+    <p>Neither bar has a corner, because its ends are the container's.</p>
+    <p>Neither casts a block, because there is nowhere for one to fall.</p>
+    <p>Keep scrolling.</p>
+    <p>A little further.</p>
+  </div>
+  <div class="axi-dock axi-dock--end" style="position: sticky; bottom: 0">
+    <div style="display: flex; gap: 8px; align-items: center; justify-content: space-between">
+      <span class="axi-eyebrow">3 selected</span>
+      <button class="axi-btn axi-btn--primary" type="button">Delete</button>
+    </div>
+  </div>
+</div>`,
+      },
+      {
+        title: 'A shorter bar',
+        note: 'The knob takes one or two values, like any padding',
+        html: `<div class="axi-dock" style="--axi-dock-pad: 6px 10px">
+  <div style="display: flex; gap: 8px; align-items: center">
+    <button class="axi-btn axi-btn--ghost" type="button">Undo</button>
+    <span class="axi-eyebrow">1 fight hidden</span>
+  </div>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'mast',
     name: 'Masthead',
     layer: 'shells',

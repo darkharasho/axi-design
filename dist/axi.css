@@ -38,8 +38,10 @@
   --axi-surface-raised: #2b313d;
   /* The fill for a surface that FLOATS over content which scrolls behind it:
      the command palette, the menu and picker popovers, the modal, the drawer,
-     the toast, and any .axi-panel--float, .axi-rail--float or
-     .axi-toolbar--float a consumer declares. Holds --axi-surface, because for
+     the toast, every .axi-dock (which is the one surface here that cannot be
+     anything else - docking IS having content scroll under you), and any
+     .axi-panel--float, .axi-rail--float or .axi-toolbar--float a consumer
+     declares. Holds --axi-surface, because for
      a theme whose panels are opaque a floating panel is just a panel and there
      is nothing to decide.
 
@@ -1278,6 +1280,59 @@ textarea.axi-input {
    modifier rather than left to each consumer's inline style, so the reason
    lives here instead of in a comment in somebody's component. */
 .axi-toolbar--nowrap { flex-wrap: nowrap; }
+
+/* ---------- dock ---------- */
+/* A bar that IS one edge of its scroll container rather than an object standing
+   in the layout: a tray that drops in above a list, an action bar pinned under
+   one. The horizontal counterpart to .axi-rail--flush, and the shape this
+   language was missing - a rail is vertical, and a toolbar stands in the layout
+   with space around it, so every consumer with a full-width edge bar had to
+   write the surface, the single border and the squared ends by hand.
+
+   It drops what says "an object with space around it", for the reasons
+   .axi-rail--flush drops them: no radius, because its two ends are the
+   container's own edges and a corner there is a corner cut out of the page; and
+   no offset block, because a block needs somewhere to fall and this has content
+   on one side and the container's edges on the other three.
+
+   It is on --axi-surface-float unconditionally, with no --float modifier to
+   forget. Every other surface here can be either way - a panel may sit still on
+   the page or be pinned over a scrolling table - but "the content scrolls under
+   it" is the definition of docking rather than a variant of it. A translucent
+   dock is a dock with the list showing through its own buttons on any platform
+   where the blur is unavailable, which is to say on some platform.
+
+   What it does not say is how its contents are arranged or how it is pinned:
+   put an .axi-toolbar's row of controls inside it, or a head above a scrolling
+   body; make it position: sticky or leave it in flow. Those belong to the
+   consumer, and a dock that answered either would be two objects wearing one
+   name. */
+.axi-dock {
+  /* The inline figure is a page gutter and the block figure is a bar's height.
+     They differ on purpose: a dock spans the full width, so its contents have
+     to line up with the content it is docked against, while how tall it stands
+     is its own business. */
+  padding: var(--axi-dock-pad, 12px 16px);
+  background: var(--axi-surface-float);
+  backdrop-filter: var(--axi-surface-filter);
+  /* The seam's colour and style said once, both widths off, and each modifier
+     below turning on the one side it needs. Spelling the whole shorthand twice
+     would put two independent copies of the edge in the file for a theme to
+     change one of. */
+  border: 0;
+  border-block: 0 solid var(--axi-ink-line);
+  border-radius: 0;
+}
+/* The border faces the content, so a dock at the block-start edge draws it on
+   its block-end side. Logical rather than physical, so it survives a vertical
+   writing mode - the same correction .axi-rail--flush took. */
+.axi-dock:not(.axi-dock--end) { border-block-end-width: var(--axi-border-panel); }
+/* The other edge. Unlike .axi-rail--flush, which assumes the leading edge and
+   has no way to ask for the far one, a dock can say which edge it is on -
+   because both cases arrived together: a tray drops in from the top of a list
+   and an action bar is pinned beneath the same list. This is the pair
+   .axi-rail--flush should grow into the day a trailing-edge rail exists. */
+.axi-dock--end { border-block-start-width: var(--axi-border-panel); }
 
 /* ---------- menu popover ---------- */
 /* A disclosure, not a permanent row of controls. The trigger is an .axi-btn

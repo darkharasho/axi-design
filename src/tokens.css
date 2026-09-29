@@ -34,8 +34,10 @@
   --axi-surface-raised: #2b313d;
   /* The fill for a surface that FLOATS over content which scrolls behind it:
      the command palette, the menu and picker popovers, the modal, the drawer,
-     the toast, and any .axi-panel--float, .axi-rail--float or
-     .axi-toolbar--float a consumer declares. Holds --axi-surface, because for
+     the toast, every .axi-dock (which is the one surface here that cannot be
+     anything else - docking IS having content scroll under you), and any
+     .axi-panel--float, .axi-rail--float or .axi-toolbar--float a consumer
+     declares. Holds --axi-surface, because for
      a theme whose panels are opaque a floating panel is just a panel and there
      is nothing to decide.
 

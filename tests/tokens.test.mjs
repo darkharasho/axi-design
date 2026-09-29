@@ -644,6 +644,7 @@ describe('the float surface reaches every surface that floats', () => {
     '.axi-panel--float',
     '.axi-rail--float',
     '.axi-toolbar--float',
+    '.axi-dock',
   ]
 
   const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
@@ -670,8 +671,8 @@ describe('the float surface reaches every surface that floats', () => {
   it('names the same consumers in the token comment', () => {
     const comment = read(TOKENS_FILE).match(/FLOATS over content[\s\S]*?\*\//)[0]
     // The five named components are spelled in prose there ("the modal", "the
-    // drawer"), so only the three modifier classes are literal enough to pin.
-    for (const selector of ['.axi-panel--float', '.axi-rail--float', '.axi-toolbar--float']) {
+    // drawer"), so only the classes named literally can be pinned.
+    for (const selector of ['.axi-panel--float', '.axi-rail--float', '.axi-toolbar--float', '.axi-dock']) {
       expect(comment, `${selector} missing from the token's consumer list`).toContain(selector)
     }
   })
