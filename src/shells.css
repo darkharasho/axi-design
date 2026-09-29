@@ -23,6 +23,29 @@
   padding-inline: var(--axi-gutter);
   display: flex; align-items: center; gap: 22px; min-height: 66px; flex-wrap: wrap;
 }
+/* Above --axi-page the row stops growing: the cap is on this box, not on the
+   window, so from 1280px up the masthead has exactly one width to fit in and
+   wrapping there is not a fallback, it is a permanent second line - one tab
+   too many and the last item in source order drops, on a 4K display as surely
+   as on a laptop. So the wide row does not wrap; it takes the width out of the
+   search field instead (below), and the strip scrolls only if that runs out.
+   Under the cap the window really is too narrow and wrapping is the honest
+   answer, which is why this is a floor and not a blanket `nowrap`. */
+@media (min-width: 1280px) {
+  .axi-mast__in { flex-wrap: nowrap; }
+}
+/* Nothing in the row gives up width unless it is named below. */
+.axi-mast__in > * { flex-shrink: 0; }
+/* The field is the one control here that is still entirely itself 70px
+   narrower - a placeholder that elides costs nothing, where a clipped tab
+   costs a destination. Flexbox shrinks proportionally, not in order, and a
+   merely-larger factor still took a couple of pixels off the last tab; the
+   number is this big to make that share round to nothing, so the effect is
+   the ordering CSS has no other way to say. Once the field is at its floor -
+   still wide enough to read as a search box rather than a smudge - whatever
+   is left over goes to the strip, which scrolls. */
+.axi-mast .axi-search,
+.axi-mast .docs-search { flex-shrink: 1000; min-width: 200px; }
 .axi-brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 /* The sigil is the diamond motif scaled up with a glyph on top. The diamond is
    a rotated pseudo-element behind the text rather than a rotated box, so the
@@ -56,8 +79,14 @@
 .axi-tabs { display: flex; gap: 8px; }
 /* The auto margin belongs to the masthead, not to the strip: it is a statement
    about where the tabs sit in that row, and a strip standing on its own -
-   spanning a view instead of ending a header - has nothing to push away from. */
-.axi-mast .axi-tabs { margin-left: auto; }
+   spanning a view instead of ending a header - has nothing to push away from.
+   The overflow belongs to the masthead for the same reason. This row is capped
+   at --axi-page, so the brand, the strip, the search field and the two selects
+   divide 1244px however wide the window is, and flex-wrap breaks a line before
+   it shrinks an item - so one tab too many sent the last item in source order
+   to a second row instead of taking width off the widest one. The strip is the
+   item that can give: it scrolls, and the row stays a row. */
+.axi-mast .axi-tabs { margin-left: auto; flex-shrink: 1; min-width: 0; overflow-x: auto; }
 .axi-tabs a,
 .axi-tabs button {
   padding: 8px 16px;
