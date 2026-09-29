@@ -838,3 +838,43 @@ describe('a pill is a button that holds a state, so it is the same shape', () =>
     })
   }
 })
+
+// A code span inside rendered markdown and a code span inside a card are the
+// same object. The language spelled it twice - once as `.axi-prose code`, and
+// nowhere reachable outside prose, which is why consumers invented boxes. The
+// fix was one rule with both selectors, and these are the two facts that fix
+// depends on: that both selectors are present, and that they are in the SAME
+// rule. Asserting only "both exist" would pass a re-split into two rules with
+// drifting values, which is the defect this replaced.
+describe('a quoted literal is one object, in or out of prose', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+
+  // Every rule whose selector list mentions either spelling of code.
+  const rules = [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim(), body }))
+    .filter(({ sel }) => /(^|,|\s)\.axi-code\b/.test(sel) || /\.axi-prose\s+code\b/.test(sel))
+
+  it('declares both spellings in a single rule', () => {
+    // `.axi-prose pre code` legitimately overrides the shared rule inside a
+    // block, so it is not a second copy - exclude it by its own selector.
+    const shared = rules.filter(({ sel }) => !/pre\s+code/.test(sel))
+    expect(shared.length, `expected one shared rule, found ${shared.length}: ${shared.map((r) => r.sel).join(' | ')}`).toBe(1)
+    expect(shared[0].sel).toMatch(/\.axi-code/)
+    expect(shared[0].sel).toMatch(/\.axi-prose\s+code/)
+  })
+
+  it('sizes the literal against the text around it, not in pixels', () => {
+    const shared = rules.find(({ sel }) => !/pre\s+code/.test(sel))
+    // A code span lands in body copy and in 10px captions alike; a px size
+    // would read as a different voice in one of them.
+    expect(/font-size:\s*[\d.]+em/.test(shared.body), 'font-size is not in em').toBe(true)
+  })
+
+  it('is sunk into its surface, where the key it sits beside is raised off one', () => {
+    const shared = rules.find(({ sel }) => !/pre\s+code/.test(sel))
+    expect(shared.body).toMatch(/background:\s*var\(--axi-ground\)/)
+    const kbd = [...css.matchAll(/\.axi-kbd\s*\{([^}]*)\}/g)][0]
+    expect(kbd, 'no .axi-kbd rule found').toBeTruthy()
+    expect(kbd[1]).toMatch(/background:\s*var\(--axi-surface\)/)
+  })
+})

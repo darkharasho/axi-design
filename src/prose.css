@@ -46,12 +46,8 @@
   border: var(--axi-border-hairline) solid var(--axi-ink-line);
 }
 
-.axi-prose code {
-  font-family: var(--axi-mono); font-size: .88em;
-  background: var(--axi-ground); color: var(--axi-text);
-  border: var(--axi-border-hairline) solid var(--axi-ink-line);
-  border-radius: var(--axi-radius-sm); padding: 1px 5px;
-}
+/* .axi-prose code is declared beside .axi-code in primitives.css: one rule,
+   both selectors, because they are one object. */
 .axi-prose pre {
   margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;
   background: var(--axi-ground);

@@ -682,3 +682,23 @@ vacuously while no theme exists, and binds the moment the first file lands.
 4. Add it to the gallery, and check it with the accent switcher — if it does
    not follow the accent, it hard-coded something.
 5. `npm run build` and commit `dist/axi.css` with your source change.
+
+### A style only reachable through a layer will be re-invented
+
+If a style lives at `.some-layer .thing` and nowhere else, then it exists for
+consumers who adopted that layer and for nobody else. Every other consumer that
+needs the same object has to adopt a whole layer to reach one declaration — and
+what it does instead is draw its own. That is not a hypothetical: `.axi-prose
+code` was the language's only word for a quoted literal, and a consumer with six
+literals in its interface copy — none of them in prose — had written three
+different boxes for them, the sixth having given up and drawn none.
+
+So when a layer-scoped style names an object that can appear outside that layer,
+give the object its own class and put **both selectors on one rule**. Not two
+rules that agree: one rule. `.axi-code, .axi-prose code { … }`. Two rules that
+agree today are two rules that disagree after the next edit, and that is how the
+same object ends up with two appearances inside one language — the defect this
+whole section exists to prevent.
+
+The test to write is not "does `.axi-code` exist". It is "are both spellings in
+the same rule", because only the second one fails when someone splits them.

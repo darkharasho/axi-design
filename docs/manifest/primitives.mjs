@@ -308,6 +308,41 @@ It sits at the same measure as the input, so give the wrapper the width.`,
     ],
   },
   {
+    id: 'code',
+    name: 'Code',
+    layer: 'primitives',
+    classes: ['.axi-code'],
+    summary: 'A literal the reader types or recognises character for character: a slash command, a file extension, a config key.',
+    rules: [3, 5],
+    knobs: [],
+    notes: `This style was always in the language, but only as \`.axi-prose
+code\` - reachable only by adopting a whole typography layer for a document. A
+consumer naming one command inside a sentence of interface copy cannot adopt
+that layer without restyling the sentence, so it draws its own box instead. One
+real consumer had three spellings across six spans, and the sixth had given up
+and drawn no box at all.
+
+\`.axi-code\` and \`.axi-prose code\` are one rule with two selectors, not
+two rules that agree. They are the same object, and the last time this language
+spelled one object twice the copies drifted; a test holds them in one rule.
+
+Its size is in \`em\`, so a literal in body copy and a literal in a 10px
+caption each track the text around them. A fixed size would make one of them
+read as a different voice.
+
+It sits on \`--axi-ground\` where \`.axi-kbd\` sits on \`--axi-surface\`,
+and the reason is the same one written down there: a key is raised off what it
+is printed on, and a quoted literal is sunk into it.`,
+    examples: [
+      {
+        title: 'A command named inside interface copy',
+        html: `<p class="axi-stack" style="max-width: 46ch">
+  In Discord, run <code class="axi-code">/bridge pair</code> to link this channel.
+</p>`,
+      },
+    ],
+  },
+  {
     id: 'kbd',
     name: 'Keyboard key',
     layer: 'primitives',

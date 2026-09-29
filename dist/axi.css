@@ -672,6 +672,37 @@ button.axi-panel--tile:hover,
   color: var(--axi-accent); font-weight: 900; pointer-events: none;
 }
 
+/* ---------- code ---------- */
+/* A literal the reader is meant to type or recognise character for character:
+   a slash command, a file extension, a URL, a config key. The language already
+   had this style, but only as `.axi-prose code` - reachable by adopting a whole
+   typography layer for a document. A consumer with one command to name inside a
+   sentence of interface copy cannot adopt that layer without restyling the
+   sentence, so it invents a box instead. One real consumer had three spellings
+   for six spans, and the sixth had given up and drawn no box at all.
+
+   So the rule below carries both selectors. Not for brevity - because a code
+   span inside rendered markdown and a code span inside a card are the same
+   object, and the last time this language spelled one object twice the two
+   copies drifted. There is a test that they stay one rule.
+
+   `em`, not `px`: this lands in body copy and in 10px captions alike, and a
+   literal that does not track the text around it reads as a different voice.
+
+   It sits on --axi-ground where .axi-kbd sits on --axi-surface, and the
+   reason is already written down one rule below: a key is raised off what it
+   is printed on, and a quoted literal is sunk into it. */
+.axi-code,
+.axi-prose code {
+  font-family: var(--axi-mono);
+  font-size: .88em;
+  background: var(--axi-ground);
+  color: var(--axi-text);
+  border: var(--axi-border-hairline) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  padding: 1px 5px;
+}
+
 /* ---------- keyboard key ---------- */
 /* A key on the keyboard, named in the interface: the Esc that closes a
    palette, the Ctrl K that opens it. Drawn as a small control rather than as a
@@ -2606,12 +2637,8 @@ textarea.axi-input {
   border: var(--axi-border-hairline) solid var(--axi-ink-line);
 }
 
-.axi-prose code {
-  font-family: var(--axi-mono); font-size: .88em;
-  background: var(--axi-ground); color: var(--axi-text);
-  border: var(--axi-border-hairline) solid var(--axi-ink-line);
-  border-radius: var(--axi-radius-sm); padding: 1px 5px;
-}
+/* .axi-prose code is declared beside .axi-code in primitives.css: one rule,
+   both selectors, because they are one object. */
 .axi-prose pre {
   margin: 0 0 18px; padding: 14px 16px; overflow-x: auto;
   background: var(--axi-ground);
