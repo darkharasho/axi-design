@@ -144,6 +144,7 @@ not "what does the system look like". Everything else is
 | `--axi-pill-size` | an `.axi-pill`'s text size, which travels with its padding | `13px` | `<button class="axi-pill" style="--axi-pill-size: 10px">` |
 | `--axi-input-pad` | the padding inside an `.axi-input`, for a field that is furniture in a header rather than a control on a page | `11px 12px` | `<input class="axi-input" style="--axi-input-pad: 7px 12px">` |
 | `--axi-input-size` | an `.axi-input`'s text size, which travels with its padding | `14px` | `<input class="axi-input" style="--axi-input-size: 13px">` |
+| `--axi-action-hit` | the hit target of an `.axi-action--glyph`, whose label is one character and gives the pointer nothing to land on | `24px` | `<button class="axi-action axi-action--glyph" style="--axi-action-hit: 32px">` |
 | `--axi-well-pad` | the padding inside an `.axi-well` | `10px` | `<div class="axi-well" style="--axi-well-pad: 18px">` |
 | `--axi-well-radius` | an `.axi-well`'s corner radius, for a well used at reading scale rather than page scale | `var(--axi-radius)` | `<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">` |
 | `--axi-rail-w` | an `.axi-rail`'s width, for labels longer than the default holds | `208px` | `<aside class="axi-rail" style="--axi-rail-w: 260px">` |

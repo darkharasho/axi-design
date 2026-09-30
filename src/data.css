@@ -127,7 +127,19 @@
    alternative of filling the container and leaving the cells transparent: a
    sticky head has to carry its own fill, because a fill on `thead` stays
    behind while the cells travel. */
-.axi-table tbody tr:hover :is(td, th) {
+/* Written to weigh exactly one class, which takes some doing for a rule that
+   has to reach a descendant. `.axi-table tbody tr:hover :is(td, th)` weighed
+   three classes and four elements, so it beat the ink layer's one - and the
+   consumer that found this had six cells inked danger and six inked ok, every
+   one of which went plain the moment its row was hovered. A red value and a
+   green value both losing their verdict exactly as the reader reaches for them
+   is rule 6's addendum again, arriving through a descendant selector.
+
+   `.axi-table` is the only thing here that counts, so this lands level with the
+   resting cell rule (`.axi-table :where(td, tbody th)`, also one class) and
+   wins on order, while an ink class in utilities.css - one class, later file -
+   wins over both. */
+.axi-table :where(tbody tr:hover) :where(td, th) {
   background: var(--axi-surface-raised);
   background-attachment: fixed;
   color: var(--axi-text);

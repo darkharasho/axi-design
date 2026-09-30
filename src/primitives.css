@@ -493,6 +493,74 @@ button.axi-panel--tile:hover,
 .axi-link:where(:hover),
 .axi-prose a:where(:hover) { color: var(--axi-text); }
 
+/* ---------- quiet action ---------- */
+/* A control that is only its label. Not a button - it draws no box, takes no
+   padding and sits inside running text or a dense header where a box would be
+   the loudest thing on screen. Not a link either: a link goes somewhere and
+   says so with an underline and the accent, while this does something to the
+   view you are already looking at.
+
+   It exists because the first consumer counted had ninety of them and no class
+   for any of them, so each spelled out its own resting colour and - the part
+   that actually broke - its own hover colour. Fifteen different hover colours
+   across ninety sites, every one a literal from a utility palette rather than
+   a token, which means every one of them left the theme at the moment the
+   cursor arrived.
+
+   Three of those ninety did worse than leave the theme. A control resting on
+   the warning ink hovered to a neutral grey, and one resting on the danger ink
+   hovered to white: the verdict disappearing exactly when the reader reaches
+   for it. That is the same failure rule 6's addendum describes on .axi-btn,
+   arriving by a different road - not a component out-ranking its own modifier,
+   but an author naming a colour that had no business being named. The fix is
+   the same shape, and it is why the hover below is `:where(:hover)`: it weighs
+   one class, so `axi-action axi-ink-danger` stays red under the cursor and
+   takes its feedback from the underline instead.
+
+   `font: inherit` and not the label font: these land at 10px in a chart
+   legend, 11px in a section header and 14px in a modal, and a control that is
+   only its label has no business resizing the text around it. The weight is
+   inherited too, which is where this parts company with .axi-link - a link is
+   600 wherever it lands because it must be findable in a paragraph; an action
+   already sits where the reader is looking. */
+.axi-action {
+  padding: 0;
+  background: none;
+  border: 0;
+  font: inherit;
+  text-align: inherit;
+  color: var(--axi-text-dim);
+  cursor: pointer;
+  transition: color .1s;
+}
+/* Brighten for the uninked case, underline for every case. The colour change
+   is a fallback the ink layer beats by design, so an inked action would have
+   no hover feedback at all without a second signal that names no colour. An
+   underline is the one this language already trusts - it is how .axi-link
+   marks itself actionable - and it reads on amber, on red and on plain alike. */
+.axi-action:where(:hover) {
+  color: var(--axi-text);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+}
+
+/* An action whose label is a single glyph: a clear-field cross, a stepper
+   arrow, a star that marks a favourite. Same control, but a glyph gives the
+   pointer almost nothing to land on, so this is the one thing the plain action
+   does not need - a hit target. The box stays invisible; only its size is
+   declared. */
+.axi-action--glyph {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: var(--axi-action-hit, 24px);
+  min-height: var(--axi-action-hit, 24px);
+  /* The label is a glyph, so there is no text to underline - the brighten is
+     the whole signal and the underline would draw a stray rule beside it. */
+  text-decoration: none;
+}
+.axi-action--glyph:where(:hover) { text-decoration: none; }
+
 /* ---------- keyboard key ---------- */
 /* A key on the keyboard, named in the interface: the Esc that closes a
    palette, the Ctrl K that opens it. Drawn as a small control rather than as a

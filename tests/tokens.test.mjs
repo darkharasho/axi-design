@@ -1054,7 +1054,7 @@ describe('a picked row is marked by its edge, not by a step no theme has', () =>
   it('does not try to out-fill the hover, because no theme has a step for it', () => {
     // Both states sit on the raised step on purpose. If this ever diverges, the
     // themes below are what decides whether the new value is visible at all.
-    const hover = bodyOf('tbody tr:hover :is(td, th)')
+    const hover = bodyOf('tbody tr:hover')
     const fill = (b) => (b.match(/background:\s*var\((--axi-surface[a-z-]*)\)/) || [])[1]
     expect(fill(current())).toBe(fill(hover))
   })
@@ -1161,5 +1161,169 @@ describe('a table in a pane divides the room it has', () => {
     const container = (rules.find((r) => r.sel === '.axi-table__who') || {}).body
     expect(container, 'no bare .axi-table__who rule').toBeTruthy()
     expect(container).toMatch(/min-width:\s*0/)
+  })
+})
+
+// A hover may not put a component's colour further out of the ink layer's
+// reach than the component's own resting rule already does. That is the exact
+// invariant .axi-btn was fixed for - `axi-btn axi-ink-danger` went white under
+// the cursor because `.axi-btn:hover` weighed two classes against the ink's
+// one - and stating it as arithmetic rather than as "wrap your hovers in
+// :where()" is what makes it check the cases nobody has met yet. Derived: the
+// rules come out of the stylesheets, and the set is asserted non-empty.
+//
+// It deliberately does NOT claim the ink layer reaches every component. Two of
+// them address their children by element (`.axi-tabs a`, `.axi-crumbs a`), so
+// an ink class loses to them at REST, hover or no hover - a real defect, and a
+// different one from this. Widening this test to cover it would have it fail
+// for a reason it cannot diagnose.
+describe('a hover does not put a colour further out of reach than rest does', () => {
+  const RULES = () =>
+    ORDER.flatMap((name) => {
+      const css = stripComments(read(name))
+      return [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({
+        file: name,
+        sel: sel.trim().replace(/\s+/g, ' '),
+        body
+      }))
+    })
+
+  // `:where()` contributes nothing; an element name still counts.
+  const weigh = (sel) => {
+    const bare = sel.replace(/:where\((?:[^()]|\([^()]*\))*\)/g, '')
+    const classes = (bare.match(/\.[a-zA-Z][\w-]*|\[[^\]]+\]|:(?:hover|focus|is)\b/g) || []).length
+    const elements = (bare.match(/(?:^|[\s>+~(,])(a|button|td|th|tr|thead|tbody|option|input|label|svg|img|span)\b/g) || []).length
+    return classes * 100 + elements
+  }
+
+  // The component a selector belongs to: its first class. That is the rule an
+  // ink class competes with, and the one a hover must not outweigh.
+  const owner = (sel) => (sel.match(/\.[a-zA-Z][\w-]*/) || [null])[0]
+
+  const colourHovers = () =>
+    RULES().filter((r) => /:hover/.test(r.sel) && /(^|[\s;])color:/.test(r.body))
+
+  // Colours that ARE the state rather than a default the consumer might mean to
+  // replace. Both are argued at length beside their rules: an ink reaching the
+  // accent fill or a pressed pill's fill would put a status colour on top of a
+  // block and the label would stop being legible.
+  const STATE_COLOUR = [
+    /^\.axi-btn--primary:hover$/,
+    /^\.axi-pill\[aria-pressed="true"\]:hover$/,
+    // A current rail item, whose colour is the same statement the pressed pill
+    // makes: this one is on. The rule pairs rest and hover deliberately so the
+    // current item does not brighten further under the cursor.
+    /^\.axi-rail__item\[aria-current\], \.axi-rail__item\[aria-current\]:hover$/
+  ]
+
+  it('finds the hover rules to check', () => {
+    expect(colourHovers().length).toBeGreaterThan(2)
+  })
+
+  // The sixteen rules that were already like this when the invariant was
+  // written down. Every one is the same latent defect: give its component an
+  // ink class and the ink is lost under the cursor. None is fixed here, for a
+  // reason worth stating - wrapping them is visually inert, but three sibling
+  // guards in this suite look their selectors up by exact text, so the change
+  // is mechanical in the stylesheet and not mechanical in the tests.
+  //
+  // This list is a ratchet, not an excuse: the test below fails if anything
+  // NEW joins it, and also if anything on it disappears, so it can only be
+  // shortened deliberately and can never rot into a list of rules that no
+  // longer exist.
+  const KNOWN_UNWRAPPED = [
+    "primitives.css .axi-select:hover, .axi-picker__btn:hover, .axi-picker__btn[aria-expanded='true']",
+    'primitives.css .axi-select option:hover, .axi-select option:focus',
+    'primitives.css .axi-picker__opt:hover, .axi-picker__opt:focus',
+    'shells.css .axi-tabs a:hover, .axi-tabs button:hover',
+    'shells.css .axi-tabs .axi-tabs__close:hover',
+    'shells.css .axi-rail__item:hover',
+    'shells.css .axi-rail__subitem:hover',
+    'shells.css .axi-menu__pop label:hover',
+    'shells.css .axi-palette__row:hover',
+    'shells.css .axi-palette__trigger:hover',
+    'shells.css .axi-card:hover .axi-card__go',
+    'shells.css .axi-drawer__close:hover',
+    'shells.css .axi-titlebar__btns button:hover',
+    'shells.css .axi-titlebar__btns button:last-child:hover',
+    'shells.css .axi-crumbs a:hover',
+    'shells.css .axi-pages__n:hover'
+  ]
+
+  it('never weighs more than the resting rule of the class it belongs to', () => {
+    const all = RULES()
+    const offenders = []
+    for (const h of colourHovers()) {
+      if (STATE_COLOUR.some((re) => re.test(h.sel))) continue
+      const cls = owner(h.sel)
+      if (!cls) continue
+      // The resting rule: the lightest rule naming this class that sets a
+      // colour and is not itself a state.
+      const resting = all
+        .filter((r) => r.sel.includes(cls) && /(^|[\s;])color:/.test(r.body))
+        .filter((r) => !/:hover|:focus|\[aria-|\[data-/.test(r.sel))
+        .map((r) => weigh(r.sel))
+      if (!resting.length) continue
+      const lightest = Math.min(...resting)
+      if (weigh(h.sel) > lightest) offenders.push(`${h.file} ${h.sel}`)
+    }
+    const fresh = offenders.filter((o) => !KNOWN_UNWRAPPED.includes(o))
+    expect(
+      fresh,
+      'this hover outweighs its own resting rule, so an ink class that reaches the component at rest loses it under the cursor'
+    ).toEqual([])
+    // The ratchet's other tooth: a name on the list that no longer offends has
+    // either been fixed (delete it) or renamed (rename it). Either way the list
+    // must move, or it stops describing the stylesheet.
+    const stale = KNOWN_UNWRAPPED.filter((k) => !offenders.includes(k))
+    expect(stale, 'these no longer offend - take them off the list').toEqual([])
+  })
+
+  it('never names a colour outside the token set', () => {
+    const literal = colourHovers().filter((r) =>
+      /(^|[\s;])color:\s*(#|rgb|hsl|\b(?:white|black|gray|grey|slate|red|blue|amber|yellow|green)\b)/.test(r.body)
+    )
+    expect(
+      literal.map((r) => `${r.file} ${r.sel}`),
+      'a literal colour on hover leaves the theme at the moment the cursor arrives'
+    ).toEqual([])
+  })
+})
+
+describe('the quiet action is a control that is only its label', () => {
+  const css = stripComments(read('primitives.css'))
+  const rules = [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({
+    sel: sel.trim().replace(/\s+/g, ' '),
+    body
+  }))
+  const bodyOf = (sel) => (rules.find((r) => r.sel === sel) || {}).body
+
+  it('draws no box at all - that is the whole of what makes it quiet', () => {
+    const base = bodyOf('.axi-action')
+    expect(base, 'no .axi-action rule').toBeTruthy()
+    expect(base).toMatch(/border:\s*0/)
+    expect(base).toMatch(/background:\s*none/)
+    expect(base).toMatch(/padding:\s*0/)
+  })
+
+  it('inherits its type, because it lands at 10px and at 14px', () => {
+    expect(bodyOf('.axi-action')).toMatch(/font:\s*inherit/)
+  })
+
+  it('keeps a second hover signal, since the colour change is a fallback', () => {
+    // An inked action's colour is held by the ink layer, which beats the
+    // :where() hover by design - so a hover that offered only colour would
+    // offer an inked action nothing.
+    const hover = bodyOf('.axi-action:where(:hover)')
+    expect(hover, 'no .axi-action hover rule').toBeTruthy()
+    expect(hover).toMatch(/text-decoration:\s*underline/)
+  })
+
+  it('gives a glyph a hit target and takes back the underline it cannot use', () => {
+    const glyph = bodyOf('.axi-action--glyph')
+    expect(glyph, 'no glyph modifier').toBeTruthy()
+    expect(glyph).toMatch(/min-width:/)
+    expect(glyph).toMatch(/min-height:/)
+    expect(bodyOf('.axi-action--glyph:where(:hover)')).toMatch(/text-decoration:\s*none/)
   })
 })

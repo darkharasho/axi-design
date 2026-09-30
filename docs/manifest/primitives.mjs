@@ -386,6 +386,78 @@ utility still lands on top. A link in a caption that says
     ],
   },
   {
+    id: 'action',
+    name: 'Quiet action',
+    layer: 'primitives',
+    classes: ['.axi-action', '.axi-action--glyph'],
+    summary:
+      'A control that is only its label. Not a button, which draws a box; not a link, which goes somewhere. It does something to the view you are already looking at.',
+    rules: [3, 5, 6],
+    knobs: ['--axi-action-hit'],
+    notes: `The third chromeless control this language has needed and the first
+one it names. \`.axi-link\` covers the word that takes you elsewhere and
+\`.axi-btn--ghost\` covers the button that keeps its edge and drops its fill;
+between them sat the small text action - "clear", "reset", "show all", "out /
+in" - which draws nothing at all and had no word.
+
+It was found by counting. One consumer had ninety of them and a class for none,
+so each spelled out its own resting colour and its own hover colour: **fifteen
+different hover colours across ninety sites**, every one a literal from a
+utility palette rather than a token. That is ninety controls that left the theme
+at the moment the cursor arrived.
+
+Three of the ninety did worse than leave the theme. A control resting on the
+warning ink hovered to a neutral grey; one resting on the danger ink hovered to
+white. The verdict disappearing exactly when the reader reaches for it - the
+same failure rule 6's addendum describes on \`.axi-btn\`, arriving by a
+different road. There it was a component out-ranking its own modifier; here it
+was an author naming a colour that had no business being named.
+
+So the hover is \`:where(:hover)\`, and it carries a second signal that names
+no colour. The brighten is a fallback the ink layer beats by design, which means
+an inked action would otherwise get no hover feedback at all; an underline works
+on amber, on red and on plain alike, and it is the mark this language already
+uses for "actionable".
+
+\`font: inherit\`, not the label font: these land at 10px in a chart legend,
+11px in a section header and 14px in a modal, and a control that is only its
+label has no business resizing the text around it. The weight inherits too,
+which is where this parts company with \`.axi-link\` - a link is 600 wherever
+it lands because it must be findable inside a paragraph, while an action already
+sits where the reader is looking.
+
+\`--glyph\` is for the action whose label is a single character: a clear-field
+cross, a stepper arrow, a star. A glyph gives the pointer almost nothing to land
+on, so this is the one thing the plain action does not need - a hit target, sized
+by \`--axi-action-hit\`. The box stays invisible; only its size is declared.
+It also takes the underline back, because there is no text under a glyph to
+underline and the rule would only draw a stray mark beside it.`,
+    examples: [
+      {
+        title: 'Quiet actions in a section header, and one that keeps its verdict',
+        html: `<div class="axi-panel axi-stack">
+  <div style="display:flex;align-items:center;gap:14px">
+    <span style="font:var(--axi-t-label);letter-spacing:var(--axi-ls-label)">Boon uptime</span>
+    <button class="axi-action" type="button" style="font-size:10px;text-transform:uppercase;letter-spacing:.16em">Show all</button>
+    <button class="axi-action" type="button" style="font-size:10px;text-transform:uppercase;letter-spacing:.16em">Reset</button>
+    <button class="axi-action axi-ink-danger" type="button" style="font-size:10px;text-transform:uppercase;letter-spacing:.16em">Clear fights</button>
+  </div>
+  <p class="axi-ink-dim" style="font-size:12px;margin:0">The third stays red under the cursor: the hover weighs one class, so the ink lands on top of it.</p>
+</div>`,
+      },
+      {
+        title: 'A glyph action: a field you can clear',
+        html: `<div class="axi-panel" style="max-width:320px">
+  <div style="position:relative">
+    <input class="axi-input" value="Kroof" style="width:100%;padding-right:32px" aria-label="Filter players">
+    <button class="axi-action axi-action--glyph" type="button" aria-label="Clear filter"
+            style="position:absolute;right:4px;top:50%;transform:translateY(-50%)">&times;</button>
+  </div>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'kbd',
     name: 'Keyboard key',
     layer: 'primitives',

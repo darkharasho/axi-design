@@ -90,6 +90,12 @@ export const KNOBS = [
     example: '<input class="axi-input" style="--axi-input-size: 13px">',
   },
   {
+    name: '--axi-action-hit',
+    sets: "the hit target of an `.axi-action--glyph`, whose label is one character and gives the pointer nothing to land on",
+    fallback: '`24px`',
+    example: '<button class="axi-action axi-action--glyph" style="--axi-action-hit: 32px">',
+  },
+  {
     name: '--axi-well-pad',
     sets: 'the padding inside an `.axi-well`',
     fallback: '`10px`',

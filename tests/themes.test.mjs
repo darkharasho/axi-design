@@ -489,7 +489,7 @@ describe('a surface assembled from cells is painted once', () => {
   // of them are quietly vacuous.
   it('finds the cell fills it is meant to be checking', () => {
     expect(cellFills().map((r) => r.selector)).toEqual([
-      '.axi-table tbody tr:hover :is(td, th)',
+      '.axi-table :where(tbody tr:hover) :where(td, th)',
       // Selection, and selection-under-the-cursor. Added by the rule that
       // needed them, which is the check doing its job: a new cell fill cannot
       // arrive without declaring itself here.
