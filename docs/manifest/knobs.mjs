@@ -156,6 +156,12 @@ export const KNOBS = [
     example: '<div class="axi-grid" style="--axi-grid-min: 240px">',
   },
   {
+    name: '--axi-matrix-cell',
+    sets: "the floor on a matrix cell's height and width",
+    fallback: '`24px`',
+    example: '<table class="axi-table axi-table--matrix" style="--axi-matrix-cell: 18px">',
+  },
+  {
     name: '--axi-split-nav-w',
     sets: "the width of an `.axi-split`'s picker column",
     fallback: '`280px`',

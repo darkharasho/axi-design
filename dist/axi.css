@@ -2794,7 +2794,17 @@ textarea.axi-input {
    resting cell rule (`.axi-table :where(td, tbody th)`, also one class) and
    wins on order, while an ink class in utilities.css - one class, later file -
    wins over both. */
-.axi-table :where(tbody tr:hover) :where(td, th) {
+/* A DATA FILL SURVIVES A ROW STATE, and the `:not()` sits inside `:where()`
+   so saying so costs no specificity. A matrix cell's band IS its value (rule 9,
+   "the matrix is the bound on not at all") - washing it on the way past the row
+   you want deletes the reading. The row state is not weakened by this: it is
+   drawn by the leading edge below, and by every cell that has nothing to say.
+   Which is the edge-not-fill answer the selection rule below reaches on its own
+   grounds, arriving here a second time.
+
+   Nothing changes for a table with no `data-heat` in it, which is every table
+   in this language but one. */
+.axi-table :where(tbody tr:hover) :where(td:not([data-heat]), th:not([data-heat])) {
   background: var(--axi-surface-raised);
   background-attachment: fixed;
   color: var(--axi-text);
@@ -2829,7 +2839,7 @@ textarea.axi-input {
 .axi-table :where(tbody tr) > :where(td, th):first-child {
   border-inline-start: var(--axi-border-control) solid transparent;
 }
-.axi-table tbody tr[aria-current] :is(td, th) {
+.axi-table tbody tr[aria-current] :is(td, th):where(:not([data-heat])) {
   background: var(--axi-surface-raised);
   background-attachment: fixed;
   color: var(--axi-text);
@@ -2989,6 +2999,115 @@ textarea.axi-input {
   cursor: pointer;
 }
 .axi-table th:first-child .axi-table__sort { justify-content: flex-start; }
+
+/* ---------- matrix ---------- */
+/* Two categorical axes and a quantity where they cross: forty players down the
+   side, sixty five-second buckets across, a count in each cell. Rule 9's
+   "the matrix is the bound on not at all" is the whole argument for this
+   existing at all, and the short form is: the plane is spent, so there is no
+   third dimension left to give the quantity a LENGTH, and both axes are
+   already sorted by something the reader needs so neither can be re-sorted by
+   the value. Intensity is what is left, and it is admissible here because the
+   cell also prints its number - the digit is the legible copy rule 9 demands,
+   and the band is only what lets the eye find the shape without reading two
+   thousand figures one at a time. A matrix cell with nothing written in it is
+   a heatmap and rule 9 refuses it.
+
+   This is a MODIFIER and not a component, and that is the finding rather than
+   a convenience. Everything structural a matrix field needs, this table
+   already had: --sticky for the ruler that stays, --pinned for the names that
+   stay, --dense for sixty columns' padding, --fixed plus a <colgroup> for
+   proportional cells, and .axi-table__scroll for the frame they move inside.
+   The consumer measured against here had hand-written all five, and had got
+   --sticky wrong in exactly the way that modifier's comment warns about: its
+   ruler was --axi-surface-raised, so under glass the rows slid through it.
+   The only thing genuinely missing was the quantity.
+
+   What the modifier changes is the CELL, which stops being a number in a
+   column and becomes a patch in a field: centred rather than right-aligned,
+   because a band is read by position and not by its digits lining up, and
+   unpadded because the padding is the field. The name column keeps the base
+   table's left alignment and its gutter - it is still a name. */
+.axi-table--matrix { border-collapse: separate; border-spacing: 0; }
+.axi-table--matrix thead th { padding: 0 0 6px; text-align: center; }
+.axi-table--matrix :is(td, tbody th) {
+  padding: 0;
+  text-align: center;
+  height: var(--axi-matrix-cell, 24px);
+}
+/* `min-width` and not `width`: under the default auto layout this is the floor
+   a one-digit column cannot fall below, and under --fixed a <colgroup> takes
+   over entirely (fixed layout ignores both min and max - see --fixed). */
+.axi-table--matrix :is(td, tbody th):not(:first-child) {
+  min-width: var(--axi-matrix-cell, 24px);
+}
+.axi-table--matrix :is(td, tbody th):first-child {
+  text-align: left;
+  padding: 0 10px 0 0;
+}
+/* The four bands. Each is a color-mix() of the accent into the surface's flat
+   companion, which makes every one of them a computed OPAQUE colour - the
+   accent at 18% alpha over the field would be rule 2's faded ink, and it also
+   fails on its own terms, because the cells a reader is scanning for are the
+   quiet ones and an alpha ramp is where those disappear.
+
+   --axi-surface-paint and not --axi-surface, and this is the trap: a surface
+   token is allowed to hold a gradient (rule 1's one relief, which is how a
+   glass theme exists), color-mix() takes colours and nothing else, and an
+   invalid color-mix() is dropped at computed-value time. Spell it --axi-surface
+   and the bands do not fade - they vanish, silently, in whichever theme paints
+   a gradient. That is measured, not hypothetical: it is why
+   --axi-surface-paint exists (see tokens.css).
+
+   Four steps and not a continuous ramp, because a band is also where the digit
+   has to change ink, and a step is the only thing a flip can happen ON. The
+   top two carry --axi-accent-ink for the same reason .axi-btn--primary does:
+   past roughly half strength the field is the accent and the text on it is the
+   accent's companion, not the text ramp. */
+.axi-table--matrix :is(td, tbody th)[data-heat='1'] {
+  background-color: color-mix(in srgb, var(--axi-accent) 18%, var(--axi-surface-paint));
+}
+.axi-table--matrix :is(td, tbody th)[data-heat='2'] {
+  background-color: color-mix(in srgb, var(--axi-accent) 42%, var(--axi-surface-paint));
+}
+.axi-table--matrix :is(td, tbody th)[data-heat='3'] {
+  background-color: color-mix(in srgb, var(--axi-accent) 70%, var(--axi-surface-paint));
+  color: var(--axi-accent-ink);
+}
+.axi-table--matrix :is(td, tbody th)[data-heat='4'] {
+  background-color: color-mix(in srgb, var(--axi-accent) 100%, var(--axi-surface-paint));
+  color: var(--axi-accent-ink);
+}
+/* A matrix whose columns are a TIMELINE rather than a list of categories, which
+   changes two things and only two.
+
+   The column labels move left. A label over a category names the column and
+   belongs centred over it; a label on a ruler names a MOMENT, and centring it
+   puts the text half a cell to the right of the instant it is pointing at.
+
+   And the division gets a line. `[data-tick]` marks the columns that carry a
+   label - every thirtieth second, not every bucket, because at a five-second
+   resolution a five-minute fight is sixty columns and a timestamp over each is
+   unreadable at the width a cell allows. The line is the RULE, at the hairline
+   step: it is the same line that parts the rows, continued down the field,
+   which is the whole reason it is not drawn on every column. Sixty ruled
+   columns is a spreadsheet; the bands are meant to be the figure. */
+.axi-table--ruler thead th { text-align: left; }
+.axi-table--ruler :is(thead th, td, tbody th)[data-tick] {
+  border-left: var(--axi-border-hairline) solid var(--axi-rule);
+}
+/* A change of category down the rows - a subgroup, a team, a date. Heavier than
+   the hairline that parts two rows of one group, and heavier in INK rather than
+   in weight: the same line, drawn darker. Going up a form step instead would
+   put a control-weight line inside running content, which is rule 8's grid of
+   boxes, and the boundary would then compete with the head's own lid.
+
+   An attribute and not a class, per rule 13, and on the row because that is
+   what starts: the consumer compares one row's category with the previous
+   row's, which is a fact only it can know. */
+.axi-table tbody tr[data-group-start] > :is(td, th) {
+  border-top: var(--axi-border-hairline) solid var(--axi-ink-line);
+}
 
 /* ---------- meter ---------- */
 /* Rule 9: a proportion is a length. The track is the ground, the fill is the

@@ -419,6 +419,51 @@ fact has no magnitude to draw: rendering "no" as a short bar says "a little
 bit" as loudly as a faded fill says "30%". That series is a row of marks of
 one size, differing only in ink, which is `.axi-ticks`.
 
+### The matrix is the bound on "not at all"
+
+The first corollary says this language does not draw a heatmap, and as written
+that is too wide. It is true of a *distribution* — one series along one
+categorical axis — because there a bar is always available, and reaching for
+tint over length is choosing the illegible encoding when the legible one was
+free.
+
+A matrix is not that shape. Two categorical axes, both of them orderings the
+reader navigates by — forty players down the side, sixty five-second buckets
+across — and a quantity at each intersection. The plane is spent. There is no
+third dimension left to give a length to, a bar per cell is 2400 bars four
+pixels wide, and neither axis can be re-sorted by the value because both are
+already sorted by something the reader needs: down the side by subgroup, across
+by time. "Or not at all" would mean the shape is undrawable, and it is the only
+shape that answers *who was doing this, and when*.
+
+So a matrix may encode its quantity as intensity, under one condition — and the
+condition is rule 9's own argument rather than an exemption from it. Rule 9 does
+not object to intensity. It objects to intensity being the ONLY copy of the
+number, and the illegible one. **A matrix cell prints its value.** The digit is
+the legible copy, the band is what lets the eye find the shape without reading
+two thousand numbers one at a time, and a reader who wants a figure reads the
+figure. A matrix cell with no number in it is a heatmap, and for a heatmap the
+corollary stands exactly as written.
+
+Two further bounds, both of them rules already here rather than new ones.
+
+The steps are **discrete and opaque**. A continuous alpha ramp of the accent
+over the field is a faded accent, which is rule 2 — and it fails on its own
+terms as well, because the cells a reader scans for are the low ones and those
+are the ones a ramp makes hardest to see. Four steps, each a `color-mix()` of
+the accent into `--axi-surface-paint`, so every band is a computed opaque
+colour. The flat companion and not `--axi-surface`, because a surface token is
+allowed to hold a gradient and `color-mix()` takes colours only; get that wrong
+and the bands do not fade, they vanish.
+
+And the band is the cell's **fill**, which settles what a row state may do to
+it. Hover and selection raise a row by filling its cells, and a cell whose fill
+is the data has no room for that — so on any table, a cell carrying a value in
+its fill keeps it, and the row state is drawn by the leading edge and by every
+cell that has nothing to say. That is not a concession to the matrix: it is the
+edge-not-fill answer rule 8's selection already gives, arriving a second time
+for the same reason.
+
 ## 10. A chart's ink is the accent
 
 One series is the accent. A second, for comparison, is the neutral ramp —

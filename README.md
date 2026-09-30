@@ -155,6 +155,7 @@ not "what does the system look like". Everything else is
 | `--axi-modal-width` | the maximum width of an `.axi-modal`, before the viewport clamp | `560px` | `<dialog class="axi-modal" style="--axi-modal-width: 760px">` |
 | `--axi-card-strip` | the colour of `.axi-card--strip`'s top strip | `var(--axi-accent)` | `<a class="axi-card axi-card--strip" style="--axi-card-strip: var(--axi-ok)">` |
 | `--axi-grid-min` | minimum column width in `.axi-grid` | `300px` | `<div class="axi-grid" style="--axi-grid-min: 240px">` |
+| `--axi-matrix-cell` | the floor on a matrix cell's height and width | `24px` | `<table class="axi-table axi-table--matrix" style="--axi-matrix-cell: 18px">` |
 | `--axi-split-nav-w` | the width of an `.axi-split`'s picker column | `280px` | `<div class="axi-split" style="--axi-split-nav-w: 180px">` |
 | `--axi-split-gap` | the parting between an `.axi-split`'s picker and its body | `10px` | `<div class="axi-split" style="--axi-split-gap: 16px">` |
 | `--axi-split-nav-h` | the picker's height cap once an `.axi-split` has stacked under 640px | `200px` | `<div class="axi-split" style="--axi-split-nav-h: 140px">` |

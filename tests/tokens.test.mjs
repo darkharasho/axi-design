@@ -260,6 +260,10 @@ const HEX = /#[0-9a-fA-F]{3,8}\b/
 // contributor reaches for oklch() or color-mix() before rgb(). `lab`/`lch`
 // carry a word boundary so they do not also match inside `oklab`/`oklch`.
 const COLOUR_FUNCTION = /\b(rgba?|hsla?|hwb|oklch|oklab|lch|lab|color|color-mix)\s*\(/i
+// The same set, used to find where a function STARTS so its arguments can be
+// scanned with balanced parens. Kept beside its twin so the two lists cannot
+// drift apart.
+const COLOUR_FUNCTION_OPEN = /\b(?:rgba?|hsla?|hwb|oklch|oklab|lch|lab|color|color-mix)\s*\(/i
 // A named colour only counts as a value token: bounded by neither a word
 // character nor a hyphen on either side, so no identifier or custom-property
 // segment can trip it.
@@ -327,8 +331,72 @@ const extractOpaque = (value) => {
 // colour literal, and letting quotes launder it would reopen the hole rule 3
 // exists to close. This is a deliberate asymmetry, not an oversight: see
 // docs/RULES.md.
+// A colour FUNCTION is unambiguous SYNTAX, and syntax is not the same thing as
+// a literal. `color-mix(in srgb, var(--axi-accent) 18%, var(--axi-surface-paint))`
+// spells no colour anywhere: both operands are tokens and the percentage is a
+// ratio, not an ink. That shape is how this language derives a colour it cannot
+// store - the matrix's heat bands, rule 9's "the matrix is the bound on not at
+// all" - and no token could hold the result, because the mix depends on
+// whichever accent is live.
+//
+// So: a colour function is a literal UNLESS every colour-valued argument in it
+// is a bare `var(--token)`. Beside those, only the colour-space clause
+// (`in srgb`, `in oklch shorter hue`), percentages and separators may remain.
+// Anything else - a hex, a named colour, a bare numeric channel, or a literal
+// hiding in a var() FALLBACK - leaves residue and still fails. The CAUGHT cases
+// below pin each of those.
+//
+// A bare alpha (`rgba(var(--x), 0.5)`) is deliberately not in the allowed
+// residue. It is left failing because a token at partial opacity is rule 2, so
+// the two checks agree rather than one excusing the other.
+//
+// Balanced-paren scanning, not a non-greedy match: a colour function's
+// arguments hold parens of their own, and `var(--x, #fff)` is exactly the case
+// a lazy `\)` would launder.
+const stripTokenOnlyColourFunctions = (value) => {
+  let out = value
+  // Bounded rather than `while (true)`: a malformed value must not hang the
+  // suite. Ten nested colour functions is far past anything this language has.
+  for (let pass = 0; pass < 10; pass += 1) {
+    const open = COLOUR_FUNCTION_OPEN.exec(out)
+    if (!open) return out
+    const from = open.index + open[0].length - 1
+    let depth = 0
+    let end = -1
+    for (let i = from; i < out.length; i += 1) {
+      if (out[i] === '(') depth += 1
+      else if (out[i] === ')') {
+        depth -= 1
+        if (depth === 0) {
+          end = i
+          break
+        }
+      }
+    }
+    if (end < 0) return out
+    // Innermost first, by resolving the arguments before measuring them. A
+    // token-only mix of a token-only mix is still token-only, and scanning
+    // outside-in would see the inner function's own name as residue and give up
+    // on the outer one. Bounded by the arguments being strictly shorter.
+    const residue = stripTokenOnlyColourFunctions(out.slice(from + 1, end))
+      .replace(/var\(\s*--[\w-]+\s*\)/g, ' ')
+      .replace(/\bin\s+[\w-]+(\s+(shorter|longer|increasing|decreasing)\s+hue)?/gi, ' ')
+      .replace(/-?[\d.]+%/g, ' ')
+      .replace(/[,\s]+/g, '')
+    // A real literal is in there. Leave the function in place so the scan below
+    // fails on it, which is the whole point.
+    if (residue !== '') return out
+    out = `${out.slice(0, open.index)} ${out.slice(end + 1)}`
+  }
+  return out
+}
+
 const colourLiteralIn = (value) => {
-  const { rest, opaque } = extractOpaque(value)
+  const { rest: raw, opaque } = extractOpaque(value)
+  // Token-only colour functions are removed first, while the `var()` calls
+  // that prove them token-only are still intact - the name-stripping below
+  // would erase the evidence.
+  const rest = stripTokenOnlyColourFunctions(raw)
   // Custom property NAMES are stripped before the bare-value scan so a token
   // name can never be read as a value - `--axi-ink-line` and friends are
   // names, not colours.
@@ -507,13 +575,21 @@ describe('colour literal scan - both polarities', () => {
     '@supports prelude': `@supports (color: oklch(0 0 0)) { .q-h { color: var(--axi-text); } }`,
     'grid-template-areas with a colour word in it': `.q-i { grid-template-areas: "nav gold"; }`,
     'transparent stop in a gradient': `.q-j { background: linear-gradient(to bottom, transparent 50%, var(--axi-accent) 50%); }`,
+    // The matrix's heat band: a colour function spelling no colour. Both
+    // operands are tokens, and the 18% is a ratio.
+    'color-mix() of two tokens': `.q-k { background-color: color-mix(in srgb, var(--axi-accent) 18%, var(--axi-surface-paint)); }`,
+    // The polar form, whose colour-space clause carries a hue method.
+    'color-mix() in a polar space': `.q-l { background-color: color-mix(in oklch shorter hue, var(--axi-accent) 42%, var(--axi-surface-paint)); }`,
+    // Nested, to prove the balanced-paren scan does not stop at the inner
+    // close paren.
+    'color-mix() of a color-mix()': `.q-m { background-color: color-mix(in srgb, color-mix(in srgb, var(--axi-accent) 50%, var(--axi-surface-paint)) 70%, var(--axi-ground)); }`,
   }
 
   it.each(Object.entries(LEGAL))('passes: %s', (_label, css) => {
     expect(colourOffendersIn(css)).toEqual([])
   })
 
-  it('all ten legal inputs pass together', () => {
+  it('all thirteen legal inputs pass together', () => {
     const offenders = Object.values(LEGAL).flatMap((css) => colourOffendersIn(css))
     expect(offenders).toEqual([])
   })
@@ -527,6 +603,19 @@ describe('colour literal scan - both polarities', () => {
     'named colour in a longhand': `.p-c { border-color: rebeccapurple; }`,
     'modern colour function as a box-shadow ink': `.p-d { box-shadow: var(--axi-offset-panel) var(--axi-offset-panel) 0 oklch(0.72 0.19 142); }`,
     'hex literal inside a data-URI SVG inside url()': `.p-e { background: url("data:image/svg+xml,<svg><path fill='#000'/></svg>"); }`,
+    // The four ways a colour function stops being token-only. Each is the
+    // reason stripTokenOnlyColourFunctions inspects the arguments instead of
+    // trusting the function name.
+    'color-mix() with one hex operand': `.p-f { background-color: color-mix(in srgb, #ff00aa 18%, var(--axi-surface-paint)); }`,
+    'color-mix() with a named operand': `.p-g { background-color: color-mix(in srgb, var(--axi-accent) 18%, white); }`,
+    // A literal in a var() FALLBACK, which is where one would hide from a
+    // check that only looked for `var(`.
+    'color-mix() with a literal in a var() fallback': `.p-h { background-color: color-mix(in srgb, var(--axi-accent, #ff00aa) 18%, var(--axi-surface-paint)); }`,
+    // Bare numeric channels, the ordinary hand-written colour.
+    'rgb() with numeric channels': `.p-i { color: rgb(12, 14, 18); }`,
+    // A token faded, which rule 2 forbids - left failing so this check and
+    // rule 2 agree rather than one excusing the other.
+    'a token at partial alpha': `.p-j { background-color: rgba(var(--axi-accent-rgb), 0.5); }`,
   }
 
   it.each(Object.entries(CAUGHT))('catches: %s', (_label, css) => {
@@ -1734,5 +1823,199 @@ describe('a stacked button can shrink, and so can its label', () => {
     expect(label, 'no rule for the stacked label').toBeTruthy()
     expect(label.sel).toMatch(/:where\(/)
     expect(label.body).toMatch(/text-overflow:\s*ellipsis/)
+  })
+})
+
+// ---------------------------------------------------------------------------
+// Rule 9's matrix bound. The ruling came first and these hold both halves of
+// it: that the bands are an opaque derived ramp rather than a faded ink, and
+// that the digit rule 9 demands is never washed away by a row state.
+// ---------------------------------------------------------------------------
+describe('a matrix draws its quantity in opaque steps, over a number', () => {
+  const data = () => read('data.css')
+
+  // Declaration body for one exact selector, from the source rather than the
+  // bundle, so a failure points at a line someone can edit.
+  const bodyOf = (css, selector) => {
+    const hit = [...stripComments(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(
+      ([, sel]) => sel.trim().replace(/\s+/g, ' ') === selector,
+    )
+    return hit ? hit[2] : null
+  }
+
+  const STEPS = [
+    ['1', 18, false],
+    ['2', 42, false],
+    ['3', 70, true],
+    ['4', 100, true],
+  ]
+
+  it.each(STEPS)('band %s mixes the accent into the flat companion at %i%%', (step, pct) => {
+    const body = bodyOf(data(), `.axi-table--matrix :is(td, tbody th)[data-heat='${step}']`)
+    expect(body, `no rule for data-heat='${step}'`).not.toBeNull()
+    // The companion and not --axi-surface. color-mix() takes colours only, a
+    // surface token may hold a gradient, and an invalid color-mix() is dropped
+    // silently - so getting this wrong does not fade the band, it deletes it.
+    expect(body).toMatch(
+      new RegExp(
+        `background-color:\\s*color-mix\\(in srgb, var\\(--axi-accent\\) ${pct}%, var\\(--axi-surface-paint\\)\\)`,
+      ),
+    )
+    expect(body).not.toMatch(/var\(--axi-surface\)/)
+  })
+
+  it('flips to the accent ink on the two loudest bands and no others', () => {
+    for (const [step, , inked] of STEPS) {
+      const body = bodyOf(data(), `.axi-table--matrix :is(td, tbody th)[data-heat='${step}']`)
+      const hasInk = /color:\s*var\(--axi-accent-ink\)/.test(body)
+      expect(hasInk, `data-heat='${step}' ink flip`).toBe(inked)
+    }
+  })
+
+  it('never fades the accent with an alpha, on any band', () => {
+    // Rule 2, and rule 9's own reason: the cells a reader scans for are the
+    // quiet ones, which is exactly where an alpha ramp loses them. The
+    // consumer this was lifted from had a continuous `rgba(accent, a)` ramp
+    // AND this discrete one, fighting, with !important to settle it.
+    // Comments are stripped, so the section header cannot be the end anchor -
+    // the next component's own selector is.
+    const matrix = stripComments(data()).match(/\.axi-table--matrix[\s\S]*?(?=\.axi-meter\s*\{)/)
+    expect(matrix, 'the matrix block moved or was renamed').not.toBeNull()
+    expect(matrix[0]).not.toMatch(/rgba?\(/)
+    expect(matrix[0]).not.toMatch(/opacity\s*:/)
+    expect(matrix[0]).not.toMatch(/!important/)
+  })
+
+  it('leaves a data cell its fill under hover and under selection', () => {
+    // The band IS the value. A row state that filled over it would delete the
+    // reading on the way past the row you wanted.
+    const css = stripComments(data())
+    const stateRules = [...css.matchAll(/([^{}]*(?::hover|\[aria-current\])[^{}]*)\{([^{}]*)\}/g)]
+      .map(([, sel, body]) => ({ selector: sel.trim().replace(/\s+/g, ' '), body }))
+      .filter(({ selector, body }) => /\.axi-table\b/.test(selector) && /background/.test(body))
+    // Inert-guard: if the table's row states are renamed this must fail, not pass.
+    expect(stateRules.length).toBeGreaterThan(0)
+    for (const { selector } of stateRules) {
+      expect(selector, `${selector} can still wash a data cell`).toMatch(/:not\(\[data-heat\]\)/)
+    }
+  })
+
+  it('spends no specificity saying so', () => {
+    // The `:not()` has to sit inside a `:where()`. Outside one it would add a
+    // class-level weight to the hover rule, and the table's own comment
+    // promises that an ink class in utilities.css - one class, later file -
+    // out-ranks it. A guard, because the fix and the regression look identical
+    // at a glance.
+    const css = stripComments(data())
+    for (const [, sel] of css.matchAll(/([^{}]+)\{[^{}]*\}/g)) {
+      const selector = sel.trim().replace(/\s+/g, ' ')
+      if (!selector.includes(':not([data-heat])')) continue
+      // Every occurrence must be enclosed by a :where(...) group.
+      const stripped = selector.replace(/:where\([^()]*(\([^()]*\)[^()]*)*\)/g, ' ')
+      expect(stripped, `${selector} pays specificity for its exclusion`).not.toContain('data-heat')
+    }
+  })
+
+  it('centres a matrix cell hard enough to beat the base table', () => {
+    // `.axi-table td { text-align: right }` is (0,1,1) with no :where() around
+    // its element, so a modifier written the obvious way - `.axi-table--matrix
+    // :where(td)` at (0,1,0) - loses and the field silently stays a column of
+    // right-aligned numbers. Measured in the BUILT sheet, because the cascade
+    // is the one a consumer gets.
+    const built = readFileSync(resolve(process.cwd(), 'dist/axi.css'), 'utf8')
+    // One ARM of a selector list, not the list: specificity is a property of the
+    // compound that matched, and weighing `.axi-table th, .axi-table td` whole
+    // double-counts the class and makes the base look twice as strong as it is.
+    // Split on TOP-LEVEL commas only. `:where(td, tbody th)` holds a comma that
+    // is not a list separator, and splitting on it produces the fragment
+    // `.axi-table--matrix :where(td` - whose unbalanced `:where(` then reads as
+    // a class and scores the arm one weight too high, which is enough to hide
+    // exactly the defect this check exists for.
+    const arms = (list) => {
+      const out = []
+      let depth = 0
+      let start = 0
+      for (let i = 0; i < list.length; i += 1) {
+        if (list[i] === '(') depth += 1
+        else if (list[i] === ')') depth -= 1
+        else if (list[i] === ',' && depth === 0) {
+          out.push(list.slice(start, i).trim())
+          start = i + 1
+        }
+      }
+      out.push(list.slice(start).trim())
+      return out
+    }
+    const arm = (list, forElement) =>
+      arms(list).find((one) =>
+        new RegExp(`(^|[\\s>+~(])${forElement}(?=$|[\\s>+~,):.[])`).test(one),
+      )
+    // `:is()` and `:not()` take their argument's weight; `:where()` takes none.
+    // That difference is the whole subject of this check, so it is spelled out
+    // rather than folded together.
+    const weigh = (sel) => {
+      const flat = sel.replace(/:where\([^()]*(\([^()]*\)[^()]*)*\)/g, ' ').replace(/:(?:is|not)\(/g, '(')
+      const ids = (flat.match(/#[\w-]+/g) || []).length
+      const classes = (flat.match(/\.[\w-]+|\[[^\]]+\]|:[\w-]+/g) || []).length
+      const types = (flat.match(/(^|[\s>+~(,])[a-z][\w-]*/g) || []).length
+      return ids * 10000 + classes * 100 + types
+    }
+    // Both selectors are READ from the sheet, not written here. A guard that
+    // weighs its own string literal measures nothing: rewriting the modifier
+    // with `:where()` - which is exactly the mistake - would leave this
+    // passing.
+    const selectorOf = (needle) => {
+      const hit = [...built.matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(([, sel]) =>
+        sel.includes(needle),
+      )
+      return hit ? hit[1].trim().replace(/\s+/g, ' ') : null
+    }
+    const baseSel = selectorOf('.axi-table td')
+    const modSel = [...built.matchAll(/([^{}]+)\{([^{}]*)\}/g)]
+      .map(([, sel, body]) => [sel.trim().replace(/\s+/g, ' '), body])
+      .find(([sel, body]) => sel.startsWith('.axi-table--matrix') && /text-align:\s*center/.test(body) && !sel.includes('thead'))
+    expect(baseSel, 'the base alignment rule moved').not.toBeNull()
+    expect(modSel, 'the matrix cell rule no longer centres anything').toBeTruthy()
+    const baseArm = arm(baseSel, 'td')
+    const modArm = arm(modSel[0], 'td') || modSel[0]
+    expect(baseArm, `no td arm in ${baseSel}`).toBeTruthy()
+    expect(weigh(modArm), `${modArm} is weaker than ${baseArm}`).toBeGreaterThanOrEqual(weigh(baseArm))
+    // And it is later in the sheet, which is what settles a tie.
+    expect(built.indexOf(modSel[0])).toBeGreaterThan(built.indexOf(baseSel))
+  })
+
+  it('draws a ruler division only under --ruler, on the rule', () => {
+    const css = stripComments(data())
+    const tickRules = [...css.matchAll(/([^{}]*\[data-tick\][^{}]*)\{([^{}]*)\}/g)]
+    expect(tickRules.length).toBe(1)
+    const [, selector, body] = tickRules[0]
+    // Under the modifier, so a matrix of categories does not get verticals it
+    // has no ruler to justify.
+    expect(selector).toContain('.axi-table--ruler')
+    // The rule, at the hairline step: the same line that parts the rows,
+    // continued down the field. A control-weight line here is rule 8's grid.
+    expect(body).toMatch(/border-left:\s*var\(--axi-border-hairline\) solid var\(--axi-rule\)/)
+  })
+
+  it('rules a change of category in ink rather than in weight', () => {
+    const body = bodyOf(data(), '.axi-table tbody tr[data-group-start] > :is(td, th)')
+    expect(body, 'the group boundary moved or was renamed').not.toBeNull()
+    // Hairline weight, ink colour. Going up a form step would put a
+    // control-weight line inside running content.
+    expect(body).toMatch(/border-top:\s*var\(--axi-border-hairline\) solid var\(--axi-ink-line\)/)
+    expect(body).not.toMatch(/--axi-border-control/)
+  })
+
+  it('cannot exist without the ruling that allows it', () => {
+    // The component is an exception to a written rule. If someone deletes the
+    // exception from RULES.md the CSS is no longer justified by anything, and
+    // this is the check that says so - checklist item 1, made mechanical.
+    const rules = readFileSync(resolve(process.cwd(), 'docs/RULES.md'), 'utf8')
+    const section = rules.match(/### The matrix is the bound on "not at all"[\s\S]*?(?=\n## )/)
+    expect(section, 'rule 9 no longer bounds the matrix').not.toBeNull()
+    // The bound itself, not just the heading: intensity is admissible only
+    // because the cell prints its value.
+    expect(section[0]).toMatch(/A matrix cell prints its value/)
+    expect(section[0]).toMatch(/A matrix cell with no number in it is a heatmap/)
   })
 })

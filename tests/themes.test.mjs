@@ -481,7 +481,20 @@ describe('a surface assembled from cells is painted once', () => {
   const CELL = /(^|[\s,(>+~])(th|td)(?=$|[\s,()>+~:.[])/
   const THEMED_FILL = /background(-color|-image)?:[^;]*var\(--axi-surface[a-z-]*\)/
 
-  const cellFills = () => rules().filter((r) => CELL.test(r.selector) && THEMED_FILL.test(r.body))
+  // A surface token inside a `color-mix()` is an OPERAND, not the surface. The
+  // result is one flat computed colour, and a flat colour has no gradient for
+  // `background-attachment` to anchor - the property is a no-op on it. More to
+  // the point, such a fill is per-cell DATA (the matrix's heat bands, rule 9),
+  // so "these cells are one surface" is the opposite of what it means: every
+  // cell is deliberately a different colour, and making them share a painting
+  // area would be the bug.
+  //
+  // Stripped rather than allowlisted by selector, so the guard stays live for
+  // any genuinely assembled surface that arrives next.
+  const withoutMixes = (body) => body.replace(/color-mix\([^()]*(\([^()]*\)[^()]*)*\)/g, ' ')
+
+  const cellFills = () =>
+    rules().filter((r) => CELL.test(r.selector) && THEMED_FILL.test(withoutMixes(r.body)))
 
   // The guard on the guard. If a refactor renames the table's parts or moves
   // them out of src/, the loop below would pass by finding nothing at all -
@@ -489,13 +502,17 @@ describe('a surface assembled from cells is painted once', () => {
   // of them are quietly vacuous.
   it('finds the cell fills it is meant to be checking', () => {
     expect(cellFills().map((r) => r.selector)).toEqual([
-      '.axi-table :where(tbody tr:hover) :where(td, th)',
+      // The `:not([data-heat])` is rule 9's matrix bound: a cell whose fill is
+      // the data keeps it, and the row state is drawn by the leading edge and
+      // by every cell that has nothing to say. Inside `:where()` so saying so
+      // costs no specificity and the ink layer still out-ranks this.
+      '.axi-table :where(tbody tr:hover) :where(td:not([data-heat]), th:not([data-heat]))',
       // Selection, and selection-under-the-cursor. Added by the rule that
       // needed them, which is the check doing its job: a new cell fill cannot
       // arrive without declaring itself here.
       // Selection. Added by the rule that needed it, which is the check doing
       // its job: a new cell fill cannot arrive without declaring itself here.
-      '.axi-table tbody tr[aria-current] :is(td, th)',
+      '.axi-table tbody tr[aria-current] :is(td, th):where(:not([data-heat]))',
       '.axi-table--sticky thead th',
       '.axi-table--pinned :is(thead, tbody) :is(th, td):first-child',
       // The one this check was not written for. A markdown table's head is the

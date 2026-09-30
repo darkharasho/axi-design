@@ -51,10 +51,12 @@ not measured from it.`,
       '.axi-table--fixed',
       '.axi-table__cell--sorted',
       '.axi-table__sort',
+      '.axi-table--matrix',
+      '.axi-table--ruler',
     ],
     summary: 'A ranked list of rows inside a panel. Rows are separated by rules rather than outlined or blocked, because the panel is the raised thing and the table is its interior.',
-    rules: [8],
-    knobs: [],
+    rules: [8, 9],
+    knobs: ['--axi-matrix-cell'],
     notes: `Numbers are set right-aligned and names left-aligned on the element
 itself, not left to every consumer to remember. \`.axi-table__rank--top\` is
 the only fill a table ever gets, and only for a real podium position - a row
@@ -102,8 +104,208 @@ theme aliases it to \`--axi-surface\` and glass sets it darker than
 \`--axi-surface-raised\`. So selection and hover share the raised fill and are
 told apart by an accent edge on the first cell, which every body row reserves as
 a transparent control-weight border so that lighting it costs no reflow. One edge
-is a mark; the box around a row is what rule 8 refuses.`,
+is a mark; the box around a row is what rule 8 refuses.
+
+### The matrix
+
+Two categorical axes with a quantity where they cross — players down the side,
+time buckets across, a count in each cell. \`--matrix draws the field and
+\`--ruler is for the case where the columns are a timeline rather than a list
+of categories.
+
+Rule 9 says a quantity is drawn as length and never as intensity, and this is
+the one shape it bounds rather than forbids. The plane is spent: with both axes
+spoken for there is no third dimension left to give the quantity a length, a bar
+per cell is 2400 bars four pixels wide, and neither axis can be re-sorted by the
+value because both are already sorted by something the reader needs. What makes
+the intensity admissible is rule 9's own argument rather than an exemption from
+it — **the cell prints its number.** The digit is the legible copy, the band is
+only what lets the eye find the shape without reading two thousand figures one
+at a time. A matrix cell with nothing written in it is a heatmap, and rule 9
+refuses it.
+
+It is a MODIFIER and not a component, which is the finding rather than a
+convenience. Everything structural a matrix field needs, the table already had:
+\`--sticky for a ruler that stays, \`--pinned for names that stay,
+\`--dense for sixty columns' padding, \`--fixed with a \`colgroup\` for
+proportional cells, \`.axi-table__scroll\` for the frame they move in. The
+only thing missing was the quantity.
+
+Set the band with \`data-heat="1"\` to \`"4"\` on the cell. Four steps, each a
+\`color-mix()\` of the accent into \`--axi-surface-paint\` so every band is a
+computed opaque colour — the accent at 18% alpha over the field would be rule
+2's faded ink, and it fails on its own terms too, because the cells a reader
+scans for are the quiet ones and an alpha ramp is where those disappear. The
+flat companion and not \`--axi-surface\`, because a surface token may hold a
+gradient and \`color-mix()\` takes colours only: spell it wrong and the bands do
+not fade, they vanish. The top two steps carry \`--axi-accent-ink\`, because past
+roughly half strength the field is the accent and the text on it is the accent's
+companion.
+
+A cell carrying a band keeps it under hover and under \`aria-current\`. A fill
+that is the data has no room for a row state, so the row state is drawn by the
+leading edge and by every cell with nothing to say — which is the same
+edge-not-fill answer the selection above reaches on its own grounds.
+
+\`--ruler changes two things and only two. Column labels move left, because a
+label on a ruler names a MOMENT and centring it puts the text half a cell right
+of the instant it points at. And \`data-tick\` on a column draws its division as
+the rule at the hairline step — the same line that parts the rows, continued
+down the field. Mark only the labelled columns: sixty ruled columns is a
+spreadsheet, and the bands are meant to be the figure.
+
+\`data-group-start\` on a \`tr\` rules a change of category down the rows — a
+subgroup, a team, a date. Heavier in ink rather than in weight, because going up
+a form step would put a control-weight line inside running content, which is rule
+8's grid of boxes. It works on any table, not only a matrix.`,
     examples: [
+      {
+        title: 'A matrix field',
+        note: 'Strips taken per player per five seconds. Every cell prints its number — the band is what lets the eye find the shape, not the only copy of it',
+        html: `<div class="axi-panel" style="--axi-panel-pad: 0;">
+  <div class="axi-table__scroll">
+    <table class="axi-table axi-table--dense axi-table--matrix axi-table--ruler axi-table--sticky axi-table--pinned">
+      <thead>
+        <tr>
+        <th>Player</th>
+        <th scope="col">0:00</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col" data-tick>0:30</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col" data-tick>1:00</th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+        <th scope="row">Skoll.4183</th>
+        <td data-heat="3">6</td>
+        <td></td>
+        <td></td>
+        <td data-heat="3">6</td>
+        <td data-heat="1">2</td>
+        <td></td>
+        <td data-tick data-heat="1">1</td>
+        <td data-heat="2">3</td>
+        <td data-heat="4">8</td>
+        <td data-heat="4">7</td>
+        <td></td>
+        <td></td>
+        <td data-tick></td>
+        <td data-heat="1">2</td>
+        <td data-heat="4">7</td>
+        <td data-heat="1">2</td>
+        </tr>
+        <tr>
+        <th scope="row">Renna.9021</th>
+        <td data-heat="2">4</td>
+        <td data-heat="4">7</td>
+        <td data-heat="3">5</td>
+        <td data-heat="4">7</td>
+        <td></td>
+        <td data-heat="2">4</td>
+        <td data-tick data-heat="1">1</td>
+        <td data-heat="1">1</td>
+        <td data-heat="4">8</td>
+        <td></td>
+        <td></td>
+        <td data-heat="1">2</td>
+        <td data-tick data-heat="1">1</td>
+        <td></td>
+        <td data-heat="2">4</td>
+        <td></td>
+        </tr>
+        <tr data-group-start>
+        <th scope="row">Oakvale.5567</th>
+        <td data-heat="2">3</td>
+        <td data-heat="1">1</td>
+        <td data-heat="4">8</td>
+        <td data-heat="2">4</td>
+        <td data-heat="4">7</td>
+        <td></td>
+        <td data-tick data-heat="2">3</td>
+        <td></td>
+        <td data-heat="1">1</td>
+        <td></td>
+        <td data-heat="2">3</td>
+        <td data-heat="1">1</td>
+        <td data-tick></td>
+        <td data-heat="2">4</td>
+        <td></td>
+        <td data-heat="3">6</td>
+        </tr>
+        <tr>
+        <th scope="row">Bracken.7712</th>
+        <td data-heat="4">9</td>
+        <td data-heat="1">2</td>
+        <td data-heat="1">2</td>
+        <td data-heat="3">6</td>
+        <td data-heat="4">7</td>
+        <td></td>
+        <td data-tick data-heat="1">1</td>
+        <td></td>
+        <td data-heat="1">1</td>
+        <td data-heat="2">4</td>
+        <td></td>
+        <td></td>
+        <td data-tick data-heat="3">5</td>
+        <td data-heat="1">2</td>
+        <td data-heat="1">1</td>
+        <td></td>
+        </tr>
+        <tr data-group-start>
+        <th scope="row">Marrow.3098</th>
+        <td data-heat="4">7</td>
+        <td data-heat="2">4</td>
+        <td data-heat="1">2</td>
+        <td data-heat="2">4</td>
+        <td></td>
+        <td data-heat="4">9</td>
+        <td data-tick></td>
+        <td data-heat="3">6</td>
+        <td></td>
+        <td></td>
+        <td data-heat="3">5</td>
+        <td></td>
+        <td data-tick data-heat="2">3</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        </tr>
+        <tr>
+        <th scope="row">Thistle.6640</th>
+        <td></td>
+        <td></td>
+        <td data-heat="4">7</td>
+        <td></td>
+        <td></td>
+        <td data-heat="3">5</td>
+        <td data-tick></td>
+        <td data-heat="2">3</td>
+        <td data-heat="4">9</td>
+        <td></td>
+        <td></td>
+        <td></td>
+        <td data-tick></td>
+        <td data-heat="4">7</td>
+        <td data-heat="2">3</td>
+        <td data-heat="3">5</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>`,
+      },
       {
         title: 'A ranked table',
         note: 'The top rank is filled; the rest are outlined',
