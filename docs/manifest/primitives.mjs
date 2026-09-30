@@ -11,6 +11,7 @@ export default [
       '.axi-btn--sm',
       '.axi-btn--xs',
       '.axi-btn--icon',
+      '.axi-btn--stack',
     ],
     summary: 'The control everything else is measured against: an outlined box at the control weight that gains its block under the cursor. One button per view is the primary.',
     rules: [3, 4],
@@ -38,8 +39,42 @@ than a pair of values you have to pick.
 had wrong. An icon-only button has no label to pad around, so the sides meant
 for one produced a wide rectangle around a single glyph - which the icon page's
 own "Alone in a button" example showed, uncommented, for as long as it has
-existed.`,
+existed.
+\`--stack\` puts the icon over the label instead of beside it, and it is not a
+style choice - it is the only thing that makes a bar of equal actions fit a
+phone. Measured on the consumer that needed it: four icon+label actions side by
+side want 387px of the 337px available at 393px wide, and every label is one
+unbreakable word, so min-content equals max-content and \`flex-shrink\` has
+nothing to give. The last action runs off the screen. Stacked, the same four
+come to ~291px.
+
+It also sets \`min-width: 0\` on the button and on its label, because that
+failure has a second half: a flex item's default min-width is its content, so
+without it a button refuses to shrink below its own label even when the row is
+told to divide the space, and the label's ellipsis is unreachable.`,
     examples: [
+      {
+        title: 'A bar of equal actions on a phone',
+        note: 'Stacked, so four unbreakable labels fit a 393px screen',
+        html: `<div class="axi-toolbar axi-toolbar--float axi-toolbar--nowrap" style="--axi-toolbar-pad: 8px; width: 337px">
+  <button class="axi-btn axi-btn--xs axi-btn--stack" style="flex: 1">
+    <svg class="axi-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+    <span>Back</span>
+  </button>
+  <button class="axi-btn axi-btn--xs axi-btn--stack" style="flex: 1">
+    <svg class="axi-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 5h18M3 12h18M3 19h18"/></svg>
+    <span>Contents</span>
+  </button>
+  <button class="axi-btn axi-btn--xs axi-btn--stack" style="flex: 1">
+    <svg class="axi-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m21 21-4.3-4.3"/></svg>
+    <span>Search</span>
+  </button>
+  <button class="axi-btn axi-btn--xs axi-btn--stack" style="flex: 1">
+    <svg class="axi-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 19V5M5 12l7-7 7 7"/></svg>
+    <span>Top</span>
+  </button>
+</div>`,
+      },
       {
         title: 'The four buttons',
         note: 'Only one of these is the primary',

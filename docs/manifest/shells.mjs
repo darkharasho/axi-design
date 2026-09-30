@@ -667,7 +667,7 @@ name.`,
     id: 'tabs',
     name: 'Tabs',
     layer: 'shells',
-    classes: ['.axi-tabs', '.axi-tabs__tab', '.axi-tabs__close'],
+    classes: ['.axi-tabs', '.axi-tabs--scroll', '.axi-tabs__tab', '.axi-tabs__close'],
     summary: 'Top-level navigation, in a masthead or standing on its own. The current tab is filled and blocked; the rest are transparent until hovered.',
     rules: [],
     knobs: [],
@@ -690,8 +690,42 @@ A tab the reader can close wraps its label and its \`.axi-tabs__close\` control
 in one \`.axi-tabs__tab\`, so the strip's gap falls between tabs rather than
 between a tab and its own X. The close control is an affordance of the tab and
 not a tab itself, so it opts out of the tab treatment and stays faint until the
-cursor reaches it.`,
+cursor reaches it.
+\`--scroll\` is for a strip with more tabs than room. \`.axi-tabs\` is a flex row
+with no wrap, so a strip too wide for its container overflows, and outside a
+scroll container the tabs past the edge are simply unreachable. The language
+already believed this twice and could say it in neither place a consumer could
+use: once behind \`.axi-mast\`, and once at the 640px breakpoint, where every
+strip scrolls. A standalone strip above that breakpoint with one tab too many
+had nowhere to look, and the consumer that hit it wrote \`overflow-x: auto\` on
+its own wrapper - the fourth arrival of the pattern in
+"A style only reachable through a layer will be re-invented".
+
+A modifier and not the base rule, deliberately. \`overflow-x: auto\` computes
+\`overflow-y\` from \`visible\` to \`auto\`, so a strip that scrolls is also a strip
+that clips vertically - a focus ring, a badge hanging off a tab, a popover
+anchored to one. Every strip paying that to fix the strips that are too long is
+the wrong trade.
+
+The scrollbar is left visible, and the quiet-scroll rule deliberately does not
+name this. That rule is about a bar down the side of a narrow strip, where the
+object's own edge is already a vertical line and a count elsewhere already says
+how many rows there are. A tab strip scrolling sideways has no second signal:
+the bar is the only thing saying there are more tabs.`,
     examples: [
+      {
+        title: 'More tabs than room',
+        note: 'The strip scrolls instead of losing the tabs past the edge',
+        html: `<nav class="axi-tabs axi-tabs--scroll" style="max-width: 420px">
+  <button aria-current="page">Overview</button>
+  <button>Offense</button>
+  <button>Defense</button>
+  <button>Support</button>
+  <button>Healing</button>
+  <button>Conditions</button>
+  <button>Boons</button>
+</nav>`,
+      },
       {
         title: 'A nav with one current tab',
         html: `<nav class="axi-tabs">

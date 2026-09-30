@@ -1634,3 +1634,105 @@ describe('a split pane is a recess beside a raised thing', () => {
     expect(dist).toMatch(/\.axi-split__nav\s*\{\s*max-height:\s*var\(--axi-split-nav-h/)
   })
 })
+
+// A strip with more tabs than room scrolls rather than losing them. The
+// language believed that twice and could say it in neither place a consumer
+// could reach: once behind .axi-mast, once at the 640px breakpoint. The fourth
+// arrival of "A style only reachable through a layer will be re-invented".
+describe('a tab strip that outgrows its room scrolls, and any strip can say so', () => {
+  const shells = stripComments(read('shells.css'))
+  const all = [...shells.matchAll(/([^{}]*)\{([^{}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+  const rules = all.filter((r) => !r.sel.startsWith('@'))
+  const decls = (body) => Object.fromEntries(
+    body.split(';').map((d) => d.split(':')).filter((p) => p.length >= 2)
+      .map(([k, ...v]) => [k.trim(), v.join(':').trim()]))
+
+  const scrollRule = rules.find(({ sel }) => /\.axi-tabs--scroll/.test(sel))
+
+  it('says it once, for the modifier and the masthead together', () => {
+    // Two rules that agree today are two rules that disagree after the next
+    // edit. The masthead's own statement - margin-left: auto - stays its own,
+    // because where the strip sits in that row is not the scroll behaviour.
+    expect(scrollRule, 'no .axi-tabs--scroll rule').toBeTruthy()
+    expect(scrollRule.sel).toMatch(/\.axi-mast\s+\.axi-tabs/)
+    expect(scrollRule.body).toMatch(/overflow-x:\s*auto/)
+    expect(scrollRule.body).toMatch(/min-width:\s*0/)
+    expect(scrollRule.body, 'the mast margin is not scroll behaviour')
+      .not.toMatch(/margin-left/)
+  })
+
+  it('leaves the base strip alone, so no strip clips what it is not scrolling', () => {
+    // `overflow-x: auto` computes `overflow-y` from `visible` to `auto`. Folded
+    // into .axi-tabs, every strip would clip a focus ring, a badge hanging off
+    // a tab, or a popover anchored to one - paid by every strip to fix the few
+    // that are too long.
+    const base = rules.find(({ sel }) => sel === '.axi-tabs')
+    expect(base, 'no bare .axi-tabs rule').toBeTruthy()
+    expect(base.body).not.toMatch(/overflow/)
+  })
+
+  it('keeps the 640px arm pinned to the modifier it cannot share a rule with', () => {
+    // A media-query rule and an unconditional one are different rules by
+    // construction, so the arm restates the declarations. It may not drift:
+    // everything it says about scrolling must also be said by the modifier, at
+    // the same value. `width` is the arm's own and is exempt - it is about a
+    // phone's layout, not about scrolling.
+    const media = shells.slice(shells.search(/@media[^{]*640px/))
+    const arm = [...media.matchAll(/([^{}]*)\{([^{}]*)\}/g)]
+      .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+      .find(({ sel }) => sel === '.axi-tabs')
+    expect(arm, 'no .axi-tabs arm at 640px').toBeTruthy()
+    const shared = decls(scrollRule.body)
+    for (const [prop, value] of Object.entries(decls(arm.body))) {
+      if (prop === 'width') continue
+      expect(shared, `the 640px arm declares ${prop}, which the modifier does not`)
+        .toHaveProperty(prop)
+      expect(shared[prop], `the 640px arm's ${prop} has drifted from the modifier`)
+        .toBe(value)
+    }
+  })
+
+  it('keeps its scrollbar, because nothing else says there are more tabs', () => {
+    // The quiet-scroll rule is about a bar drawn DOWN the side of a narrow
+    // strip, where the object's own edge is already a vertical line and a
+    // count elsewhere already gives the number. A strip scrolling sideways has
+    // no second signal - the same reason .axi-table__scroll keeps its bar.
+    const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+    const quiet = [...css.matchAll(/([^{}]*)\{([^{}]*)\}/g)]
+      .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+      .find(({ body }) => /scrollbar-width\s*:\s*none/.test(body))
+    expect(quiet.sel).not.toMatch(/\.axi-tabs/)
+  })
+})
+
+// Icon over label, for a bar of equal actions on a phone. Four icon+label
+// actions side by side want 387px of the 337px available at 393px wide, and
+// every label is one unbreakable word - so flex-shrink has nothing to give and
+// the last action runs off the screen.
+describe('a stacked button can shrink, and so can its label', () => {
+  const primitives = stripComments(read('primitives.css'))
+  const rules = [...primitives.matchAll(/([^{}]*)\{([^{}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+
+  it('stacks, and gives up its content-sized minimum', () => {
+    const stack = rules.find(({ sel }) => sel === '.axi-btn--stack')
+    expect(stack, 'no .axi-btn--stack rule').toBeTruthy()
+    expect(stack.body).toMatch(/flex-direction:\s*column/)
+    // A flex item's default min-width is its content, so without this the
+    // button refuses to shrink below its own label however the row is told to
+    // divide the space - which is half of the failure --stack exists for.
+    expect(stack.body).toMatch(/min-width:\s*0/)
+  })
+
+  it('addresses its label without out-ranking the ink layer', () => {
+    // The label is an element and not a named part: a stacked button has two
+    // children and only one of them is words, so naming a part would make
+    // every consumer add a class to say what the span already says. :where()
+    // is what keeps that from costing specificity the ink layer is owed.
+    const label = rules.find(({ sel }) => /^\.axi-btn--stack\s*>/.test(sel))
+    expect(label, 'no rule for the stacked label').toBeTruthy()
+    expect(label.sel).toMatch(/:where\(/)
+    expect(label.body).toMatch(/text-overflow:\s*ellipsis/)
+  })
+})

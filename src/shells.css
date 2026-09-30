@@ -95,7 +95,34 @@
    it shrinks an item - so one tab too many sent the last item in source order
    to a second row instead of taking width off the widest one. The strip is the
    item that can give: it scrolls, and the row stays a row. */
-.axi-mast .axi-tabs { margin-left: auto; flex-shrink: 1; min-width: 0; overflow-x: auto; }
+.axi-mast .axi-tabs { margin-left: auto; }
+/* A strip with more tabs than room scrolls rather than losing them.
+
+   .axi-tabs is `display: flex` with no wrap, so a strip too wide for its
+   container overflows - and outside a scroll container the tabs past the edge
+   are simply unreachable. The language already believed this twice and could
+   say it in neither place a consumer could use: once here, behind .axi-mast,
+   and once at the 640px breakpoint below, where EVERY strip scrolls. A
+   standalone strip above that breakpoint with one tab too many had nowhere to
+   look, and the consumer that hit it wrote `overflow-x: auto` on its own
+   wrapper - the same re-invention docs/RULES.md describes, arriving a fourth
+   time.
+
+   A modifier rather than the base rule, and this is the part worth arguing.
+   `overflow-x: auto` computes `overflow-y` from `visible` to `auto`, so a
+   strip that scrolls is also a strip that clips vertically - a focus ring, a
+   badge hanging off a tab, a popover anchored to one. Every strip paying that
+   to fix the strips that are too long is the wrong trade; the strips that are
+   too long say so.
+
+   The bar is NOT hidden here, and the quiet-scroll rule in src/utilities.css
+   deliberately does not name this. That rule is about a bar drawn down the
+   side of a narrow strip, where the object's own edge is already a vertical
+   line and a count elsewhere already says how many rows there are. A tab strip
+   that scrolls horizontally has no second signal: the bar is the only thing
+   saying there are more tabs. Same reason .axi-table__scroll keeps its. */
+.axi-tabs--scroll,
+.axi-mast .axi-tabs { flex-shrink: 1; min-width: 0; overflow-x: auto; }
 .axi-tabs :where(a, button) {
   padding: 8px 16px;
   font: 800 13.5px/1 var(--axi-sans);
@@ -1001,7 +1028,12 @@
 @media (max-width: 640px) {
   .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }
   .axi-mast .axi-tabs { margin-left: 0; }
-  .axi-tabs { width: 100%; overflow-x: auto; }
+  /* Every strip scrolls on a phone, whether or not it asked. This cannot join
+     the shared rule above - a media-query rule and an unconditional one are
+     different rules by construction - so the values are pinned against it by
+     test instead: the arm may declare nothing the modifier does not, and
+     nothing at a different value. */
+  .axi-tabs { width: 100%; flex-shrink: 1; min-width: 0; overflow-x: auto; }
   /* The offset blocks eat horizontal room a phone does not have, so the panel
      step drops to the control step here rather than to an invented number.
      The card's hover has to come down with it - left alone it kept deepening

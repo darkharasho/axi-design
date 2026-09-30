@@ -586,6 +586,43 @@ button.axi-panel--tile:hover,
    icon-only button has no label to pad around, so the 20px sides meant for
    one produced a wide rectangle around a single glyph - visible in this
    language's own gallery, in the example titled "Alone in a button". */
+/* Icon over label rather than beside it. Not a style choice - it is the only
+   thing that makes a bar of equal actions fit a phone. Measured on the
+   consumer that needed it: four icon+label actions side by side want 387px of
+   the 337px available at 393px wide, and every label is one unbreakable word,
+   so min-content equals max-content and flex-shrink has nothing to give. The
+   last action simply runs off the screen. Stacked, the same four come to
+   ~291px.
+
+   min-width: 0 because that failure has a second half. A flex item's default
+   min-width is its content, so a button in a row refuses to shrink below its
+   own label even when the row is told to divide the space - which is the same
+   trap .axi-tabs__tab documents for its label and .axi-split__body for its
+   track.
+
+   The label is addressed as an element because a stacked button has two
+   children and only one of them is words; naming a part would make every
+   consumer add a class to say what the span already says. :where() so it
+   spends no specificity - the ink layer and any modifier still out-rank it,
+   which is the contract src/utilities.css is owed. */
+.axi-btn--stack {
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.axi-btn--stack > :where(span) {
+  /* Both, and the pair is the point: max-width caps it against the button,
+     min-width: 0 is what lets it shrink at all. A flex item's default
+     min-width is its content, so max-width alone leaves the ellipsis
+     unreachable - the label overflows the cap instead of truncating inside
+     it. tests/tokens.test.mjs pins the pair for every truncating rule in the
+     language, and it caught this one. */
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .axi-btn--sm   { --axi-btn-pad: 8px 13px; --axi-btn-size: 12px; }
 .axi-btn--xs   { --axi-btn-pad: 5px 9px;  --axi-btn-size: 11px; }
 .axi-btn--icon { --axi-btn-pad: 7px; }
@@ -1527,7 +1564,34 @@ textarea.axi-input {
    it shrinks an item - so one tab too many sent the last item in source order
    to a second row instead of taking width off the widest one. The strip is the
    item that can give: it scrolls, and the row stays a row. */
-.axi-mast .axi-tabs { margin-left: auto; flex-shrink: 1; min-width: 0; overflow-x: auto; }
+.axi-mast .axi-tabs { margin-left: auto; }
+/* A strip with more tabs than room scrolls rather than losing them.
+
+   .axi-tabs is `display: flex` with no wrap, so a strip too wide for its
+   container overflows - and outside a scroll container the tabs past the edge
+   are simply unreachable. The language already believed this twice and could
+   say it in neither place a consumer could use: once here, behind .axi-mast,
+   and once at the 640px breakpoint below, where EVERY strip scrolls. A
+   standalone strip above that breakpoint with one tab too many had nowhere to
+   look, and the consumer that hit it wrote `overflow-x: auto` on its own
+   wrapper - the same re-invention docs/RULES.md describes, arriving a fourth
+   time.
+
+   A modifier rather than the base rule, and this is the part worth arguing.
+   `overflow-x: auto` computes `overflow-y` from `visible` to `auto`, so a
+   strip that scrolls is also a strip that clips vertically - a focus ring, a
+   badge hanging off a tab, a popover anchored to one. Every strip paying that
+   to fix the strips that are too long is the wrong trade; the strips that are
+   too long say so.
+
+   The bar is NOT hidden here, and the quiet-scroll rule in src/utilities.css
+   deliberately does not name this. That rule is about a bar drawn down the
+   side of a narrow strip, where the object's own edge is already a vertical
+   line and a count elsewhere already says how many rows there are. A tab strip
+   that scrolls horizontally has no second signal: the bar is the only thing
+   saying there are more tabs. Same reason .axi-table__scroll keeps its. */
+.axi-tabs--scroll,
+.axi-mast .axi-tabs { flex-shrink: 1; min-width: 0; overflow-x: auto; }
 .axi-tabs :where(a, button) {
   padding: 8px 16px;
   font: 800 13.5px/1 var(--axi-sans);
@@ -2433,7 +2497,12 @@ textarea.axi-input {
 @media (max-width: 640px) {
   .axi-mast__in { min-height: 0; padding: 10px 16px; gap: 12px; }
   .axi-mast .axi-tabs { margin-left: 0; }
-  .axi-tabs { width: 100%; overflow-x: auto; }
+  /* Every strip scrolls on a phone, whether or not it asked. This cannot join
+     the shared rule above - a media-query rule and an unconditional one are
+     different rules by construction - so the values are pinned against it by
+     test instead: the arm may declare nothing the modifier does not, and
+     nothing at a different value. */
+  .axi-tabs { width: 100%; flex-shrink: 1; min-width: 0; overflow-x: auto; }
   /* The offset blocks eat horizontal room a phone does not have, so the panel
      step drops to the control step here rather than to an invented number.
      The card's hover has to come down with it - left alone it kept deepening

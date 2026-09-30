@@ -236,6 +236,43 @@ button.axi-panel--tile:hover,
    icon-only button has no label to pad around, so the 20px sides meant for
    one produced a wide rectangle around a single glyph - visible in this
    language's own gallery, in the example titled "Alone in a button". */
+/* Icon over label rather than beside it. Not a style choice - it is the only
+   thing that makes a bar of equal actions fit a phone. Measured on the
+   consumer that needed it: four icon+label actions side by side want 387px of
+   the 337px available at 393px wide, and every label is one unbreakable word,
+   so min-content equals max-content and flex-shrink has nothing to give. The
+   last action simply runs off the screen. Stacked, the same four come to
+   ~291px.
+
+   min-width: 0 because that failure has a second half. A flex item's default
+   min-width is its content, so a button in a row refuses to shrink below its
+   own label even when the row is told to divide the space - which is the same
+   trap .axi-tabs__tab documents for its label and .axi-split__body for its
+   track.
+
+   The label is addressed as an element because a stacked button has two
+   children and only one of them is words; naming a part would make every
+   consumer add a class to say what the span already says. :where() so it
+   spends no specificity - the ink layer and any modifier still out-rank it,
+   which is the contract src/utilities.css is owed. */
+.axi-btn--stack {
+  flex-direction: column;
+  gap: 5px;
+  min-width: 0;
+}
+.axi-btn--stack > :where(span) {
+  /* Both, and the pair is the point: max-width caps it against the button,
+     min-width: 0 is what lets it shrink at all. A flex item's default
+     min-width is its content, so max-width alone leaves the ellipsis
+     unreachable - the label overflows the cap instead of truncating inside
+     it. tests/tokens.test.mjs pins the pair for every truncating rule in the
+     language, and it caught this one. */
+  max-width: 100%;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 .axi-btn--sm   { --axi-btn-pad: 8px 13px; --axi-btn-size: 12px; }
 .axi-btn--xs   { --axi-btn-pad: 5px 9px;  --axi-btn-size: 11px; }
 .axi-btn--icon { --axi-btn-pad: 7px; }
