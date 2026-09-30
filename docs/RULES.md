@@ -852,10 +852,30 @@ allowed to come apart, they had already come apart. When you lift a
 layer-scoped style out, look for the declarations the layer was getting for
 free from its element. Those are the ones the new spelling silently loses.
 
-Two instances is a pattern, so the check belongs at the top of the list when
-adding anything: grep `src/` for the component's style living behind a layer
-prefix. If it does, it has consumers you cannot see, and they have already
-drawn their own.
+The third instance was not behind a layer prefix at all, and it widens the
+rule. `.axi-palette__list` hid its scrollbar with the argument written inline —
+a bar down the side of a small panel reporting a fact the row count has already
+given. That was the language's only word for the decision, and the decision was
+about *strips*, not about palettes. The same consumer needed it for two rails
+and a picker slot and could not reach it, so it wrote the rule again five times
+in its own stylesheet — twice with a `*` descendant arm, because the element
+that actually scrolls sits one level inside a component it does not control,
+which is the sledgehammer a consumer reaches for when the language gives it no
+name. The remedy is unchanged: one rule, every spelling in it, and a class the
+consumer can spend (`.axi-scroll-quiet`, in `src/utilities.css`).
+
+So the check is not only "is this style behind a layer prefix". It is **is this
+style the only statement of a decision that is broader than the component
+stating it**. A component's own inline reasoning is the tell: if the comment
+argues about a category of thing — a strip, a recess, a reading — and the
+selector names one member of that category, the rest of the category has
+nowhere to look.
+
+Three instances, so the check belongs at the top of the list when adding
+anything: grep `src/` for the component's style living behind a layer prefix,
+and read the comments on any single-selector rule you are about to copy. If
+either applies, it has consumers you cannot see, and they have already drawn
+their own.
 
 ### A refusal holds at every level, not just the one it was written for
 

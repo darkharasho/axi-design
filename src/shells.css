@@ -495,14 +495,16 @@
 }
 /* min-height: 0 because the panel is a flex column and a list that cannot
    shrink below its content pushes the panel past its own max-height. The
-   scrollbar is hidden: at twelve rows behind a fixed cap the bar is a channel
-   carved down the side of a small panel to report a fact the row count in the
-   bar has already given. */
+   scrollbar is hidden, but not here: that decision is the language's and not
+   this component's, and it now lives once, in src/utilities.css under "the
+   quiet scroll", with this selector in the same rule as every other strip that
+   makes it. The argument that produced it was written here first - at twelve
+   rows behind a fixed cap the bar is a channel carved down the side of a small
+   panel to report a fact the row count in the bar has already given - and it is
+   preserved in full at the rule. */
 .axi-palette__list {
   flex: 1; min-height: 0; overflow-y: auto; padding: 4px 0;
-  scrollbar-width: none;
 }
-.axi-palette__list::-webkit-scrollbar { width: 0; height: 0; }
 /* One .axi-palette__section per group of rows, each opening with a
    .axi-palette__group heading. The section is a named part rather than left to
    the consumer's wrapper so the rule between groups can be stated as what it

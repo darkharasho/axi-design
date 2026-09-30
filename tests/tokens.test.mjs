@@ -1500,3 +1500,137 @@ describe('a picked surface says so on the surface and to the reader', () => {
     }
   })
 })
+
+// A scrollbar down the side of a narrow strip is a channel, not information.
+// The language had decided that once, inline on .axi-palette__list, and the
+// argument written there was about a CATEGORY - a strip - while the selector
+// named one member of it. Every other strip had nowhere to look, and the first
+// consumer to need the same thing wrote the rule five more times in its own
+// stylesheet, twice with a `*` descendant arm. These tests pin the remedy:
+// one rule, every spelling in it, a class a consumer can spend, and no
+// descendant reach.
+describe('a strip scrolls quietly, and says so in one place', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+  const rules = [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+
+  const compounds = (sel) => {
+    const out = []
+    let cur = '', depth = 0
+    for (const ch of sel) {
+      if (ch === '(') depth++
+      else if (ch === ')') depth--
+      if (ch === ',' && depth === 0) { out.push(cur); cur = '' } else cur += ch
+    }
+    if (cur.trim()) out.push(cur)
+    return out.map((s) => s.trim())
+  }
+
+  const hides = rules.filter(({ body }) => /scrollbar-width\s*:\s*none/.test(body))
+  const zeroes = rules.filter(({ sel, body }) =>
+    /::-webkit-scrollbar/.test(sel) && /width\s*:\s*0/.test(body))
+
+  // The strips the language ships. A part added here without being added to
+  // the rule fails the next test, which is the point: the list is the contract.
+  const STRIPS = ['.axi-palette__list', '.axi-rail', '.axi-rail__nav', '.axi-split__nav']
+
+  it('hides the bar in exactly one rule, not once per component', () => {
+    // Two rules that agree today are two rules that disagree after the next
+    // edit, and that is how one decision ends up with two spellings. The
+    // palette used to hold its own copy; collapsing it into the shared rule is
+    // what this test protects.
+    expect(hides.map((r) => r.sel)).toHaveLength(1)
+    expect(zeroes.map((r) => r.sel)).toHaveLength(1)
+  })
+
+  it('names the consumer class and every strip the language ships', () => {
+    const say = compounds(hides[0].sel)
+    const zero = compounds(zeroes[0].sel).map((c) => c.replace('::-webkit-scrollbar', ''))
+    // The class is what a consumer spends on its own scroller. Without it the
+    // decision is unreachable again and the next consumer writes it by hand.
+    expect(say).toContain('.axi-scroll-quiet')
+    expect(zero).toContain('.axi-scroll-quiet')
+    for (const part of STRIPS) {
+      expect(say, `${part} is not in the quiet-scroll rule`).toContain(part)
+      expect(zero, `${part} has no ::-webkit-scrollbar arm`).toContain(part)
+    }
+    // Both arms cover the same set. A part in one and not the other is quiet in
+    // Firefox and loud in Chromium, which is the bug this pairing exists for.
+    expect(new Set(zero)).toEqual(new Set(say))
+  })
+
+  it('reaches no descendant, so a table in a rail keeps its bar', () => {
+    // The consumer's `__sidebar *` arm is the sledgehammer a missing name
+    // produces. .axi-table__scroll keeps a horizontal bar ON PURPOSE - there it
+    // is the only thing saying a column is off-screen - so a descendant reach
+    // here would take that away the moment a table landed in a strip.
+    for (const c of [...compounds(hides[0].sel), ...compounds(zeroes[0].sel)]) {
+      const target = c.replace('::-webkit-scrollbar', '')
+      expect(target, `${c} reaches past the strip itself`).not.toMatch(/[\s>+~*]/)
+    }
+    expect(compounds(hides[0].sel)).not.toContain('.axi-table__scroll')
+  })
+})
+
+// The split pane: a picker choosing what the surface beside it shows. Two
+// objects on one plane, not two panels parted by a hairline. The consumer that
+// derived this shape by hand is what these tests are measured against - it got
+// the outline and left the block out, which fails rule 3 from the other side.
+describe('a split pane is a recess beside a raised thing', () => {
+  const layout = stripComments(read('layout.css'))
+  const primitives = stripComments(read('primitives.css'))
+  const rules = (css) => [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+
+  it("declares the picker slot as a well in the well's own rule", () => {
+    // One rule, both spellings - the remedy docs/RULES.md prescribes for a
+    // style two selectors have to agree about. Restating --axi-well-fill beside
+    // .axi-split would be two rules that agree today.
+    const well = rules(primitives).find(({ sel }) => /(^|,\s*)\.axi-well\s*$/.test(sel))
+    expect(well, 'no rule whose last compound is .axi-well').toBeTruthy()
+    expect(well.sel).toMatch(/\.axi-split__nav/)
+  })
+
+  it('gives the body track a zero floor, so a nowrap table cannot blow it out', () => {
+    // `1fr` is `minmax(auto, 1fr)` and `auto` is a CONTENT floor. Every cell in
+    // .axi-table is nowrap, so a table in a `1fr` track sizes to its content
+    // and takes the pane's width with it.
+    const split = rules(layout).find(({ sel }) => sel === '.axi-split')
+    expect(split, 'no .axi-split rule').toBeTruthy()
+    expect(split.body).toMatch(/grid-template-columns:[^;]*minmax\(\s*0\s*,\s*1fr\s*\)/)
+    // The item's minimum is a different thing from the track's, and an ellipsis
+    // inside the body is fighting the item's.
+    const body = rules(layout).find(({ sel }) => sel === '.axi-split__body')
+    expect(body.body).toMatch(/min-width:\s*0/)
+  })
+
+  it('outlines AND blocks the body, at the control step', () => {
+    // Rule 3: every raised element is both. The consumer drew the outline and
+    // no block - a boundary around content that was meant to be standing on the
+    // surface behind it. Control weight rather than panel, because a split pane
+    // lives inside a panel that has already paid a 6px block and rule 8's
+    // counterpart settles what a second one nested in it reads as.
+    const body = rules(layout).find(({ sel }) => sel === '.axi-split__body')
+    expect(body.body).toMatch(/border:\s*var\(--axi-border-control\)/)
+    expect(body.body).toMatch(/box-shadow:\s*var\(--axi-shadow-control\)/)
+  })
+
+  it('stacks under the one breakpoint, and the stacked arm actually wins', () => {
+    // Specificity is equal, so order decides. Written below the base rule the
+    // media query is live; written above it - which is where appending to the
+    // file puts it, and where the first draft of this component put it - it
+    // parses, passes every other check here, and does nothing. Measured in the
+    // built sheet rather than in one source file, because that is the cascade a
+    // consumer actually gets.
+    const dist = stripComments(readFileSync(resolve('dist/axi.css'), 'utf8'))
+    const base = dist.search(/\.axi-split\s*\{/)
+    const stacked = dist.search(/@media[^{]*640px[\s\S]*?\.axi-split\s*\{/)
+    expect(base, '.axi-split is not in the built sheet').toBeGreaterThan(-1)
+    expect(stacked, 'no 640px arm for .axi-split').toBeGreaterThan(-1)
+    expect(stacked, 'the stacked arm is declared before the base rule and loses')
+      .toBeGreaterThan(base)
+    // The picker keeps a cap once stacked: one that grows to twenty rows pushes
+    // the result it picked off the screen.
+    expect(dist).toMatch(/\.axi-split__nav\s*\{\s*max-height:\s*var\(--axi-split-nav-h/)
+  })
+})

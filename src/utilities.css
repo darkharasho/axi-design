@@ -1,6 +1,6 @@
 /* axi design language - utilities.
-   Two families of single-purpose class and one state, and the file is last in
-   the cascade
+   Two families of single-purpose class, one state and one refusal, and the file
+   is last in the cascade
    because that is the whole point of it: a utility has to be able to overrule
    the component it sits inside, and it is not allowed to buy that with
    !important or with a padded selector.
@@ -121,4 +121,59 @@
 .axi-titlebar__btns :where(button):is(:disabled, [aria-disabled="true"]) {
   opacity: .5;
   cursor: not-allowed;
+}
+
+/* ---------- the quiet scroll ---------- */
+/* A scrollbar down the side of a narrow strip is a channel, not information.
+
+   The language had already decided this and said it in exactly one place, on
+   .axi-palette__list, with the argument written inline: at twelve rows behind
+   a fixed cap the bar reports a fact the row count in the bar has already
+   given. Said only there, it was the language's only word for the decision -
+   and the consumer that needed the same thing for its own strips could not
+   reach it, so it wrote the rule again. Five times, in its own stylesheet, for
+   two rails and a picker slot, twice with a `*` descendant arm because the
+   element that actually scrolls sits one level inside a component it does not
+   control. That is the third instance of the pattern in docs/RULES.md ("A style
+   only reachable through a layer will be re-invented"), and the remedy is the
+   same one: give the decision a name a consumer can spend, and put every
+   spelling of it in ONE rule.
+
+   So: one rule. The class is what a consumer says about its own scroller; the
+   four component parts beside it are the strips the language ships. Two rules
+   that agree today are two rules that disagree after the next edit.
+
+   This is a refusal rather than a utility - it says what NOT to draw - which is
+   why it is here rather than beside each component even though nothing needs
+   the last-in-cascade position to win. One fact about parts living in three
+   different source files has one home, the same as the dead state above.
+
+   Why these four and not everything that scrolls. The strip is the test: a
+   rail is 208px wide and a palette list sits in a small floating panel, so the
+   bar costs a measurable share of the width AND draws a second vertical line
+   beside the object's own edge. A table's horizontal bar is the opposite case
+   and .axi-table__scroll keeps it on purpose (see src/data.css) - there the bar
+   is the only thing telling you a column is off-screen. Nothing here reaches a
+   descendant: `*` would take the table's bar away the moment someone put one
+   in a rail.
+
+   `.axi-rail` and `.axi-rail__nav` both, because either can be the scroller.
+   The rail declares `overflow-y: auto` and is the scroller by default, but a
+   rail with something pinned below its list - a "back" action at the floor -
+   scrolls the nav instead and leaves the rail still. Both are the same strip
+   and the decision cannot depend on which one the consumer chose. */
+.axi-scroll-quiet,
+.axi-palette__list,
+.axi-rail,
+.axi-rail__nav,
+.axi-split__nav {
+  scrollbar-width: none;
+}
+.axi-scroll-quiet::-webkit-scrollbar,
+.axi-palette__list::-webkit-scrollbar,
+.axi-rail::-webkit-scrollbar,
+.axi-rail__nav::-webkit-scrollbar,
+.axi-split__nav::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }

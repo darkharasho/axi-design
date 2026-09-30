@@ -477,7 +477,17 @@ button.axi-panel--tile:hover,
    than the ink for its edge - see --axi-well-fill in src/tokens.css for why
    both of those follow from the same fact. Reach for this wherever a second
    panel inside a panel was the instinct: a picker list beside a table, a column
-   of cards standing on the page, a trough a bar fills. */
+   of cards standing on the page, a trough a bar fills.
+
+   .axi-split__nav is the first of those three named as a part rather than left
+   to the consumer to remember, and it is in THIS rule rather than restating the
+   fill next to the split pane. Two rules that agree today are two rules that
+   disagree after the next edit - see "A style only reachable through a layer
+   will be re-invented" in docs/RULES.md, which is the same argument arriving
+   from the other direction. The split pane's slot cannot be a well by
+   convention: a consumer who forgets the second class gets a picker with no
+   recess, and the language has no way to notice. */
+.axi-split__nav,
 .axi-well {
   background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-well-line);
@@ -1342,6 +1352,68 @@ textarea.axi-input {
 /* A horizontal run that wraps rather than overflowing. */
 .axi-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--axi-row-gap, 10px); }
 
+/* ---------- split pane ---------- */
+/* A picker on the left choosing what the surface on the right shows. Thirteen
+   sections of one consumer are this shape, and a fourteenth had hand-built it
+   inline because there was no name for it.
+
+   It is two objects on one plane and not two panels, which is the whole reason
+   it needs naming: a picker list beside a table is the first case --axi-well's
+   own comment names, and the thing the list picks is the raised counterpart to
+   that recess. Drawn as two panels it read flat - a hairline parting one field,
+   with the list's scrollbar carving a groove down the middle of it - because
+   nothing in it was an object.
+
+   The body carries the CONTROL step, not the panel's. A split pane lives
+   inside a panel that has already paid a 6px block, and rule 8's counterpart
+   settles what a second one nested in it reads as: two planes arguing. The
+   consumer that derived this shape by hand got the outline and left out the
+   block entirely, which is a rule 3 failure in the other direction - a
+   boundary drawn around content that is standing on the surface behind it.
+   Outlined and blocked, at the weight that says "the contents of a box".
+
+   The radius follows the form step and not the footprint. The body is
+   panel-sized in area and control-weight in form, and .axi-panel--tile already
+   settled that argument the same way.
+
+   `minmax(0, 1fr)` rather than `1fr`: a table in a `1fr` track cannot shrink
+   below its own content, and every cell in .axi-table is `nowrap`, so the
+   column blows out and takes the pane's width with it. `1fr` is
+   `minmax(auto, 1fr)` and `auto` is a content floor.
+
+   No breakpoint of its own. Under 640px the two stack, which is layout.css's
+   one breakpoint and deliberately still its only one - .axi-table--fixed
+   already makes a 360px pane work, so a pane narrow enough to need a second
+   breakpoint is one --fixed was written for. */
+.axi-split {
+  display: grid;
+  grid-template-columns: var(--axi-split-nav-w, 280px) minmax(0, 1fr);
+  gap: var(--axi-split-gap, 10px);
+  /* A split pane is routinely the flex child that fills a section's height,
+     and a grid that cannot shrink below its content pushes the section past
+     its own cap - the same reason .axi-palette__list says it. */
+  min-height: 0;
+}
+/* The picker is a well, declared as one in the same rule as .axi-well in
+   src/primitives.css rather than restated here. This part only says what the
+   slot adds: it scrolls, and it may not out-grow the row it sits in. Its
+   scrollbar is hidden by the language's quiet-scroll rule in
+   src/utilities.css, which is where that decision lives for every strip. */
+.axi-split__nav { overflow-y: auto; min-height: 0; }
+.axi-split__body {
+  /* Paired with the track's minmax(0, 1fr): the track stops the COLUMN
+     growing, this stops the ITEM, whose min-width is `auto` by default and is
+     what an ellipsis inside it is actually fighting. */
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  box-shadow: var(--axi-shadow-control);
+}
+
 @media (max-width: 640px) {
   /* The fallback must match the resting rule's (var(--axi-gutter), 18px) -
      README.md documents --axi-page-pad's fallback as --axi-gutter, and a
@@ -1349,6 +1421,12 @@ textarea.axi-input {
      mobile, which is the one viewport where the gutter matters most. */
   .axi-page { padding-inline: var(--axi-page-pad, var(--axi-gutter)); }
   .axi-grid { grid-template-columns: 1fr; }
+  /* The picker stops being a column beside the thing it picks and becomes the
+     row above it. It keeps a height cap - a picker that grows to twenty rows
+     pushes the result it picked off the screen, which is the one thing the
+     stacked form must not do. */
+  .axi-split { grid-template-columns: 1fr; }
+  .axi-split__nav { max-height: var(--axi-split-nav-h, 200px); }
 }
 
 /* --- shells.css --- */
@@ -1849,14 +1927,16 @@ textarea.axi-input {
 }
 /* min-height: 0 because the panel is a flex column and a list that cannot
    shrink below its content pushes the panel past its own max-height. The
-   scrollbar is hidden: at twelve rows behind a fixed cap the bar is a channel
-   carved down the side of a small panel to report a fact the row count in the
-   bar has already given. */
+   scrollbar is hidden, but not here: that decision is the language's and not
+   this component's, and it now lives once, in src/utilities.css under "the
+   quiet scroll", with this selector in the same rule as every other strip that
+   makes it. The argument that produced it was written here first - at twelve
+   rows behind a fixed cap the bar is a channel carved down the side of a small
+   panel to report a fact the row count in the bar has already given - and it is
+   preserved in full at the rule. */
 .axi-palette__list {
   flex: 1; min-height: 0; overflow-y: auto; padding: 4px 0;
-  scrollbar-width: none;
 }
-.axi-palette__list::-webkit-scrollbar { width: 0; height: 0; }
 /* One .axi-palette__section per group of rows, each opening with a
    .axi-palette__group heading. The section is a named part rather than left to
    the consumer's wrapper so the rule between groups can be stated as what it
@@ -3191,8 +3271,8 @@ textarea.axi-input {
 
 /* --- utilities.css --- */
 /* axi design language - utilities.
-   Two families of single-purpose class and one state, and the file is last in
-   the cascade
+   Two families of single-purpose class, one state and one refusal, and the file
+   is last in the cascade
    because that is the whole point of it: a utility has to be able to overrule
    the component it sits inside, and it is not allowed to buy that with
    !important or with a padded selector.
@@ -3313,4 +3393,59 @@ textarea.axi-input {
 .axi-titlebar__btns :where(button):is(:disabled, [aria-disabled="true"]) {
   opacity: .5;
   cursor: not-allowed;
+}
+
+/* ---------- the quiet scroll ---------- */
+/* A scrollbar down the side of a narrow strip is a channel, not information.
+
+   The language had already decided this and said it in exactly one place, on
+   .axi-palette__list, with the argument written inline: at twelve rows behind
+   a fixed cap the bar reports a fact the row count in the bar has already
+   given. Said only there, it was the language's only word for the decision -
+   and the consumer that needed the same thing for its own strips could not
+   reach it, so it wrote the rule again. Five times, in its own stylesheet, for
+   two rails and a picker slot, twice with a `*` descendant arm because the
+   element that actually scrolls sits one level inside a component it does not
+   control. That is the third instance of the pattern in docs/RULES.md ("A style
+   only reachable through a layer will be re-invented"), and the remedy is the
+   same one: give the decision a name a consumer can spend, and put every
+   spelling of it in ONE rule.
+
+   So: one rule. The class is what a consumer says about its own scroller; the
+   four component parts beside it are the strips the language ships. Two rules
+   that agree today are two rules that disagree after the next edit.
+
+   This is a refusal rather than a utility - it says what NOT to draw - which is
+   why it is here rather than beside each component even though nothing needs
+   the last-in-cascade position to win. One fact about parts living in three
+   different source files has one home, the same as the dead state above.
+
+   Why these four and not everything that scrolls. The strip is the test: a
+   rail is 208px wide and a palette list sits in a small floating panel, so the
+   bar costs a measurable share of the width AND draws a second vertical line
+   beside the object's own edge. A table's horizontal bar is the opposite case
+   and .axi-table__scroll keeps it on purpose (see src/data.css) - there the bar
+   is the only thing telling you a column is off-screen. Nothing here reaches a
+   descendant: `*` would take the table's bar away the moment someone put one
+   in a rail.
+
+   `.axi-rail` and `.axi-rail__nav` both, because either can be the scroller.
+   The rail declares `overflow-y: auto` and is the scroller by default, but a
+   rail with something pinned below its list - a "back" action at the floor -
+   scrolls the nav instead and leaves the rail still. Both are the same strip
+   and the decision cannot depend on which one the consumer chose. */
+.axi-scroll-quiet,
+.axi-palette__list,
+.axi-rail,
+.axi-rail__nav,
+.axi-split__nav {
+  scrollbar-width: none;
+}
+.axi-scroll-quiet::-webkit-scrollbar,
+.axi-palette__list::-webkit-scrollbar,
+.axi-rail::-webkit-scrollbar,
+.axi-rail__nav::-webkit-scrollbar,
+.axi-split__nav::-webkit-scrollbar {
+  width: 0;
+  height: 0;
 }

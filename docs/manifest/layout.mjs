@@ -287,4 +287,91 @@ still how you say anything about its inside.`,
       },
     ],
   },
+  {
+    id: 'split',
+    name: 'Split pane',
+    layer: 'layout',
+    classes: ['.axi-split', '.axi-split__nav', '.axi-split__body'],
+    summary: 'A picker choosing what the surface beside it shows. Two objects on one plane — the list is sunk into the panel, the thing it picked stands out of it — rather than two panels parted by a hairline.',
+    rules: [3, 8],
+    knobs: ['--axi-split-nav-w', '--axi-split-gap', '--axi-split-nav-h'],
+    notes: `The nav slot **is** a well, declared in the same rule as
+\`.axi-well\` in \`src/primitives.css\` rather than left to the consumer to
+remember a second class. The well's own comment already named this case — "a
+picker list beside a table" is the first of the three things it says to reach
+for — and a slot that is a well by convention is a slot a consumer can forget.
+
+The body carries the **control** step, not the panel's. A split pane lives
+inside a panel that has already paid a 6px block, and rule 8's counterpart
+settles what a second one nested in it reads as: two planes arguing. The
+consumer that derived this shape by hand got the outline and left the block out
+entirely, which fails rule 3 from the other side — a boundary drawn around
+content that is meant to be standing on the surface behind it. The radius
+follows the form step rather than the footprint, which is the same way
+\`.axi-panel--tile\` settled it.
+
+\`minmax(0, 1fr)\` for the body track, not \`1fr\`. \`1fr\` is
+\`minmax(auto, 1fr)\` and \`auto\` is a content floor: every cell in
+\`.axi-table\` is \`nowrap\`, so a table in a \`1fr\` track sizes to its
+content and takes the pane's width with it. The body element repeats
+\`min-width: 0\` for itself, because the track's minimum and the item's
+minimum are two different things and an ellipsis inside the body is fighting
+the second one.
+
+No breakpoint of its own. Under 640px — layout.css's one breakpoint, and
+deliberately still its only one — the picker becomes the row above the thing it
+picks and keeps a height cap, because a picker that grows to twenty rows pushes
+the result you picked off the screen. A pane narrow enough to want a second
+breakpoint is one \`.axi-table--fixed\` was written for; it makes a 360px pane
+work.
+
+The nav's scrollbar is hidden by the language's quiet-scroll rule, not by
+anything here — see **Quiet scroll** in the utilities layer.`,
+    examples: [
+      {
+        title: 'A picker beside a table',
+        note: 'The list is recessed, the table stands on the panel at control weight',
+        html: `<div class="axi-panel">
+  <p class="axi-eyebrow">Damage by skill</p>
+  <div class="axi-split" style="height: 240px">
+    <div class="axi-split__nav">
+      <div class="axi-rail__nav axi-rail__nav--quiet">
+        <button class="axi-rail__item" aria-current="true">Meteor Shower</button>
+        <button class="axi-rail__item">Lava Font</button>
+        <button class="axi-rail__item">Flame Burst</button>
+        <button class="axi-rail__item">Glyph of Storms</button>
+      </div>
+    </div>
+    <div class="axi-split__body">
+      <table class="axi-table axi-table--fixed" style="width: 100%">
+        <colgroup><col style="width: 55%"><col style="width: 45%"></colgroup>
+        <thead><tr><th>Player</th><th>Damage</th></tr></thead>
+        <tbody>
+          <tr><td>Aera</td><td>184,204</td></tr>
+          <tr><td>Bram</td><td>151,880</td></tr>
+          <tr><td>Cade</td><td>98,415</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>`,
+      },
+      {
+        title: 'A wider picker',
+        note: '--axi-split-nav-w is the one number a consumer sets',
+        html: `<div class="axi-split" style="--axi-split-nav-w: 180px; height: 120px">
+  <div class="axi-split__nav">
+    <div class="axi-rail__nav axi-rail__nav--quiet">
+      <button class="axi-rail__item" aria-current="true">Boons</button>
+      <button class="axi-rail__item">Conditions</button>
+    </div>
+  </div>
+  <div class="axi-split__body" style="padding: 14px">
+    <p class="axi-eyebrow">Boons</p>
+    <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">The body is a surface; what goes in it is the consumer's.</p>
+  </div>
+</div>`,
+      },
+    ],
+  },
 ]

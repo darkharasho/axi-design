@@ -127,7 +127,17 @@ button.axi-panel--tile:hover,
    than the ink for its edge - see --axi-well-fill in src/tokens.css for why
    both of those follow from the same fact. Reach for this wherever a second
    panel inside a panel was the instinct: a picker list beside a table, a column
-   of cards standing on the page, a trough a bar fills. */
+   of cards standing on the page, a trough a bar fills.
+
+   .axi-split__nav is the first of those three named as a part rather than left
+   to the consumer to remember, and it is in THIS rule rather than restating the
+   fill next to the split pane. Two rules that agree today are two rules that
+   disagree after the next edit - see "A style only reachable through a layer
+   will be re-invented" in docs/RULES.md, which is the same argument arriving
+   from the other direction. The split pane's slot cannot be a well by
+   convention: a consumer who forgets the second class gets a picker with no
+   recess, and the language has no way to notice. */
+.axi-split__nav,
 .axi-well {
   background: var(--axi-well-fill);
   border: var(--axi-border-control) solid var(--axi-well-line);

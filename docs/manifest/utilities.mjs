@@ -120,4 +120,56 @@ control has to offer.`,
       },
     ],
   },
+  {
+    id: 'scroll-quiet',
+    name: 'Quiet scroll',
+    layer: 'utilities',
+    classes: ['.axi-scroll-quiet'],
+    summary: 'A scrollbar down the side of a narrow strip is a channel, not information. The class says it for a consumer’s own scroller; the strips the language ships say it in the same rule.',
+    rules: [],
+    knobs: [],
+    notes: `\`.axi-palette__list\`, \`.axi-rail\`, \`.axi-rail__nav\` and
+\`.axi-split__nav\` are in the rule beside the class. One rule, not four that
+agree — two rules that agree today are two rules that disagree after the next
+edit.
+
+The language had made this decision once, inline on the palette's list, and the
+argument written there was about a *category*: at twelve rows behind a fixed cap
+the bar reports a fact the row count in the bar has already given. Said only
+there, no other strip could reach it, and the first consumer to need it for its
+own rails wrote the rule five more times in its own stylesheet — twice with a
+\`*\` descendant arm, because the element that actually scrolls sits one level
+inside a component it does not control. That sledgehammer is what a consumer
+reaches for when the language gives it no name. See "A style only reachable
+through a layer will be re-invented" in docs/RULES.md.
+
+**The strip is the test, and it is not "does this scroll".** A rail is 208px
+wide and a palette list sits in a small floating panel, so the bar costs a
+measurable share of the width *and* draws a second vertical line beside the
+object's own edge. A table's horizontal bar is the opposite case, and
+\`.axi-table__scroll\` keeps it on purpose: there the bar is the only thing
+telling you a column is off-screen. Nothing in the rule reaches a descendant —
+\`*\` would take that bar away the moment someone put a table in a rail.
+
+Both \`.axi-rail\` and \`.axi-rail__nav\`, because either can be the scroller.
+The rail declares \`overflow-y: auto\` and is the scroller by default, but a rail
+with something pinned below its list — a "back" action at the floor — scrolls
+the nav instead and leaves the rail still. Same strip; the decision cannot depend
+on which one the consumer picked.`,
+    examples: [
+      {
+        title: 'A consumer’s own scrolling strip',
+        note: 'The well’s edge already says where the list ends',
+        html: `<div class="axi-well axi-scroll-quiet" style="width: 190px; height: 110px">
+  <div class="axi-rail__nav axi-rail__nav--quiet">
+    <button class="axi-rail__item" aria-current="true">Meteor Shower</button>
+    <button class="axi-rail__item">Lava Font</button>
+    <button class="axi-rail__item">Flame Burst</button>
+    <button class="axi-rail__item">Glyph of Storms</button>
+    <button class="axi-rail__item">Fire Grab</button>
+  </div>
+</div>`,
+      },
+    ],
+  },
 ]

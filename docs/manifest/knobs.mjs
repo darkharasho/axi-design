@@ -156,6 +156,24 @@ export const KNOBS = [
     example: '<div class="axi-grid" style="--axi-grid-min: 240px">',
   },
   {
+    name: '--axi-split-nav-w',
+    sets: "the width of an `.axi-split`'s picker column",
+    fallback: '`280px`',
+    example: '<div class="axi-split" style="--axi-split-nav-w: 180px">',
+  },
+  {
+    name: '--axi-split-gap',
+    sets: 'the parting between an `.axi-split`\'s picker and its body',
+    fallback: '`10px`',
+    example: '<div class="axi-split" style="--axi-split-gap: 16px">',
+  },
+  {
+    name: '--axi-split-nav-h',
+    sets: "the picker's height cap once an `.axi-split` has stacked under 640px",
+    fallback: '`200px`',
+    example: '<div class="axi-split" style="--axi-split-nav-h: 140px">',
+  },
+  {
     name: '--axi-row-gap',
     sets: 'gap between `.axi-row` children',
     fallback: '`10px`',

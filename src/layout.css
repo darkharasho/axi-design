@@ -37,6 +37,68 @@
 /* A horizontal run that wraps rather than overflowing. */
 .axi-row { display: flex; align-items: center; flex-wrap: wrap; gap: var(--axi-row-gap, 10px); }
 
+/* ---------- split pane ---------- */
+/* A picker on the left choosing what the surface on the right shows. Thirteen
+   sections of one consumer are this shape, and a fourteenth had hand-built it
+   inline because there was no name for it.
+
+   It is two objects on one plane and not two panels, which is the whole reason
+   it needs naming: a picker list beside a table is the first case --axi-well's
+   own comment names, and the thing the list picks is the raised counterpart to
+   that recess. Drawn as two panels it read flat - a hairline parting one field,
+   with the list's scrollbar carving a groove down the middle of it - because
+   nothing in it was an object.
+
+   The body carries the CONTROL step, not the panel's. A split pane lives
+   inside a panel that has already paid a 6px block, and rule 8's counterpart
+   settles what a second one nested in it reads as: two planes arguing. The
+   consumer that derived this shape by hand got the outline and left out the
+   block entirely, which is a rule 3 failure in the other direction - a
+   boundary drawn around content that is standing on the surface behind it.
+   Outlined and blocked, at the weight that says "the contents of a box".
+
+   The radius follows the form step and not the footprint. The body is
+   panel-sized in area and control-weight in form, and .axi-panel--tile already
+   settled that argument the same way.
+
+   `minmax(0, 1fr)` rather than `1fr`: a table in a `1fr` track cannot shrink
+   below its own content, and every cell in .axi-table is `nowrap`, so the
+   column blows out and takes the pane's width with it. `1fr` is
+   `minmax(auto, 1fr)` and `auto` is a content floor.
+
+   No breakpoint of its own. Under 640px the two stack, which is layout.css's
+   one breakpoint and deliberately still its only one - .axi-table--fixed
+   already makes a 360px pane work, so a pane narrow enough to need a second
+   breakpoint is one --fixed was written for. */
+.axi-split {
+  display: grid;
+  grid-template-columns: var(--axi-split-nav-w, 280px) minmax(0, 1fr);
+  gap: var(--axi-split-gap, 10px);
+  /* A split pane is routinely the flex child that fills a section's height,
+     and a grid that cannot shrink below its content pushes the section past
+     its own cap - the same reason .axi-palette__list says it. */
+  min-height: 0;
+}
+/* The picker is a well, declared as one in the same rule as .axi-well in
+   src/primitives.css rather than restated here. This part only says what the
+   slot adds: it scrolls, and it may not out-grow the row it sits in. Its
+   scrollbar is hidden by the language's quiet-scroll rule in
+   src/utilities.css, which is where that decision lives for every strip. */
+.axi-split__nav { overflow-y: auto; min-height: 0; }
+.axi-split__body {
+  /* Paired with the track's minmax(0, 1fr): the track stops the COLUMN
+     growing, this stops the ITEM, whose min-width is `auto` by default and is
+     what an ellipsis inside it is actually fighting. */
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: var(--axi-surface);
+  backdrop-filter: var(--axi-surface-filter);
+  border: var(--axi-border-control) solid var(--axi-ink-line);
+  border-radius: var(--axi-radius-sm);
+  box-shadow: var(--axi-shadow-control);
+}
+
 @media (max-width: 640px) {
   /* The fallback must match the resting rule's (var(--axi-gutter), 18px) -
      README.md documents --axi-page-pad's fallback as --axi-gutter, and a
@@ -44,4 +106,10 @@
      mobile, which is the one viewport where the gutter matters most. */
   .axi-page { padding-inline: var(--axi-page-pad, var(--axi-gutter)); }
   .axi-grid { grid-template-columns: 1fr; }
+  /* The picker stops being a column beside the thing it picks and becomes the
+     row above it. It keeps a height cap - a picker that grows to twenty rows
+     pushes the result it picked off the screen, which is the one thing the
+     stacked form must not do. */
+  .axi-split { grid-template-columns: 1fr; }
+  .axi-split__nav { max-height: var(--axi-split-nav-h, 200px); }
 }
