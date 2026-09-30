@@ -86,3 +86,52 @@ describe('a placement modifier cancels the placement it modifies', () => {
     expect([...props('.x')].filter((p) => !props('.x--flow').has(p))).toEqual(['z-index'])
   })
 })
+
+// A scrim's rung is not a property of the scrim, it is "directly below the
+// thing I dismiss". This is the guard for that, and it is load-bearing rather
+// than tidy: reading the scrim's 50 as its own number is what made a sheet
+// impossible to scrim. Both elements are `position: fixed` in one stacking
+// context, so a scrim ABOVE its subject covers it completely - measured with
+// document.elementFromPoint at the centre of an open sheet, the element
+// returned was the scrim, so every click landed on the dismiss handler and the
+// surface opened dead.
+//
+// Two things are asserted per pair, and the second is the one that bites. The
+// scrim must be below its subject, AND nothing else may sit between them: a
+// layer added in the gap would sink behind the scrim it has no relationship
+// with, which is the same defect one rung over.
+describe('a scrim sits directly below the surface it dismisses', () => {
+  const layerOf = (css, selector) => {
+    const body = css.replace(/\/\*[\s\S]*?\*\//g, '').match(
+      new RegExp(`(^|[},])\\s*${selector.replace(/[.\-]/g, '\\$&')}\\s*\\{([^}]*)\\}`, 'm'),
+    )?.[2] ?? ''
+    const m = body.match(/z-index:\s*(\d+)/)
+    return m ? Number(m[1]) : undefined
+  }
+
+  // [the scrim, the surface it dismisses]
+  const PAIRS = [
+    ['.axi-scrim', '.axi-drawer'],
+    ['.axi-scrim--sheet', '.axi-sheet'],
+  ]
+
+  for (const [scrim, subject] of PAIRS) {
+    it(`${scrim} is below ${subject} with nothing between them`, () => {
+      const css = sources()
+      const s = layerOf(css, scrim)
+      const t = layerOf(css, subject)
+      expect(s, `${scrim} declares no z-index`).toBeTypeOf('number')
+      expect(t, `${subject} declares no z-index`).toBeTypeOf('number')
+      expect(s, `${scrim} at ${s} is not below ${subject} at ${t}, so it covers it and swallows every click`).toBeLessThan(t)
+      const between = [...declaredLayers()].filter((z) => z > s && z < t)
+      expect(between, `${between.join(', ')} sits between ${scrim} and ${subject}, so it would sink behind a scrim it has nothing to do with`).toEqual([])
+    })
+  }
+
+  // Both polarities: the arithmetic must actually reject the defect it names.
+  it('fails a scrim declared above its subject', () => {
+    const css = '.s { position: fixed; z-index: 50; } .t { position: fixed; z-index: 45; }'
+    const z = (sel) => Number(css.match(new RegExp(`\\${sel}\\s*\\{([^}]*)\\}`))[1].match(/z-index:\s*(\d+)/)[1])
+    expect(z('.s') < z('.t')).toBe(false)
+  })
+})

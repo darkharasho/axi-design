@@ -260,8 +260,8 @@ chrome stops and its content starts. \`__body\` is the scrolling region.`,
     id: 'scrim',
     name: 'Scrim',
     layer: 'shells',
-    classes: ['.axi-scrim'],
-    summary: 'The dimming layer between a drawer and the page under it. The one translucent surface in the language.',
+    classes: ['.axi-scrim', '.axi-scrim--sheet'],
+    summary: 'The dimming layer between a dismissible surface and the page under it. The one translucent surface in the language.',
     rules: [2],
     knobs: [],
     notes: `Rule 2 forbids colour at partial opacity over the ground, and the
@@ -272,7 +272,26 @@ what is behind it, which is what the ramp is for.
 
 It is a \`<div>\` with \`border: 0\` and the \`hidden\` attribute rather than a
 class, sitting one z-index below the drawer it belongs to. Clicking it closes
-the drawer; that wiring is the consumer's.`,
+the drawer; that wiring is the consumer's.
+
+A scrim's layer is not a property of the scrim - it is "directly below the thing
+I dismiss" - so there are two. The default sits under the drawer-and-modal rung,
+which is where \`--axi-scrim\`'s value was tuned. \`.axi-scrim--sheet\` is the
+same scrim one rung below \`.axi-sheet\`.
+
+Reach for the modifier whenever the thing being dismissed is a sheet, because
+the default cannot do it and fails hard rather than visibly: the sheet's rung is
+below the default scrim's, both are \`position: fixed\` in one stacking context,
+so the scrim covers the sheet completely and every click lands on the dismiss
+handler. The sheet opens and then does nothing. A sheet wants a scrim despite
+being opaque, because \`--axi-sheet-top\` leaves a strip of live page above it
+and that strip is what the reader clicks to get out.
+
+No motion is shipped for either. This language has no transition vocabulary, and
+a consumer that fades a scrim in owns those keyframes - and owns keeping them off
+the fill. An enter/exit class that also sets a background is a colour literal
+standing on top of \`--axi-scrim\`, which is how one consumer had quietly
+replaced the token with its own near-black.`,
     examples: [
       {
         title: 'The scrim over content',

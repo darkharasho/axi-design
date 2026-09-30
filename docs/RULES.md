@@ -548,6 +548,7 @@ instead of joining it.
 | Table corner | 3 | where the two cross |
 | Sticky chrome | 40 | `.axi-mast` |
 | Popovers | 41 | `.axi-menu__pop`, `.axi-picker__pop` |
+| Sheet scrim | 44 | `.axi-scrim--sheet` |
 | Sheet | 45 | `.axi-sheet` |
 | Scrim | 50 | `.axi-scrim` |
 | Drawer | 51 | `.axi-drawer` |
@@ -571,6 +572,15 @@ them.
 A negative `z-index` inside a component's own `isolation` context — the sigil's
 backing shape — is not a layer and is not listed. It is invisible outside the
 component that owns it.
+
+The scrim appears twice, and that is the table saying something rather than
+repeating itself. A scrim's rung is not a property of the scrim; it is "directly
+below the thing I dismiss", so a language with two dismissible surfaces at two
+rungs has two scrims. Reading the single 50 as the scrim's own number is what
+makes a sheet impossible to scrim: at 50 over the sheet's 45 the scrim covers
+the sheet completely, every click lands on the dismiss handler, and the surface
+opens dead. So when you add a dismissible surface, check whether it needs a
+scrim rung directly beneath it, and add both rows together.
 
 ## Light mode
 

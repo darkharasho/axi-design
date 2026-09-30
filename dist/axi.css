@@ -2016,7 +2016,44 @@ textarea.axi-input {
 .axi-card:hover .axi-card__go { color: var(--axi-text); }
 
 /* ---------- drawer ---------- */
+/* A scrim's layer is not a property of the scrim. It is "directly below the
+   thing I dismiss", and this language has two things that get dismissed at two
+   different rungs, so the scrim has two.
+
+   The default is the drawer-and-modal rung at 50, which is where
+   --axi-scrim's own value was tuned (its token comment reads "behind a
+   drawer"). `.axi-scrim--sheet` is the same scrim one rung below the sheet at
+   45.
+
+   Without that modifier a sheet cannot be scrimmed at all, and the failure is
+   not cosmetic - it is a dead interface. Both elements are `position: fixed` in
+   the same stacking context with no isolation between them, so at 50 over 45
+   the scrim covers the sheet completely: measured with
+   `document.elementFromPoint` at the centre of an open sheet, the element
+   returned is the scrim. Every click lands on the dismiss handler instead of on
+   the content, so the sheet opens and then does nothing.
+
+   The sheet still wants a scrim even though it is opaque and covers the view,
+   for two reasons the sheet's own note explains. --axi-sheet-top pushes it down
+   under an app's titlebar, so a strip of live page stays visible above it and
+   wants darkening; and the scrim is the click-to-dismiss target for that strip,
+   which is a function rather than an appearance.
+
+   A sheet that opens a modal or a drawer is unaffected: those land at 50 and
+   51, above both the sheet and its scrim, which is the ordering the sheet's own
+   comment argues for. That is why this is a second rung and not a change to the
+   first - moving the scrim below 45 outright would put it under the drawer it
+   was measured for.
+
+   No motion here, deliberately. This language has no transition vocabulary -
+   no duration or easing tokens - and rule 11 is a restriction on work
+   indicators rather than a system for animating chrome. A consumer that fades
+   a scrim in owns that animation, and owns keeping its keyframes off the fill:
+   an enter/exit class that also sets a background is a colour literal standing
+   on top of --axi-scrim, which is how the one consumer here had quietly
+   replaced the token with rgba(10, 14, 18, .85). */
 .axi-scrim { position: fixed; inset: 0; z-index: 50; background: var(--axi-scrim); backdrop-filter: var(--axi-surface-filter); border: 0; }
+.axi-scrim--sheet { z-index: 44; }
 .axi-drawer {
   position: fixed; top: 0; right: 0; bottom: 0; z-index: 51;
   width: min(var(--axi-drawer-width, 560px), 100vw);
