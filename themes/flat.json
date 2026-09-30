@@ -13,7 +13,9 @@
   "tokens": {
     "--axi-ground": "#090b10",
     "--axi-surface": "linear-gradient(#1c2130, #181d2c)",
+    "--axi-surface-paint": "#1a1f2e",
     "--axi-surface-raised": "linear-gradient(#242a3b, #202636)",
+    "--axi-surface-raised-paint": "#222838",
     "--axi-well-fill": "#141822",
     "--axi-ink-line": "rgba(255, 255, 255, .10)",
     "--axi-rule": "rgba(255, 255, 255, .07)",
@@ -33,5 +35,6 @@
     "--axi-radius": "6px",
     "--axi-radius-sm": "4px",
     "--axi-radius-xs": "2px"
-  }
+  },
+  "//paint": "Each of the surfaces this theme paints with a gradient also restates its -paint companion, the same surface as one flat <color>, because a token holding a gradient can only ever BE a background and consumers want these fills in places that take a colour - a chart's fill, an operand of color-mix(), a border-color. See --axi-surface-paint in tokens.css for why that is a companion rather than a split. The values are not a fresh judgement: each is the midpoint of the gradient above it, the colour that gradient is a narrow spread around. Restating them is not optional for a theme that grades a surface - the companions are aliased to the surfaces in tokens.css, so a theme that grades one and forgets the other hands the gradient straight back. Flat is where the two halves read most plainly: #1a1f2e and #222838 are literally the flat values the note above has always named, and each gradient is exactly the +-4 spread around its own. --axi-surface-float-paint needs no restating for the same reason --axi-surface-float does not: it follows --axi-surface-paint, which is why tokens.css aliases it there rather than to the float. The note above used to argue the folded gradient was safe because every surface token is consumed through the background shorthand and never background-color. That was true of the package and false of its consumers: under this theme axibridge got rgb(0, 0, 0) twice and no fill at all once."
 }

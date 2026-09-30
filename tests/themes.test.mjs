@@ -512,3 +512,146 @@ describe('a surface assembled from cells is painted once', () => {
     })
   }
 })
+
+// A surface token may hold a gradient - rule 1's one relief, and the whole
+// reason a glass theme can exist. What follows from that is the thing this
+// block exists to keep true: a gradient can only ever BE a background. `fill`
+// takes <paint> and not <image>, `color-mix()` takes colours only,
+// `background-color` and `border-color` take a colour. So every surface has a
+// `-paint` companion holding the same surface as one flat <color>, and these
+// are the three ways that arrangement can rot.
+//
+// None of them shows up as a broken page in this repo, which is why they are
+// asserted rather than trusted. Nothing here consumes a surface anywhere but
+// the `background` shorthand, where an image is perfectly welcome; the whole
+// cost of this landing wrong is paid downstream, silently, because an invalid
+// `fill` drops at computed-value time and `fill` inherits - so the element
+// takes its ancestor's paint and renders something plausible.
+describe('every surface has a paint companion that is a colour', () => {
+  const SURFACES = ['--axi-surface', '--axi-surface-raised', '--axi-surface-float']
+  const PAINTS = SURFACES.map((s) => `${s}-paint`)
+
+  // url() and image-set() sit with the gradients because the fault is the same
+  // one: an <image> standing where a <color> was promised.
+  const IMAGE =
+    /(^|[\s,(])(?:(?:repeating-)?(?:linear|radial|conic)-gradient|url|image-set|cross-fade|element|paint)\s*\(/
+
+  const mainTokens = () => {
+    const css = stripComments(readFileSync(resolve('src/tokens.css'), 'utf8'))
+    return new Map([...css.matchAll(/(--axi-[a-z0-9-]+)\s*:\s*([^;]*);/g)].map((m) => [m[1], m[2].trim()]))
+  }
+
+  it('declares one for every surface level', () => {
+    const declared = mainTokens()
+    for (const paint of PAINTS) expect(declared.has(paint), `tokens.css has no ${paint}`).toBe(true)
+  })
+
+  // The float's companion follows --axi-surface-paint and NOT
+  // --axi-surface-float. The float's own default is var(--axi-surface), so
+  // aliasing the float would walk the chain back into a theme's gradient in any
+  // theme that restates the surface and leaves the float alone - which is
+  // exactly what flat does. Pinned because the wrong spelling reads more
+  // natural than the right one.
+  it('points the float companion at the surface companion, not at the float', () => {
+    expect(mainTokens().get('--axi-surface-float-paint')).toBe('var(--axi-surface-paint)')
+  })
+
+  // The load-bearing one. The companions are aliased to the surfaces in
+  // tokens.css, which is right for the main theme - its surfaces are flat
+  // colours and there is nothing to reduce - and is a trapdoor for a theme: put
+  // a gradient in --axi-surface, forget --axi-surface-paint, and the alias hands
+  // that gradient straight back to every consumer asking for a colour. Both
+  // shipped themes grade two or three surfaces, so this is not hypothetical
+  // upkeep, it is the check a third theme will meet on its first commit.
+  it('makes a theme that grades a surface restate its companion', () => {
+    for (const theme of THEMES) {
+      for (const surface of SURFACES) {
+        const value = theme.tokens[surface]
+        if (value === undefined || !IMAGE.test(value)) continue
+        expect(
+          theme.tokens[`${surface}-paint`],
+          `${theme.id} grades ${surface} but does not restate ${surface}-paint, so the alias hands the gradient back`,
+        ).toBeDefined()
+      }
+    }
+  })
+
+  it('never lets a paint companion hold an image, in any theme', () => {
+    for (const theme of THEMES) {
+      for (const paint of PAINTS) {
+        const value = theme.tokens[paint]
+        if (value === undefined) continue
+        expect(IMAGE.test(value), `${theme.id} puts an image in ${paint}: ${value}`).toBe(false)
+      }
+    }
+  })
+
+  // The guards above only run over what exists, so they would all pass if the
+  // pattern were loosened until it matched nothing. Pin both edges against the
+  // values the two themes actually carry.
+  it('tells a gradient from a colour', () => {
+    for (const image of [
+      'linear-gradient(#1c2130, #181d2c)',
+      'linear-gradient(145deg, rgba(58, 68, 92, .55), rgba(28, 33, 46, .42))',
+      'radial-gradient(900px 500px at 15% 0%, rgba(120, 90, 255, .30), transparent 60%)',
+      'url(noise.png)',
+    ]) {
+      expect(IMAGE.test(image), `${image} should read as an image`).toBe(true)
+    }
+    for (const colour of ['rgba(43, 50, 69, .485)', '#1a1f2e', 'var(--axi-surface)', 'blur(18px) saturate(140%)']) {
+      expect(IMAGE.test(colour), `${colour} should not read as an image`).toBe(false)
+    }
+  })
+
+  it('finds the themes it is meant to be checking', () => {
+    const graded = THEMES.filter((t) => SURFACES.some((s) => t.tokens[s] && IMAGE.test(t.tokens[s])))
+    expect(graded.map((t) => t.id).sort()).toEqual(['flat', 'glass'])
+  })
+})
+
+// The other half of the same contract, pointed inward. The language may paint a
+// surface with an image, so every component here reads a surface token through
+// the `background` shorthand and is right to. What it may not do is read one in
+// a position that takes a colour and nothing else - which would be the same
+// silent drop, this time shipped in the package rather than reached for by a
+// consumer. That is what the `-paint` companions are for, and this is the check
+// that keeps the two uses from being confused as the language grows.
+describe('a colour-only property reads the paint companion', () => {
+  const SRC = resolve(process.cwd(), 'src')
+  const css = readdirSync(SRC)
+    .filter((f) => f.endsWith('.css') && f !== 'tokens.css')
+    .map((f) => `/* ${f} */\n${readFileSync(resolve(SRC, f), 'utf8')}`)
+    .join('\n')
+
+  // `fill` and `stroke` take <paint>; background-color and the border colours
+  // take <color>; color-mix() takes colours wherever it appears, so a surface
+  // token inside one is caught by the operand check rather than by the property.
+  const COLOUR_ONLY = /(?:^|[;{\s])(fill|stroke|background-color|border(?:-[a-z]+)?-color)\s*:\s*([^;}]*)/g
+
+  const offenders = () => {
+    const found = []
+    for (const [, prop, value] of stripComments(css).matchAll(COLOUR_ONLY)) {
+      for (const [, token] of value.matchAll(/var\((--axi-surface(?:-raised|-float)?)\)/g)) {
+        found.push(`${prop}: ${token}`)
+      }
+    }
+    for (const [, value] of stripComments(css).matchAll(/color-mix\(([^()]*(?:\([^()]*\)[^()]*)*)\)/g)) {
+      for (const [, token] of value.matchAll(/var\((--axi-surface(?:-raised|-float)?)\)/g)) {
+        found.push(`color-mix(): ${token}`)
+      }
+    }
+    return found
+  }
+
+  it('never reads a bare surface token where only a colour is valid', () => {
+    expect(offenders()).toEqual([])
+  })
+
+  it('would catch it if one arrived', () => {
+    const sample = '.x { fill: var(--axi-surface); }'
+    const hits = [...sample.matchAll(COLOUR_ONLY)].flatMap(([, prop, value]) =>
+      [...value.matchAll(/var\((--axi-surface(?:-raised|-float)?)\)/g)].map(([, t]) => `${prop}: ${t}`),
+    )
+    expect(hits).toEqual(['fill: --axi-surface'])
+  })
+})

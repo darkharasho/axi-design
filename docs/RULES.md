@@ -22,6 +22,23 @@ what lets a glass theme exist without one component ever learning the word
 "glass". A component cannot reach for that exception, because it cannot see it:
 what it reads is the same surface token it was already reading.
 
+That relief has a consequence worth stating next to it, because it is not
+visible from inside this package. A surface token that may hold a gradient can
+only ever *be* a background: `fill` takes `<paint>` and not `<image>`,
+`color-mix()` takes colours only, `background-color` and `border-color` take a
+colour. Every component here paints a surface through the `background`
+shorthand and so never meets this — but a consumer wanting a surface-coloured
+chart fill, or a surface mixed some way toward the accent, has nothing to ask
+for, and the failure is silent: an invalid `fill` drops at computed-value time
+and `fill` inherits, so the element takes its ancestor's paint and renders
+something plausible. So each surface has a **`-paint` companion** —
+`--axi-surface-paint`, `--axi-surface-raised-paint`,
+`--axi-surface-float-paint` — holding the same surface as one flat `<color>`.
+Paint a surface with the surface token; reach for the companion wherever only a
+colour is valid. A theme that grades a surface must restate that surface's
+companion, and `themes.test.mjs` asserts it: the companions are aliased to the
+surfaces, so a theme that forgets one hands its gradient straight back.
+
 ## 2. No colour at partial opacity over the ground
 
 If a colour is present it is at full strength. A muted gold over near-black is
@@ -490,6 +507,8 @@ Three layers, in `src/tokens.css` — the only file permitted to contain a colou
 literal.
 
 - **Surface & text** — `--axi-ground`, `--axi-surface`, `--axi-surface-raised`,
+  `--axi-surface-float`, their three `-paint` companions (the same surfaces as a
+  single `<color>`, for `fill`, `color-mix()` and the `*-color` properties),
   `--axi-ink-line`, `--axi-ground-deep`, `--axi-rule`, `--axi-text`,
   `--axi-text-dim`, `--axi-text-faint`, `--axi-scrim`
 - **Accent & status** — `--axi-accent`, `--axi-accent-ink`, `--axi-meta`,
@@ -631,7 +650,9 @@ first step back toward theme-only components.
 
 Rules 1 and 2 name the relief a theme gets in the surface layer: a theme may
 put a gradient on a surface and may hold a surface token at partial opacity. It
-may not mute an ink. Read those two rules for why.
+may not mute an ink. Read those two rules for why. A theme taking the gradient
+half of that relief owes the `-paint` companion of every surface it grades —
+see rule 1.
 
 The relief is not confined to that layer, though, and the first draft of this
 section said it was. **A theme may also restate the block and the corner** —

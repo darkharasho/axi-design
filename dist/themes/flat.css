@@ -4,7 +4,9 @@
 [data-axi-theme="flat"] {
   --axi-ground: #090b10;
   --axi-surface: linear-gradient(#1c2130, #181d2c);
+  --axi-surface-paint: #1a1f2e;
   --axi-surface-raised: linear-gradient(#242a3b, #202636);
+  --axi-surface-raised-paint: #222838;
   --axi-well-fill: #141822;
   --axi-ink-line: rgba(255, 255, 255, .10);
   --axi-rule: rgba(255, 255, 255, .07);

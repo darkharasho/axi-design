@@ -5,8 +5,11 @@
   --axi-ground: #0a0c10;
   --axi-ground-image: radial-gradient(900px 500px at 15% 0%, rgba(120, 90, 255, .30), transparent 60%), radial-gradient(700px 500px at 95% 30%, rgba(0, 190, 255, .22), transparent 62%), radial-gradient(600px 600px at 60% 100%, rgba(255, 90, 170, .20), transparent 60%);
   --axi-surface: linear-gradient(145deg, rgba(58, 68, 92, .55), rgba(28, 33, 46, .42));
+  --axi-surface-paint: rgba(43, 50, 69, .485);
   --axi-surface-raised: linear-gradient(145deg, rgba(86, 99, 130, .5), rgba(44, 52, 71, .38));
+  --axi-surface-raised-paint: rgba(65, 76, 100, .44);
   --axi-surface-float: linear-gradient(145deg, rgba(38, 45, 62, .97), rgba(22, 26, 36, .97));
+  --axi-surface-float-paint: rgba(30, 36, 49, .97);
   --axi-surface-filter: blur(18px) saturate(140%);
   --axi-ink-line: rgba(180, 200, 255, .16);
   --axi-rule: rgba(180, 200, 255, .14);

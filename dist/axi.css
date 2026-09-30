@@ -54,6 +54,63 @@
      own token, and a theme that goes translucent restates it near-opaque
      without giving up the tint on everything that merely sits still. */
   --axi-surface-float: var(--axi-surface);
+  /* --- a surface as a single paint --- */
+  /* The three surface tokens above, each reduced to one flat <color>.
+
+     They exist because a surface token is allowed to hold a gradient - rule 1's
+     one relief, which is how a glass theme exists at all - and a token holding
+     a gradient can only ever BE a background. `fill` takes <paint> and not
+     <image>. `color-mix()` takes colours and nothing else. `background-color`
+     and `border-color` take a colour. So every consumer that wanted a
+     surface-coloured chart fill, or a surface mixed some way toward the accent,
+     had nothing in this language to ask for.
+
+     Nothing in this package noticed, because every component here paints a
+     surface through the `background` shorthand, where an image is welcome. The
+     cost landed downstream, and the way it lands is silent: an invalid `fill`
+     is dropped at computed-value time, and `fill` inherits, so the element
+     adopts its ancestor's paint rather than showing anything wrong. Measured in
+     axibridge under the flat theme - a chart's brush slide and its bar cursor
+     both computed rgb(0, 0, 0), and a heat ramp built on color-mix() lost its
+     fill altogether. The app had papered over the glass half by pinning two
+     flat values of its own by eye, and had no way to paper over flat.
+
+     Why a companion rather than splitting each surface into a colour and an
+     `-image` half, the way --axi-ground is split. That was tried first and
+     measured. It works for the ground because the ground is OPAQUE: the colour
+     is the page and the image is light added over it. It does not transfer to a
+     translucent surface, where the gradient is not light on a fill, it IS the
+     fill - alpha and all. Painting a glass panel as an absolute gradient over a
+     flat base composites the two and takes the panel from .55 to .77 opacity,
+     which is 15 RGB steps of visible change. Fitting a base and a modulation
+     that reproduce the original to within 2 steps is possible, and the fit
+     lands on rgba(28, 41, 65, .361) - a set of constants no one can maintain,
+     carrying an alpha .12 below the surface it is meant to be a reduction of,
+     which would make a chart fill read as a different material from the panel
+     beside it. A translucent surface genuinely is an image, and "that surface
+     as one flat paint" is genuinely a second thing derived from it.
+
+     What the value has to be is not a judgement each theme makes fresh: it is
+     the midpoint of that theme's gradient, the colour the gradient is a spread
+     around. Both shipped themes confirm it independently - flat's two midpoints
+     come out at exactly the #1a1f2e and #222838 its own notes call "axibridge's
+     flat values", and glass's two land within three per channel, at an
+     identical alpha, of the pair axibridge had already pinned by eye. The
+     colour was always there; it was never a token.
+
+     Aliased here because the main theme's surfaces are flat colours already, so
+     there is nothing to reduce. A theme that puts an image in a surface token
+     must restate that token's companion, or the alias hands the image straight
+     back - themes.test.mjs asserts exactly that, and it is the only way this
+     token can go wrong. Note the float's companion follows --axi-surface-paint
+     and NOT --axi-surface-float: the float's own default is var(--axi-surface),
+     so aliasing the float would walk the chain back into a theme's gradient in
+     any theme that restates the surface and leaves the float alone - which is
+     what flat does. */
+  --axi-surface-paint: var(--axi-surface);
+  --axi-surface-raised-paint: var(--axi-surface-raised);
+  --axi-surface-float-paint: var(--axi-surface-paint);
+
   --axi-ink-line: #0c0e12;        /* the outline every raised element is drawn with */
   /* The tone a shape is made of when it is made of the line ink rather than
      outlined in it - the tooltip, the titlebar strip, the switch's slug. Holds
