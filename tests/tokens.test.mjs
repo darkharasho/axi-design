@@ -1399,3 +1399,93 @@ describe('every interactive object says so when it is dead', () => {
     expect(disabledRule.body).not.toMatch(/!important/)
   })
 })
+
+// "This one is picked" is one thing a surface says, and the language spells it
+// with three attributes chosen by semantics - aria-current for a place,
+// aria-pressed for a toggle, aria-selected for a listbox option - plus the
+// label-wrapping-a-radio shape, where the input holds the state and the label
+// has nothing to set. The consumer that motivated this rule had marked ten
+// sites across six bases by appending a border utility, announcing selection
+// to nobody. These are the facts that fix depends on.
+describe('a picked surface says so on the surface and to the reader', () => {
+  const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
+  const rules = [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
+    .map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+
+  // The mark rule is the one that puts the accent on a card or panel edge for
+  // a selection attribute. Found by shape, not by a hard-coded selector, so
+  // reformatting it is allowed and splitting it is not.
+  //
+  // Judged per compound, never per selector list. base.css's reduced-motion
+  // reset names `.axi-card:hover` and `.axi-pill[aria-pressed="true"]:hover`
+  // in one list, so a whole-list scan sees a card AND a selection attribute
+  // and reads that rule as the mark - which is how the first version of this
+  // guard passed while asserting things about `transform: none !important`.
+  const compounds = (sel) => {
+    const out = []
+    let cur = '', depth = 0
+    for (const ch of sel) {
+      if (ch === '(') depth++
+      else if (ch === ')') depth--
+      if (ch === ',' && depth === 0) { out.push(cur); cur = '' } else cur += ch
+    }
+    if (cur.trim()) out.push(cur)
+    return out.map((s) => s.trim())
+  }
+  const isMark = (c) => /\.axi-(card|panel)\b/.test(c) && /aria-(current|pressed|selected)/.test(c)
+  const marks = rules.filter(({ sel }) => compounds(sel).some(isMark))
+
+  it('is a single rule, so the card and the panel cannot drift apart', () => {
+    // Two rules that agree today are two rules that disagree after the next
+    // edit - and a consumer marking one of them must not have to find out
+    // which file its selected state was written in.
+    expect(marks.length, `expected one mark rule, found ${marks.length}: ${marks.map((r) => r.sel).join(' | ')}`).toBe(1)
+    expect(marks[0].sel).toMatch(/\.axi-card\b/)
+    expect(marks[0].sel).toMatch(/\.axi-panel\b/)
+  })
+
+  it('takes every spelling of selection the language already uses', () => {
+    // A fourth spelling invented here would be a fourth thing a reader has to
+    // learn, and the three below are each already correct for their semantics.
+    const sel = marks[0].sel
+    for (const arm of ['[aria-current]', "[aria-pressed='true']", "[aria-selected='true']"]) {
+      expect(sel.includes(arm), `mark rule does not cover ${arm}`).toBe(true)
+    }
+  })
+
+  it('reads a checked radio as a mark, but only its own', () => {
+    // <label class="axi-panel"><input type=radio> is the correct markup for a
+    // picker of panels. The child combinator is the load-bearing half: a
+    // descendant match would light a panel up for any checkbox in its content.
+    expect(marks[0].sel).toMatch(/:has\(\s*>\s*input:checked\s*\)/)
+  })
+
+  it('lifts the surface with the shorthand, because two themes make it a gradient', () => {
+    // Measured: --axi-surface-raised is `linear-gradient(...)` under both flat
+    // and glass. The -paint companion is for colour-only properties, so using
+    // it here would leave the picked surface unchanged under two of the three
+    // themes - visible in neither, and only in the main theme at all.
+    expect(marks[0].body).toMatch(/background:\s*var\(--axi-surface-raised\)/)
+    expect(marks[0].body).not.toMatch(/-paint\)/)
+  })
+
+  it('puts the accent on the whole edge, and spends no fill on it', () => {
+    // A rail item is a word and can be printed on the accent; a panel carries
+    // content, which an accent fill drowns. The whole edge rather than the
+    // leading one because a grid is read in two directions.
+    expect(marks[0].body).toMatch(/border-color:\s*var\(--axi-accent\)/)
+    expect(marks[0].body).not.toMatch(/background:\s*var\(--axi-accent\)/)
+  })
+
+  it('survives a hover, which is when a picked surface is most often looked at', () => {
+    // The mark is a background and a border-colour; the lift is a transform and
+    // a shadow. If a :hover on either base ever reaches for one of the mark's
+    // two properties, pointing at the picked card would un-pick it on screen.
+    const hovers = rules.filter(({ sel }) => compounds(sel).some((c) =>
+      /\.axi-(card|panel)\b/.test(c) && /:hover/.test(c) && !/aria-/.test(c)))
+    expect(hovers.length, 'no hover rules found at all - this guard has stopped guarding').toBeGreaterThan(0)
+    for (const h of hovers) {
+      expect(h.body, `${h.sel} overrides the mark`).not.toMatch(/(^|[;{\s])(background|border-color)\s*:/)
+    }
+  })
+})

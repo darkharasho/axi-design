@@ -425,6 +425,52 @@ a.axi-panel--tile:hover,
 button.axi-panel--tile:hover,
 .axi-panel--tile[role='button']:hover { box-shadow: var(--axi-shadow-control-hover); }
 
+/* The one of these you picked. A grid of panels, tiles or cards where one is
+   chosen - a theme picker, a fight picker, a leader you have opened - and the
+   surface has to say which.
+
+   Not the accent fill a rail item takes. A rail item is a word, and a word can
+   be printed on the accent; a panel carries content, and an accent fill drowns
+   it. The answer is the third weight .axi-rail__nav--quiet already found for
+   the same reason: the surface rises and the accent arrives on the edge. A
+   whole edge here rather than the leading one, because a grid is read in two
+   directions and has no leading side to light.
+
+   Keyed off what the element already says, the way .axi-panel--tile keys its
+   press off being an <a> or a <button> rather than off a second class. The
+   language has one spelling per selection semantics, and this rule takes all
+   of them rather than inventing a fourth: `aria-current` for a place you
+   navigated to (a rail item, a tab, a table row), `aria-pressed` for a toggle
+   (a pill), `aria-selected` for an option in a listbox (a picker option). A
+   consumer that marks a card by appending a border utility has told assistive
+   tech nothing at all, and that is the defect this replaces rather than the
+   missing fill - ten sites in one consumer, six different bases, three
+   invented extra marks, and not one of them announced.
+
+   The fourth arm is a <label> wrapping its own radio, which is the correct
+   markup for a picker made of panels: the input carries the state, so the
+   label has no attribute to set and copying the state onto one would be a
+   second source of truth that can disagree. This is the language's only
+   :has(), and the child combinator is the whole point - `> input:checked`
+   means this panel IS the control, where a descendant match would light a
+   panel up for any checkbox buried in its content.
+
+   Both spellings on one rule, per "a style only reachable through a layer will
+   be re-invented": .axi-card is a shell and .axi-panel a primitive, and a
+   consumer marking one of them must not have to find out which file its
+   selected state was written in. The fill is the `background` shorthand and
+   not the -paint companion, because --axi-surface-raised is a surface token
+   and a theme is allowed to make a surface a gradient. */
+:is(.axi-card, .axi-panel):is(
+  [aria-current],
+  [aria-pressed='true'],
+  [aria-selected='true'],
+  :has(> input:checked)
+) {
+  background: var(--axi-surface-raised);
+  border-color: var(--axi-accent);
+}
+
 /* ---------- well ---------- */
 /* The panel's inverse: a field sunk into the surface around it rather than
    raised off it. No block, because a recess casts nothing, and the rule rather

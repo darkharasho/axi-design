@@ -44,6 +44,6 @@ describe('fallbackKnobs', () => {
 
 describe('ruleNumbers', () => {
   it('returns the numbered clauses of RULES.md, in order', () => {
-    expect(ruleNumbers()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+    expect(ruleNumbers()).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13])
   })
 })

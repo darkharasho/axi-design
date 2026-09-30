@@ -111,7 +111,7 @@ leaves a trailing margin behind.`,
     layer: 'layout',
     classes: ['.axi-panel', '.axi-panel--float', '.axi-panel--tile'],
     summary: 'The raised surface every larger component is built on, and the canonical panel weight: a 4px ink outline and a hard 6px block.',
-    rules: [3],
+    rules: [3, 13],
     knobs: ['--axi-panel-pad'],
     notes: `This is the component that defines rule 3's heavier step, and the one
 to reach for when a consumer needs to raise an arbitrary block of content
@@ -139,7 +139,20 @@ page that holds them - and because the ramp has two steps, a plain
 "this one is first" without a hue: the accent is not available for it anyway,
 since gold means the thing *you* picked and nobody picks a winner. A tile that
 is also a button or a link lifts under the press with no extra class, keyed
-off the element.`,
+off the element.
+
+A panel in a set where one is chosen says so by its own state, not by a
+modifier: \`[aria-current]\`, \`[aria-pressed="true"]\`, \`[aria-selected="true"]\`,
+or a checked radio it directly contains. The surface rises to
+\`--axi-surface-raised\` and the accent moves to the edge - not an accent fill,
+which is right for a rail item (a word can be printed on the accent) and wrong
+for a panel (content cannot). \`.axi-card\` takes the same state from the same
+rule, so it does not matter which of the two you are marking.
+
+Which attribute is not a style choice - each is already correct for one
+semantics, and the state you set is the one a screen reader reads. The failure
+this replaces is a consumer that appended an accent-border utility at ten
+sites: it looked picked and announced nothing.`,
     examples: [
       {
         title: 'Two panels, one tightened',
@@ -167,6 +180,27 @@ off the element.`,
     <p class="axi-eyebrow">Panel — floating</p>
     <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Content scrolls behind it, so the surface has to be opaque.</p>
   </div>
+</div>`,
+      },
+      {
+        title: 'A picker of panels, one of them chosen',
+        note: 'The state is on the markup, not in a class: a label wrapping its own radio. Tab into it and use the arrow keys — the mark follows the radio, because the radio is what holds it',
+        html: `<div class="axi-row" style="--axi-row-gap: 12px; align-items: stretch" role="radiogroup" aria-label="Surface treatment">
+  <label class="axi-panel axi-panel--tile" style="flex: 1 1 200px; cursor: pointer">
+    <input type="radio" name="axi-demo-surface" class="axi-sr-only" checked>
+    <p class="axi-eyebrow">The language</p>
+    <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Opaque surfaces, square corners.</p>
+  </label>
+  <label class="axi-panel axi-panel--tile" style="flex: 1 1 200px; cursor: pointer">
+    <input type="radio" name="axi-demo-surface" class="axi-sr-only">
+    <p class="axi-eyebrow">Flat</p>
+    <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">No blocks, hairline rules.</p>
+  </label>
+  <label class="axi-panel axi-panel--tile" style="flex: 1 1 200px; cursor: pointer">
+    <input type="radio" name="axi-demo-surface" class="axi-sr-only">
+    <p class="axi-eyebrow">Glass</p>
+    <p style="margin: 0; font: var(--axi-t-small); color: var(--axi-text-dim)">Translucent, blurred, rounded.</p>
+  </label>
 </div>`,
       },
       {

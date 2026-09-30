@@ -15,7 +15,7 @@ export default [
       '.axi-card__go',
     ],
     summary: 'One thing you can open, drawn as a raised surface you press. Its optional top strip is the one place a card carries colour, and only when there is real data to put in it.',
-    rules: [5, 4],
+    rules: [5, 4, 13],
     knobs: ['--axi-card-strip'],
     notes: `The strip is opt-in because a coloured strip that means nothing is
 decoration impersonating data, and it takes the first position the eye lands
@@ -31,7 +31,15 @@ equalised grid row every card's meta rule lands on the same line and the
 rules read as continuous across the grid. The cost is empty space on cards
 with less content, and it is worth it. \`__name\` truncates with an ellipsis
 rather than wrapping, because a wrapping title changes the card's height and
-takes the grid row with it.`,
+takes the grid row with it.
+
+A card in a set where one is chosen takes the same marked state
+\`.axi-panel\` does, from the same rule: \`[aria-current]\`,
+\`[aria-pressed="true"]\`, \`[aria-selected="true"]\`, or a checked radio it
+directly contains. The surface rises and the accent goes to the edge; the
+strip is unaffected, because the strip encodes data about the thing and being
+picked is not data about the thing. See **Panel** for why it is an edge rather
+than a fill, and why the attribute is the interface.`,
     examples: [
       {
         title: 'A grid of cards, with and without a strip',

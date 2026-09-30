@@ -501,6 +501,48 @@ that must be rejected, one per prohibition. The rule above is therefore a check
 rather than a promise — the same treatment rule 3's weights get in
 `tests/tokens.test.mjs`.
 
+## 13. A state is an attribute, and the appearance follows it
+
+Every state this language draws is keyed off an attribute the element already
+carries, never off a class invented to describe the look. `[aria-current]` on a
+rail item, a tab, a table row and a picked panel. `[aria-pressed="true"]` on a
+pill. `[aria-selected="true"]` on a listbox option. `[aria-disabled="true"]`
+beside `:disabled`, in 26 places. `[aria-sort]` on the sorted column,
+`[aria-expanded]` on the thing that opens. One spelling per semantics, and the
+semantics decides which — not the appearance, which is why a rail item and a
+picked panel share `[aria-current]` while looking nothing alike.
+
+The reason is not tidiness. **A state that exists only as an appearance is not a
+state.** A consumer that marks the chosen card with a class has drawn a mark
+sighted users can see and told everyone else nothing, and no amount of styling
+fixes it from our side — the information was never in the document. Keying the
+style off the attribute makes the two inseparable: you cannot get the look
+without emitting the state, and you cannot emit the state and fail to get the
+look.
+
+This is also what stops the language growing a second vocabulary. An invented
+`--selected` modifier would be a synonym for `[aria-current]` that a screen
+reader cannot read, and the two would drift the first time one of them got a
+tweak. There is no `.axi-panel--selected` for the same reason there is no
+`.axi-btn--off`.
+
+Two consequences when adding a component:
+
+- **Find the attribute before writing the rule.** If the state the component
+  needs already has an ARIA spelling, use it, even if the look is unlike every
+  other user of that attribute. If it genuinely has none, that is the moment to
+  ask whether the state is real.
+- **A state the markup holds needs no attribute at all.** A `<label>` wrapping
+  its own radio is the correct markup for a picker; the input holds the state,
+  so the label has nothing to set, and copying it onto the label would be a
+  second source of truth that can disagree with the first. That case is matched
+  structurally — `:has(> input:checked)`, the language's only `:has()`, with the
+  child combinator load-bearing: a descendant match would fire on any checkbox
+  buried in the component's content.
+
+`tests/tokens.test.mjs` holds this rule to the components that carry it, so it
+is a check rather than a promise.
+
 ## Tokens
 
 Three layers, in `src/tokens.css` — the only file permitted to contain a colour
