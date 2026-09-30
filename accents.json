@@ -9,5 +9,6 @@
   { "id": "crimson-red", "label": "Crimson Red", "hex": "#ef4444" },
   { "id": "slate-silver", "label": "Slate Silver", "hex": "#94a3b8" },
   { "id": "teal-ocean", "label": "Teal Ocean", "hex": "#14b8a6" },
-  { "id": "gold-bronze", "label": "Gold Bronze", "hex": "#d4a017" }
+  { "id": "gold-bronze", "label": "Gold Bronze", "hex": "#d4a017" },
+  { "id": "electric-cyan", "label": "Electric Cyan", "hex": "#22d3ee" }
 ]

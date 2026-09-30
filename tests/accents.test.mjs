@@ -16,11 +16,11 @@ describe('dist/accents.css', () => {
 })
 
 describe('the official accent list', () => {
-  it('has exactly the eleven official ids, axi-gold first', () => {
+  it('has exactly the twelve official ids, axi-gold first', () => {
     expect(ACCENTS.map((a) => a.id)).toEqual([
       'axi-gold', 'electric-blue', 'refined-cyan', 'amber-warm',
       'emerald-mint', 'rose-pink', 'violet-purple', 'crimson-red',
-      'slate-silver', 'teal-ocean', 'gold-bronze',
+      'slate-silver', 'teal-ocean', 'gold-bronze', 'electric-cyan',
     ])
   })
 
@@ -67,6 +67,18 @@ describe('packaging', () => {
     const pkg = JSON.parse(readFileSync('package.json', 'utf8'))
     expect(pkg.dependencies ?? {}).toEqual({})
     expect(Object.keys(pkg.devDependencies)).toContain('marked')
+  })
+})
+
+describe('electric-cyan', () => {
+  it('is the twelfth accent and axistream\'s identity colour', () => {
+    const accent = ACCENTS.find((a) => a.id === 'electric-cyan')
+    expect(accent).toBeTruthy()
+    expect(accent.label).toBe('Electric Cyan')
+    expect(accent.hex).toBe('#22d3ee')
+    // Appended last, so the swatch order in six shipped apps does not shuffle.
+    expect(ACCENTS[ACCENTS.length - 1].id).toBe('electric-cyan')
+    expect(buildAccentsCss()).toMatch(/\[data-axi-accent="electric-cyan"\] \{ --axi-accent: #22d3ee; \}/)
   })
 })
 
