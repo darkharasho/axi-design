@@ -3,14 +3,23 @@
    redefining them, so a change to .axi-panel moves the notice, the toolbar,
    the popover and the card together. */
 
-/* The small uppercase heading that labels a panel's contents. */
+/* The small uppercase heading that labels a panel's contents.
+
+   The gap under it is a knob because the eyebrow heads more than one size of
+   thing. 14px is the figure for a panel at its resting padding; a tile is one
+   form step down and its padding is one density step down with it, so the
+   eyebrow inside one reads the tighter figure in the rule below, the same way
+   .axi-panel--tile reads --axi-panel-pad at a tighter fallback of its own. An
+   eyebrow sitting in a row - a sheet's head, a toolbar - wants no gap at all,
+   and says so with the knob rather than with an inline margin. */
 .axi-eyebrow {
-  margin: 0 0 14px;
+  margin: 0 0 var(--axi-eyebrow-gap, 14px);
   font: var(--axi-t-eyebrow);
   letter-spacing: var(--axi-ls-eyebrow);
   text-transform: uppercase;
   color: var(--axi-text-faint);
 }
+.axi-panel--tile .axi-eyebrow { margin-bottom: var(--axi-eyebrow-gap, 6px); }
 
 /* ---------- masthead ---------- */
 /* Opaque, because content scrolls under it. Which is also why it paints the

@@ -192,6 +192,18 @@ export const KNOBS = [
     example: '<div class="axi-stack" style="--axi-stack-gap: 20px">',
   },
   {
+    name: '--axi-eyebrow-gap',
+    sets: "the gap under an `.axi-eyebrow`; tighter by default inside a tile",
+    fallback: '`14px`, or `6px` inside `.axi-panel--tile`',
+    example: '<p class="axi-eyebrow" style="--axi-eyebrow-gap: 0">',
+  },
+  {
+    name: '--axi-readout-pad',
+    sets: "the vertical padding of an `.axi-readout__row`; tighter by default inside a tile",
+    fallback: '`7px`, or `3px` inside `.axi-panel--tile`',
+    example: '<dl class="axi-readout" style="--axi-readout-pad: 10px">',
+  },
+  {
     name: '--axi-panel-pad',
     sets: "`.axi-panel`'s own padding",
     fallback: '`26px`',

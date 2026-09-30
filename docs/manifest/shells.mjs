@@ -253,7 +253,7 @@ chrome stops and its content starts. \`__body\` is the scrolling region.`,
         html: `<div style="position: relative; height: 220px; overflow: hidden">
   <div class="axi-sheet" style="position: absolute">
     <div class="axi-sheet__head axi-row" style="--axi-row-gap: 9px">
-      <p class="axi-eyebrow" style="margin: 0">Damage breakdown</p>
+      <p class="axi-eyebrow" style="--axi-eyebrow-gap: 0">Damage breakdown</p>
       <button class="axi-btn axi-btn--ghost" type="button" style="margin-left: auto" aria-label="Close">&times;</button>
     </div>
     <div class="axi-sheet__body" style="padding-top: 12px">

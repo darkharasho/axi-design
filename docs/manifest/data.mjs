@@ -420,6 +420,54 @@ fade the accent to make a bar quieter.`,
     ],
   },
   {
+    id: 'readout',
+    name: 'Readout',
+    layer: 'data',
+    classes: ['.axi-readout', '.axi-readout__row', '.axi-readout__k', '.axi-readout__v'],
+    summary: 'A short run of labelled readings, one per row, parted by the rule. Two columns of a table without the table.',
+    rules: [8],
+    knobs: ['--axi-readout-pad'],
+    aliases: ['kv', 'dl', 'status', 'settings'],
+    notes: `The eye runs down the value column, which is rule 8's test for a
+table, so it is drawn as one: rows parted by the rule at the hairline weight,
+nothing outlined and nothing blocked inside the panel that already is. The
+second cell is as often a control as a figure - a switch beside the setting it
+sets is the same object as a count beside its label - and the value slot is
+sized for either.
+
+Put the classes on a \`<dl>\`: a \`<dt>\` for the key and a \`<dd>\` for the value,
+wrapped so each row is one flex line. Row padding is \`--axi-readout-pad\`; it
+falls back tighter inside a tile than in a panel, so a dashboard's side column
+of status cards does not have to restate the density of every row in it.`,
+    examples: [
+      {
+        title: 'A status card',
+        note: 'Eyebrow, readings and a switch in one tile, with nothing restated',
+        html: `<div class="axi-panel axi-panel--tile" style="max-width: 260px">
+  <p class="axi-eyebrow">Session</p>
+  <dl class="axi-readout">
+    <div class="axi-readout__row"><dt class="axi-readout__k">Logs seen</dt><dd class="axi-readout__v">12</dd></div>
+    <div class="axi-readout__row"><dt class="axi-readout__k">Uploaded</dt><dd class="axi-readout__v">9</dd></div>
+    <div class="axi-readout__row"><dt class="axi-readout__k">Failed</dt><dd class="axi-readout__v axi-ink-danger">1</dd></div>
+    <div class="axi-readout__row"><dt class="axi-readout__k">Post to Discord</dt><dd class="axi-readout__v"><button class="axi-switch" type="button" role="switch" aria-checked="true" aria-label="Post to Discord" style="--axi-switch-w: 32px; --axi-switch-h: 18px; --axi-switch-knob: 11px"><span class="axi-switch__knob"></span></button></dd></div>
+  </dl>
+</div>`,
+      },
+      {
+        title: 'In a panel',
+        note: 'The resting density',
+        html: `<div class="axi-panel" style="max-width: 320px">
+  <p class="axi-eyebrow">Match</p>
+  <dl class="axi-readout">
+    <div class="axi-readout__row"><dt class="axi-readout__k">Started</dt><dd class="axi-readout__v">21:04</dd></div>
+    <div class="axi-readout__row"><dt class="axi-readout__k">Duration</dt><dd class="axi-readout__v">1h 52m</dd></div>
+    <div class="axi-readout__row"><dt class="axi-readout__k">Fights</dt><dd class="axi-readout__v">47</dd></div>
+  </dl>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'bars',
     name: 'Bars',
     layer: 'data',

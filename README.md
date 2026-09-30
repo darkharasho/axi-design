@@ -161,6 +161,8 @@ not "what does the system look like". Everything else is
 | `--axi-split-nav-h` | the picker's height cap once an `.axi-split` has stacked under 640px | `200px` | `<div class="axi-split" style="--axi-split-nav-h: 140px">` |
 | `--axi-row-gap` | gap between `.axi-row` children | `10px` | `<div class="axi-row" style="--axi-row-gap: 6px">` |
 | `--axi-stack-gap` | gap between `.axi-stack` children | `12px` | `<div class="axi-stack" style="--axi-stack-gap: 20px">` |
+| `--axi-eyebrow-gap` | the gap under an `.axi-eyebrow`; tighter by default inside a tile | `14px`, or `6px` inside `.axi-panel--tile` | `<p class="axi-eyebrow" style="--axi-eyebrow-gap: 0">` |
+| `--axi-readout-pad` | the vertical padding of an `.axi-readout__row`; tighter by default inside a tile | `7px`, or `3px` inside `.axi-panel--tile` | `<dl class="axi-readout" style="--axi-readout-pad: 10px">` |
 | `--axi-panel-pad` | `.axi-panel`'s own padding | `26px` | `<div class="axi-panel" style="--axi-panel-pad: 14px">` |
 | `--axi-page-pad` | `.axi-page`'s horizontal gutter | `var(--axi-gutter)` | `<div class="axi-page axi-page--narrow" style="--axi-page-pad: 0">` |
 | `--axi-palette-w` | the widest an `.axi-palette__panel` gets (it fills the room below that) | `560px` | `<div class="axi-palette__panel" style="--axi-palette-w: 720px">` |

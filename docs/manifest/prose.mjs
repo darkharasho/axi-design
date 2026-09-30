@@ -103,7 +103,7 @@ quotes outside a prose block - a card, a drawer head, a panel.`,
     classes: ['.axi-eyebrow'],
     summary: 'The small uppercase line that says what a panel\'s contents are. Set in the faint ink so it labels the content without competing with it.',
     rules: [],
-    knobs: [],
+    knobs: ['--axi-eyebrow-gap'],
     notes: `It is the language's answer to a panel heading: a \`<h2>\` inside a
 panel of numbers is the wrong size and the wrong weight, and it lands in the
 document outline as though the panel were a section. An eyebrow is typography
@@ -111,7 +111,11 @@ only - wide tracking, micro size, faint ink - and carries its own bottom
 margin, so a panel's first element does not need one.
 
 Put it on whatever element the document structure actually calls for: a
-\`<p>\` where the panel is not a section, a real heading where it is.`,
+\`<p>\` where the panel is not a section, a real heading where it is.
+
+The gap under it is \`--axi-eyebrow-gap\`. It falls back to 14px in a panel and 6px in a
+tile, one density step down with the tile's own padding; an eyebrow standing in
+a row - a sheet's head, a toolbar - sets it to 0 rather than writing a margin.`,
     examples: [
       {
         title: 'Labelling a panel',

@@ -2019,3 +2019,78 @@ describe('a matrix draws its quantity in opaque steps, over a number', () => {
     expect(section[0]).toMatch(/A matrix cell with no number in it is a heatmap/)
   })
 })
+
+describe('a readout is drawn in rules, and a tile reads its own density', () => {
+  const data = () => read('data.css')
+  const shells = () => read('shells.css')
+
+  const bodyOf = (css, selector) => {
+    const hit = [...stripComments(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(
+      ([, sel]) => sel.trim().replace(/\s+/g, ' ') === selector,
+    )
+    return hit ? hit[2] : null
+  }
+  // The fallback figure a declaration reads a knob at: `var(--x, 14px)` -> 14.
+  const fallbackOf = (body, knob) => {
+    const m = body && body.match(new RegExp(`var\\(${knob},\\s*([\\d.]+)px\\)`))
+    return m ? Number(m[1]) : null
+  }
+
+  it('sets the gap under an eyebrow through a knob, not a figure', () => {
+    const body = bodyOf(shells(), '.axi-eyebrow')
+    expect(body).not.toBeNull()
+    expect(fallbackOf(body, '--axi-eyebrow-gap')).toBe(14)
+    // A margin written as a literal is an eyebrow that cannot stand in a row
+    // without an inline style, which is what the sheet's head had been doing.
+    expect(body).not.toMatch(/margin:\s*0 0 \d/)
+  })
+
+  // Both densities are read under ONE knob name at two fallbacks, which is how
+  // .axi-panel--tile already reads --axi-panel-pad: a consumer setting the knob
+  // wins in either context, and does not have to know which one it is in.
+  it.each([
+    ['the eyebrow', () => shells(), '.axi-eyebrow', '.axi-panel--tile .axi-eyebrow', '--axi-eyebrow-gap'],
+    ['the readout row', () => data(), '.axi-readout__row', '.axi-panel--tile .axi-readout__row', '--axi-readout-pad'],
+  ])('%s reads the same knob tighter inside a tile', (_, css, resting, tile, knob) => {
+    const rest = fallbackOf(bodyOf(css(), resting), knob)
+    const tight = fallbackOf(bodyOf(css(), tile), knob)
+    expect(rest, `${resting} does not read ${knob}`).not.toBeNull()
+    expect(tight, `${tile} does not read ${knob}`).not.toBeNull()
+    expect(tight).toBeLessThan(rest)
+  })
+
+  it('parts the rows with the rule, at the hairline, and only between them', () => {
+    const body = bodyOf(data(), '.axi-readout__row + .axi-readout__row')
+    expect(body, 'the divider is no longer a sibling rule').not.toBeNull()
+    expect(body).toMatch(/border-top:\s*var\(--axi-border-hairline\) solid var\(--axi-rule\)/)
+    // The first row has no line above it: the panel's own edge is there.
+    const first = bodyOf(data(), '.axi-readout__row')
+    expect(first).not.toMatch(/border/)
+  })
+
+  it('raises nothing inside the panel: no outline, no block, no fill on any row', () => {
+    const css = stripComments(data())
+    const section = css.slice(css.indexOf('.axi-readout {'), css.indexOf('.axi-bars {'))
+    expect(section.length).toBeGreaterThan(0)
+    for (const rule of section.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+      const [, sel, body] = rule
+      expect(body, sel.trim()).not.toMatch(/box-shadow|background|outline/)
+      // Rule 8: never a control-weight line between rows of a reading.
+      expect(body, sel.trim()).not.toMatch(/--axi-border-control|--axi-border-panel/)
+    }
+  })
+
+  it('sets the value in tabular figures, ranged right', () => {
+    const body = bodyOf(data(), '.axi-readout__v')
+    expect(body).toMatch(/font-variant-numeric:\s*tabular-nums/)
+    expect(body).toMatch(/text-align:\s*right/)
+  })
+
+  it('has no eyebrow in the gallery zeroing its margin inline now that the knob exists', () => {
+    const dir = resolve(process.cwd(), 'docs/manifest')
+    for (const file of readdirSync(dir)) {
+      const text = readFileSync(resolve(dir, file), 'utf8')
+      expect(text, file).not.toMatch(/class="axi-eyebrow"[^>]*style="[^"]*margin/)
+    }
+  })
+})

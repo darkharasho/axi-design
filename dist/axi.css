@@ -1472,14 +1472,23 @@ textarea.axi-input {
    redefining them, so a change to .axi-panel moves the notice, the toolbar,
    the popover and the card together. */
 
-/* The small uppercase heading that labels a panel's contents. */
+/* The small uppercase heading that labels a panel's contents.
+
+   The gap under it is a knob because the eyebrow heads more than one size of
+   thing. 14px is the figure for a panel at its resting padding; a tile is one
+   form step down and its padding is one density step down with it, so the
+   eyebrow inside one reads the tighter figure in the rule below, the same way
+   .axi-panel--tile reads --axi-panel-pad at a tighter fallback of its own. An
+   eyebrow sitting in a row - a sheet's head, a toolbar - wants no gap at all,
+   and says so with the knob rather than with an inline margin. */
 .axi-eyebrow {
-  margin: 0 0 14px;
+  margin: 0 0 var(--axi-eyebrow-gap, 14px);
   font: var(--axi-t-eyebrow);
   letter-spacing: var(--axi-ls-eyebrow);
   text-transform: uppercase;
   color: var(--axi-text-faint);
 }
+.axi-panel--tile .axi-eyebrow { margin-bottom: var(--axi-eyebrow-gap, 6px); }
 
 /* ---------- masthead ---------- */
 /* Opaque, because content scrolls under it. Which is also why it paints the
@@ -3157,6 +3166,61 @@ textarea.axi-input {
   color: var(--axi-text);
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- readout ---------- */
+/* A short run of labelled readings: logs seen, uploaded, failed; the session's
+   start and its length; a setting and the switch that sets it. The shape of
+   every status card in a dashboard's side column, and the one the consumer
+   that had four of them built by hand each time.
+
+   Rule 8 settles how it is drawn. The eye runs down the value column - that is
+   the whole point of stacking the readings - so it is a table's interior:
+   rows parted by the rule at the hairline weight, no outline and no block on
+   any row, nothing raised inside the panel that is already the raised thing.
+   It is not a table element because it is two cells wide, has no head, and
+   the reading in the second cell is as often a control as a figure; a <dl> is
+   what the document structure calls for and the classes sit on it.
+
+   The key is the meter list's name and the value is the meter list's value,
+   restated here rather than aliased because the two lists are laid out
+   differently and rule-8's test - is there a column? - is the same for both.
+
+   Row padding is a knob at two fallbacks, like the eyebrow's gap: 7px at
+   panel density, and 3px inside a tile, where a hairline already holds the
+   rows apart and 3px is still a clear gap at this type size. */
+.axi-readout {
+  display: flex;
+  flex-direction: column;
+  margin: 0;
+}
+.axi-readout__row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  padding: var(--axi-readout-pad, 7px) 0;
+}
+.axi-readout__row + .axi-readout__row {
+  border-top: var(--axi-border-hairline) solid var(--axi-rule);
+}
+.axi-readout__k {
+  min-width: 0;
+  margin: 0;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+  font: var(--axi-t-small);
+  font-weight: 700;
+  color: var(--axi-text-dim);
+}
+.axi-readout__v {
+  flex: none;
+  margin: 0;
+  text-align: right;
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  color: var(--axi-text);
+  font-variant-numeric: tabular-nums;
+}
+.axi-panel--tile .axi-readout__row { padding-block: var(--axi-readout-pad, 3px); }
 
 /* ---------- bars ---------- */
 /* The same rule stood on end. The baseline is drawn at the control weight
