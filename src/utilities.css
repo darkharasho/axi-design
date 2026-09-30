@@ -103,6 +103,7 @@
 .axi-chip--action:is(:disabled, [aria-disabled="true"]),
 .axi-drawer__close:is(:disabled, [aria-disabled="true"]),
 .axi-input:is(:disabled, [aria-disabled="true"]),
+.axi-legend__key:where(button):is(:disabled, [aria-disabled="true"]),
 .axi-link:is(:disabled, [aria-disabled="true"]),
 .axi-palette__row:is(:disabled, [aria-disabled="true"]),
 .axi-palette__trigger:is(:disabled, [aria-disabled="true"]),

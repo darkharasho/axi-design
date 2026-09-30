@@ -549,19 +549,35 @@ every neutral surface.`,
     name: 'Legend',
     layer: 'data',
     classes: ['.axi-legend', '.axi-legend__key'],
-    summary: 'A row of keys pairing a diamond swatch with a label, identifying the series drawn in a chart.',
-    rules: [5, 7],
+    summary: 'A row of keys pairing a diamond swatch with a label, identifying the series drawn in a chart. A key that is a button isolates its series.',
+    rules: [4, 5, 7, 13],
     knobs: [],
+    aliases: ['series', 'isolate'],
     notes: `Each key reuses \`.axi-diamond\`, the family motif rule 7 asks every
 identifying mark to share - a legend is not a place to invent a second shape
 for the same idea. The swatch's ink is a state or a series, never decoration,
-per rule 5.`,
+per rule 5.
+
+Make a key a \`<button>\` and it can be pressed to isolate its series. Put
+\`aria-pressed="true"\` on the isolated one and nothing on the rest: the legend
+works out from that which keys recede, and draws them a step down the neutral
+ramp rather than at an opacity, which is rule 4's "nothing fades". A receded
+key comes back to plain under the cursor so it can still be found.`,
     examples: [
       {
         title: 'A legend of two series',
         html: `<div class="axi-legend">
   <span class="axi-legend__key"><i class="axi-diamond axi-diamond--ok"></i> Enemy downed</span>
   <span class="axi-legend__key"><i class="axi-diamond axi-diamond--danger"></i> Squad downed</span>
+</div>`,
+      },
+      {
+        title: 'A legend with one series isolated',
+        note: 'Buttons; the pressed one is plain, the rest recede to the faint step',
+        html: `<div class="axi-legend">
+  <button class="axi-legend__key" type="button" aria-pressed="true"><i class="axi-diamond axi-diamond--series"></i> Scourge <span class="axi-ink-faint">1.4M</span></button>
+  <button class="axi-legend__key" type="button"><i class="axi-diamond axi-diamond--series" style="--axi-series: var(--axi-ok)"></i> Spellbreaker <span class="axi-ink-faint">884k</span></button>
+  <button class="axi-legend__key" type="button"><i class="axi-diamond axi-diamond--series" style="--axi-series: var(--axi-meta)"></i> Firebrand <span class="axi-ink-faint">610k</span></button>
 </div>`,
       },
     ],

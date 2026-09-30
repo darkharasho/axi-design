@@ -3351,6 +3351,34 @@ textarea.axi-input {
   text-transform: uppercase;
   color: var(--axi-text-dim);
 }
+/* A key you can press, to isolate the series it names. The state is the
+   attribute rule 13 asks for: `aria-pressed="true"` on the key that is
+   isolated, and nothing at all on the others - which of them recede is the
+   legend's to work out, from whether any key is pressed, rather than a second
+   attribute the consumer has to compute and keep in step.
+
+   Receding is a step down the neutral ramp and not an opacity, which is rule
+   4's "nothing fades" reaching the legend: the consumer this was written for
+   had the rest of the keys at `opacity: .3` and they were unreadable, which
+   is the one thing a legend must not be. A receded key brightens back to
+   plain under the cursor so it can be found again - the hover is wrapped so it
+   costs nothing against an ink, and the receded rule steps aside for it.
+
+   The button reset and the hover are :where()-wrapped for the reason the ink
+   layer gives: an inked key keeps its ink. The pressed and receded colours are
+   the state's own meaning and stay at full weight. */
+.axi-legend__key:where(button) {
+  padding: 0;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  transition: color .1s;
+}
+.axi-legend__key:where(button:hover) { color: var(--axi-text); }
+.axi-legend__key[aria-pressed="true"] { color: var(--axi-text); }
+.axi-legend:has([aria-pressed="true"]) .axi-legend__key:where(:not([aria-pressed="true"], :hover)) {
+  color: var(--axi-text-faint);
+}
 
 /* --- feedback.css --- */
 /* axi design language - feedback.
@@ -3627,6 +3655,7 @@ textarea.axi-input {
 .axi-chip--action:is(:disabled, [aria-disabled="true"]),
 .axi-drawer__close:is(:disabled, [aria-disabled="true"]),
 .axi-input:is(:disabled, [aria-disabled="true"]),
+.axi-legend__key:where(button):is(:disabled, [aria-disabled="true"]),
 .axi-link:is(:disabled, [aria-disabled="true"]),
 .axi-palette__row:is(:disabled, [aria-disabled="true"]),
 .axi-palette__trigger:is(:disabled, [aria-disabled="true"]),

@@ -2094,3 +2094,64 @@ describe('a readout is drawn in rules, and a tile reads its own density', () => 
     }
   })
 })
+
+describe('a hover reveals no control, and a legend key recedes rather than fades', () => {
+  const data = () => read('data.css')
+  const bodyOf = (css, selector) => {
+    const hit = [...stripComments(css).matchAll(/([^{}]+)\{([^{}]*)\}/g)].find(
+      ([, sel]) => sel.trim().replace(/\s+/g, ' ') === selector,
+    )
+    return hit ? hit[2] : null
+  }
+
+  it('is written into rule 4', () => {
+    const rules = readFileSync(resolve(process.cwd(), 'docs/RULES.md'), 'utf8')
+    const section = rules.match(/### A hover reveals no control[\s\S]*?(?=\n## )/)
+    expect(section, 'rule 4 no longer rules on hover reveals').not.toBeNull()
+    expect(section[0]).toMatch(/never\s+its presence/)
+    expect(section[0]).toMatch(/Receding is a step down the neutral ramp/)
+  })
+
+  it('has no hover anywhere in src/ that brings something into existence', () => {
+    // A rule keyed on :hover may move, block, brighten or underline. It may not
+    // set the three properties that make a thing exist or not.
+    for (const name of COMPONENT_FILES()) {
+      const css = stripComments(read(name))
+      for (const [, sel, body] of css.matchAll(/([^{}]+)\{([^{}]*)\}/g)) {
+        if (!/:hover/.test(sel)) continue
+        expect(body, `${name}: ${sel.trim()}`).not.toMatch(/\b(opacity|display|visibility)\s*:/)
+      }
+    }
+  })
+
+  it('recedes an unpressed key to the faint step, not to an opacity', () => {
+    const css = stripComments(data())
+    const block = css.slice(css.indexOf('.axi-legend {'), css.indexOf('.axi-legend__key:where(button:hover)') + 200)
+    expect(block).not.toMatch(/opacity/)
+    const dim = bodyOf(data(), '.axi-legend:has([aria-pressed="true"]) .axi-legend__key:where(:not([aria-pressed="true"], :hover))')
+    expect(dim, 'the receded rule moved or lost its hover escape').not.toBeNull()
+    expect(dim).toMatch(/color:\s*var\(--axi-text-faint\)/)
+    expect(bodyOf(data(), '.axi-legend__key[aria-pressed="true"]')).toMatch(/color:\s*var\(--axi-text\)/)
+  })
+
+  it('keys the state on aria-pressed alone, with no second attribute for the rest', () => {
+    // Rule 13: the consumer says which key is pressed, and nothing else. If a
+    // `data-dim` or similar appears here, the consumer has been handed a
+    // derived state to keep in step.
+    const css = stripComments(data())
+    const block = css.slice(css.indexOf('.axi-legend {'), css.indexOf('.axi-bars {') > 0 ? css.length : css.length)
+    const legendRules = [...block.matchAll(/([^{}]*axi-legend[^{}]*)\{/g)].map((m) => m[1])
+    expect(legendRules.length).toBeGreaterThan(3)
+    for (const sel of legendRules) expect(sel).not.toMatch(/\[data-/)
+    expect(legendRules.some((s) => s.includes(':has([aria-pressed="true"])'))).toBe(true)
+  })
+
+  it('wraps the button reset and the hover so an inked key keeps its ink', () => {
+    const css = stripComments(data())
+    const keyRules = [...css.matchAll(/([^{}]*\.axi-legend__key[^{}]*)\{/g)].map((m) => m[1].trim())
+    const reset = keyRules.find((s) => s.includes('button') && !s.includes('hover'))
+    const hover = keyRules.find((s) => s.includes('hover') && !s.includes(':has'))
+    expect(reset).toMatch(/^\.axi-legend__key:where\(button\)$/)
+    expect(hover).toMatch(/^\.axi-legend__key:where\(button:hover\)$/)
+  })
+})

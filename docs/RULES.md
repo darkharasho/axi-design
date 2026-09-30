@@ -222,6 +222,31 @@ Every lift is turned off under `@media (prefers-reduced-motion: reduce)`, in
 diamond still rotates, because a rotation that never changes is geometry and
 not motion.
 
+### A hover reveals no control
+
+A control that exists only while the cursor is over it exists for nobody on a
+touch screen, for nobody using a keyboard, and for nobody who has not already
+found it. Three sites in one consumer had this shape: an open-link glyph at
+`opacity: 0` until its card was hovered, and two help tips faded in the same
+way. The glyph was the only way off the card. On a phone it was not there.
+
+So: **a hover changes an element's depth, and may brighten its ink, and never
+its presence.** What is on screen is on screen. If a control is worth having it
+is drawn at rest, and if it is not worth drawing at rest it is not worth having.
+
+The one thing a hover may bring in is an annotation of something already
+present — a `.axi-tooltip` naming what a glyph does — and only because the
+same tip answers focus. A tip that answers hover alone is a control-shaped
+hole for everyone the first paragraph names.
+
+The other half of this is a **dimmed** thing, which is what a consumer reaches
+for when one series in a legend is isolated and the rest should recede.
+`opacity: .3` on the rest is rule 2's faded ink, and it is what left those
+keys unreadable. Receding is a step down the neutral ramp — `--axi-text-faint`
+— which stays legible at every step, and a hover brings a receded key back to
+plain so it can be found again. Nothing in the language fades, and this is one
+more place that holds.
+
 ## 5. Filled means status, outlined means annotation
 
 A filled chip asserts a value about the thing. An outlined chip in the cool ink
