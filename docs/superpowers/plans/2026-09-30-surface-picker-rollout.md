@@ -105,7 +105,40 @@ npx vitest run tests/accents.test.mjs --maxWorkers=2
 
 Expected: FAIL — `electric-cyan must exist in accents.json`.
 
-- [ ] **Step 3: Append the accent**
+- [ ] **Step 3: Confirm the accent owes the themes nothing**
+
+`docs/RULES.md`, "A change to the language is not finished until every theme
+wears it", is binding on this work and names three shapes of change that each
+cost every theme a look: a new token, a new component, a retuned look.
+
+An accent is none of them. It adds no token to `tokens.css`, no selector to
+`src/`, and retunes nothing — `accents.css` sets the one existing `--axi-accent`
+token per `[data-axi-accent]`, and neither theme restates `--axi-accent`, so
+both already wear whichever of the twelve is live. **No theme file is edited in
+this task.** Record that reasoning in the commit message rather than leaving a
+reviewer to re-derive it.
+
+Confirm it mechanically rather than trusting the argument. Note the trailing
+quote — a loose `grep axi-accent` matches `--axi-accent-ink`, which **both
+themes do restate**, and would send you chasing a change that is not needed:
+
+```bash
+cd ~/Documents/GitHub/axi-design
+grep -l '"--axi-accent"' themes/*.json      # -> no output: no theme fixes the accent
+grep -h '"--axi-accent-ink"' themes/*.json  # -> both themes fix the ink drawn ON an accent
+```
+
+`--axi-accent-ink` is the ink a theme draws on top of an accent fill, and both
+themes pin it to a near-black (`#0c0e12` in glass, `#0c1015` in flat). That is
+the one way a new accent could need a theme's attention: an accent dark enough
+that near-black ink on it fails to read. `#22d3ee` is a bright cyan, so it does
+not — but Step 7 verifies that by eye rather than by argument, because that is
+what the rule asks for.
+
+If the first grep prints a file, a theme does fix the accent and this reasoning
+is wrong — stop and raise it before continuing.
+
+- [ ] **Step 4: Append the accent**
 
 In `accents.json`, add a twelfth entry after `gold-bronze`:
 
@@ -115,7 +148,7 @@ In `accents.json`, add a twelfth entry after `gold-bronze`:
 
 Keep the file's existing formatting. `accents.json` is the sanctioned second home for a colour literal after `tokens.css` — it is build data, not stylesheet source.
 
-- [ ] **Step 4: Rebuild the generated CSS**
+- [ ] **Step 5: Rebuild the generated CSS**
 
 ```bash
 cd ~/Documents/GitHub/axi-design
@@ -125,7 +158,7 @@ git diff --stat dist/
 
 Expected: `dist/accents.css` changed, nothing else. Do not edit `dist/` by hand.
 
-- [ ] **Step 5: Run the full suite**
+- [ ] **Step 6: Run the full suite**
 
 ```bash
 cd ~/Documents/GitHub/axi-design
@@ -134,11 +167,34 @@ npx vitest run --maxWorkers=2
 
 Expected: PASS, including the new assertion and the existing `accents.test.mjs` / `themes.test.mjs` / `tokens.test.mjs` / `build.test.mjs`.
 
-- [ ] **Step 6: Bump the version**
+- [ ] **Step 7: Look at the new accent under all three surfaces**
+
+This is what Step 3 deferred, and what `docs/RULES.md` means by "you look at it
+under all three". The risk is narrow and specific: both themes pin
+`--axi-accent-ink` to a near-black, so an accent must be light enough to carry
+near-black text on top of it.
+
+```bash
+cd ~/Documents/GitHub/axi-design
+npm run docs && npm run serve
+```
+
+In the gallery, set the accent to Electric Cyan and step through Axi, Flat and
+Glass with the theme switcher. Check the components that put ink *on* an accent
+fill rather than beside it — `.axi-btn--primary`, `.axi-chip--accent`,
+`.axi-rail__item[aria-current]`, `.axi-avatar--accent` — and confirm the label
+is legible on all three. Then check `.axi-ink-accent` and `.axi-edge-accent`,
+where the accent is the ink rather than the fill, against glass's translucent
+panels.
+
+If any of those fails, **stop**: the fix is a conversation about the accent's
+hex or about `--axi-accent-ink`, not a quiet theme edit in this task.
+
+- [ ] **Step 8: Bump the version**
 
 In `package.json`, change `"version": "1.42.0"` to `"version": "1.43.0"`. A new accent is an addition, so minor.
 
-- [ ] **Step 7: Commit**
+- [ ] **Step 9: Commit**
 
 ```bash
 cd ~/Documents/GitHub/axi-design
@@ -153,7 +209,7 @@ a visible regression against refined-cyan's duller #5eadd5.
 Co-Authored-By: Claude Opus 5 <noreply@anthropic.com>"
 ```
 
-- [ ] **Step 8: Tag and publish**
+- [ ] **Step 10: Tag and publish**
 
 The docs site stages `v1/accents.css` from the highest `v*` tag (`.github/workflows/pages.yml:34`), so the tag is what makes the new accent visible on the documentation site — not the npm publish.
 
