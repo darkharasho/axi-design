@@ -874,7 +874,7 @@ button.axi-panel--tile:hover,
    says `axi-link axi-ink-dim` must stay dim under the cursor, and the plain
    `:hover` form is what made the danger button read white under one. */
 .axi-link,
-.axi-prose a {
+.axi-prose :where(a) {
   padding: 0;
   background: none;
   border: 0;
@@ -887,7 +887,7 @@ button.axi-panel--tile:hover,
   cursor: pointer;
 }
 .axi-link:where(:hover),
-.axi-prose a:where(:hover) { color: var(--axi-text); }
+.axi-prose :where(a:hover) { color: var(--axi-text); }
 
 /* ---------- quiet action ---------- */
 /* A control that is only its label. Not a button - it draws no box, takes no
@@ -1013,8 +1013,8 @@ button.axi-panel--tile:hover,
    disclosure that drops back flat the moment the pointer moves into the list
    it opened severs the two: the lift is what says this box and that popover
    are one control. */
-.axi-select:hover,
-.axi-picker__btn:hover,
+.axi-select:where(:hover),
+.axi-picker__btn:where(:hover),
 .axi-picker__btn[aria-expanded='true'] {
   color: var(--axi-text);
   box-shadow: var(--axi-shadow-control);
@@ -1041,7 +1041,7 @@ button.axi-panel--tile:hover,
     backdrop-filter: var(--axi-surface-filter);
     box-shadow: var(--axi-shadow-panel);
   }
-  .axi-select option {
+  .axi-select :where(option) {
     display: flex; align-items: center; gap: 9px;
     padding: 8px 9px;
     border-radius: var(--axi-radius-sm);
@@ -1056,7 +1056,7 @@ button.axi-panel--tile:hover,
      level's fill - and this popover is filled with --axi-surface-raised, which
      a theme may take translucent, so an opaque row here is the black patch
      --axi-well-fill exists to prevent. Same for the picker's rows below. */
-  .axi-select option:hover, .axi-select option:focus {
+  .axi-select :where(option:hover, option:focus) {
     background: var(--axi-well-fill); color: var(--axi-text);
   }
   /* The page-wide focus ring sits 2px outside its element; inside a picker
@@ -1155,7 +1155,7 @@ button.axi-panel--tile:hover,
   color: transparent;
   font-weight: 900;
 }
-.axi-picker__opt:hover, .axi-picker__opt:focus {
+.axi-picker__opt:where(:hover, :focus) {
   background: var(--axi-well-fill); color: var(--axi-text);
 }
 /* The page-wide focus ring sits 2px outside its element; inside a popover
@@ -1450,8 +1450,7 @@ textarea.axi-input {
    to a second row instead of taking width off the widest one. The strip is the
    item that can give: it scrolls, and the row stays a row. */
 .axi-mast .axi-tabs { margin-left: auto; flex-shrink: 1; min-width: 0; overflow-x: auto; }
-.axi-tabs a,
-.axi-tabs button {
+.axi-tabs :where(a, button) {
   padding: 8px 16px;
   font: 800 13.5px/1 var(--axi-sans);
   color: var(--axi-text-dim); text-decoration: none;
@@ -1460,8 +1459,7 @@ textarea.axi-input {
   border: var(--axi-border-control) solid transparent;
   border-radius: var(--axi-radius-sm);
 }
-.axi-tabs a:hover,
-.axi-tabs button:hover { color: var(--axi-text); border-color: var(--axi-rule); }
+.axi-tabs :where(a:hover, button:hover) { color: var(--axi-text); border-color: var(--axi-rule); }
 /* The current tab is filled and blocked - the same treatment a pressed pill
    gets, because it is the same idea: this one is on. */
 .axi-tabs a[aria-current="page"],
@@ -1493,13 +1491,13 @@ textarea.axi-input {
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.axi-tabs .axi-tabs__close {
+.axi-tabs :where(.axi-tabs__close) {
   padding: 0 6px;
   font: var(--axi-t-micro);
   color: var(--axi-text-faint);
   border-color: transparent;
 }
-.axi-tabs .axi-tabs__close:hover { color: var(--axi-text); border-color: transparent; }
+.axi-tabs :where(.axi-tabs__close:hover) { color: var(--axi-text); border-color: transparent; }
 
 /* ---------- rail ---------- */
 /* Vertical navigation, for a set too large for a tab strip to hold. Same
@@ -1573,7 +1571,7 @@ textarea.axi-input {
   border-radius: var(--axi-radius-sm);
   cursor: pointer;
 }
-.axi-rail__item:hover { color: var(--axi-text); background: var(--axi-surface-raised); }
+.axi-rail__item:where(:hover) { color: var(--axi-text); background: var(--axi-surface-raised); }
 /* The same treatment a pressed pill and a current tab get. Only ever one of
    these on screen. Any aria-current value, because the right one depends on
    what the rail navigates - `page` for a view, `location` for a place within
@@ -1636,7 +1634,7 @@ textarea.axi-input {
   border-radius: var(--axi-radius-sm);
   cursor: pointer;
 }
-.axi-rail__subitem:hover { color: var(--axi-text-dim); background: var(--axi-surface-raised); }
+.axi-rail__subitem:where(:hover) { color: var(--axi-text-dim); background: var(--axi-surface-raised); }
 .axi-rail__subitem[aria-current] { color: var(--axi-text); }
 /* An annotation on an item, not a measurement of it, so rule 5 draws it
    outlined rather than filled. */
@@ -1784,13 +1782,13 @@ textarea.axi-input {
   box-shadow: var(--axi-shadow-panel);
 }
 .axi-menu__pop[hidden] { display: none; }
-.axi-menu__pop label {
+.axi-menu__pop :where(label) {
   display: flex; gap: 9px; align-items: flex-start;
   padding: 7px 8px; border-radius: var(--axi-radius-sm);
   font-size: 13px; font-weight: 600; color: var(--axi-text-dim); cursor: pointer;
 }
 /* A hovered row sinks - the same fill the select's and the picker's rows use. */
-.axi-menu__pop label:hover { background: var(--axi-well-fill); color: var(--axi-text); }
+.axi-menu__pop :where(label:hover) { background: var(--axi-well-fill); color: var(--axi-text); }
 .axi-menu__pop input { margin: 3px 0 0; }
 
 /* ---------- command palette ---------- */
@@ -1880,7 +1878,7 @@ textarea.axi-input {
   color: var(--axi-text-dim);
   font: var(--axi-t-small); text-align: left; cursor: pointer;
 }
-.axi-palette__row:hover { background: var(--axi-surface-raised); color: var(--axi-text); }
+.axi-palette__row:where(:hover) { background: var(--axi-surface-raised); color: var(--axi-text); }
 .axi-palette__row[data-active] { background: var(--axi-accent); color: var(--axi-accent-ink); }
 /* The row's own ink is set above, but a row carries a glyph and a second line
    of text that were coloured on their own; on the filled row they all become
@@ -1912,7 +1910,7 @@ textarea.axi-input {
   cursor: pointer;
   transition: transform .1s, box-shadow .1s, color .1s;
 }
-.axi-palette__trigger:hover {
+.axi-palette__trigger:where(:hover) {
   color: var(--axi-text);
   box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
@@ -2059,7 +2057,7 @@ textarea.axi-input {
   color: var(--axi-text-faint);
 }
 .axi-card__go { margin-left: auto; color: var(--axi-accent); font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
-.axi-card:hover .axi-card__go { color: var(--axi-text); }
+.axi-card:where(:hover) :where(.axi-card__go) { color: var(--axi-text); }
 
 /* ---------- drawer ---------- */
 /* A scrim's layer is not a property of the scrim. It is "directly below the
@@ -2132,7 +2130,7 @@ textarea.axi-input {
   font-size: 15px; font-weight: 900; cursor: pointer;
   transition: transform .1s, box-shadow .1s;
 }
-.axi-drawer__close:hover {
+.axi-drawer__close:where(:hover) {
   background: var(--axi-accent); color: var(--axi-accent-ink);
   box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
@@ -2274,7 +2272,7 @@ textarea.axi-input {
   -webkit-app-region: drag;
 }
 .axi-titlebar__btns { margin-left: auto; display: flex; height: 100%; -webkit-app-region: no-drag; }
-.axi-titlebar__btns button {
+.axi-titlebar__btns :where(button) {
   width: 44px;
   border: 0;
   background: transparent;
@@ -2285,10 +2283,10 @@ textarea.axi-input {
 /* No lift here. A window button is chrome, not content: it has nothing to
    lift off, and 44px of movement in the corner of every screen is exactly
    the scattered motion rule 4 rations. It answers on the neutral ramp. */
-.axi-titlebar__btns button:hover { background: var(--axi-surface); color: var(--axi-text); }
+.axi-titlebar__btns :where(button:hover) { background: var(--axi-surface); color: var(--axi-text); }
 /* Close is the one destructive control in the chrome, and the one place a
    status ink belongs in a titlebar. */
-.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
+.axi-titlebar__btns :where(button:last-child:hover) { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
 /* The scrolling region under the chrome. */
 .axi-window__body { flex: 1; overflow-y: auto; }
 
@@ -2307,8 +2305,8 @@ textarea.axi-input {
   flex-wrap: wrap;
   font: var(--axi-t-small);
 }
-.axi-crumbs a { color: var(--axi-text-dim); text-decoration: none; }
-.axi-crumbs a:hover { color: var(--axi-accent); }
+.axi-crumbs :where(a) { color: var(--axi-text-dim); text-decoration: none; }
+.axi-crumbs :where(a:hover) { color: var(--axi-accent); }
 /* 7px, matching the prose bullet (src/prose.css) exactly, with the same
    --axi-border-hairline outline: rule 7 calls the motif "a 45deg-rotated
    outlined square", and a bare fill with no border does not match it. The
@@ -2342,7 +2340,7 @@ textarea.axi-input {
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
 }
-.axi-pages__n:hover { color: var(--axi-text); }
+.axi-pages__n:where(:hover) { color: var(--axi-text); }
 .axi-pages__n[aria-current="page"] {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);
@@ -3309,11 +3307,10 @@ textarea.axi-input {
 .axi-select:is(:disabled, [aria-disabled="true"]),
 .axi-switch:is(:disabled, [aria-disabled="true"]),
 .axi-table__sort:is(:disabled, [aria-disabled="true"]),
-.axi-menu__pop label:is(:disabled, [aria-disabled="true"]),
-.axi-prose a:is(:disabled, [aria-disabled="true"]),
-.axi-tabs a:is(:disabled, [aria-disabled="true"]),
-.axi-tabs button:is(:disabled, [aria-disabled="true"]),
-.axi-titlebar__btns button:is(:disabled, [aria-disabled="true"]) {
+.axi-menu__pop :where(label):is(:disabled, [aria-disabled="true"]),
+.axi-prose :where(a):is(:disabled, [aria-disabled="true"]),
+.axi-tabs :where(a, button):is(:disabled, [aria-disabled="true"]),
+.axi-titlebar__btns :where(button):is(:disabled, [aria-disabled="true"]) {
   opacity: .5;
   cursor: not-allowed;
 }

@@ -524,7 +524,7 @@ button.axi-panel--tile:hover,
    says `axi-link axi-ink-dim` must stay dim under the cursor, and the plain
    `:hover` form is what made the danger button read white under one. */
 .axi-link,
-.axi-prose a {
+.axi-prose :where(a) {
   padding: 0;
   background: none;
   border: 0;
@@ -537,7 +537,7 @@ button.axi-panel--tile:hover,
   cursor: pointer;
 }
 .axi-link:where(:hover),
-.axi-prose a:where(:hover) { color: var(--axi-text); }
+.axi-prose :where(a:hover) { color: var(--axi-text); }
 
 /* ---------- quiet action ---------- */
 /* A control that is only its label. Not a button - it draws no box, takes no
@@ -663,8 +663,8 @@ button.axi-panel--tile:hover,
    disclosure that drops back flat the moment the pointer moves into the list
    it opened severs the two: the lift is what says this box and that popover
    are one control. */
-.axi-select:hover,
-.axi-picker__btn:hover,
+.axi-select:where(:hover),
+.axi-picker__btn:where(:hover),
 .axi-picker__btn[aria-expanded='true'] {
   color: var(--axi-text);
   box-shadow: var(--axi-shadow-control);
@@ -691,7 +691,7 @@ button.axi-panel--tile:hover,
     backdrop-filter: var(--axi-surface-filter);
     box-shadow: var(--axi-shadow-panel);
   }
-  .axi-select option {
+  .axi-select :where(option) {
     display: flex; align-items: center; gap: 9px;
     padding: 8px 9px;
     border-radius: var(--axi-radius-sm);
@@ -706,7 +706,7 @@ button.axi-panel--tile:hover,
      level's fill - and this popover is filled with --axi-surface-raised, which
      a theme may take translucent, so an opaque row here is the black patch
      --axi-well-fill exists to prevent. Same for the picker's rows below. */
-  .axi-select option:hover, .axi-select option:focus {
+  .axi-select :where(option:hover, option:focus) {
     background: var(--axi-well-fill); color: var(--axi-text);
   }
   /* The page-wide focus ring sits 2px outside its element; inside a picker
@@ -805,7 +805,7 @@ button.axi-panel--tile:hover,
   color: transparent;
   font-weight: 900;
 }
-.axi-picker__opt:hover, .axi-picker__opt:focus {
+.axi-picker__opt:where(:hover, :focus) {
   background: var(--axi-well-fill); color: var(--axi-text);
 }
 /* The page-wide focus ring sits 2px outside its element; inside a popover

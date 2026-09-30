@@ -969,21 +969,28 @@ describe('a link is one object, in or out of prose', () => {
   const css = COMPONENT_FILES().map(read).map(stripComments).join('\n')
   const rules = [...css.matchAll(/([^{}]*)\{([^}]*)\}/g)]
     .map(([, sel, body]) => ({ sel: sel.trim(), body }))
-    .filter(({ sel }) => /\.axi-link\b/.test(sel) || /\.axi-prose a\b/.test(sel))
+    // `:where(a)` and `a` are the same spelling for this guard's purpose - the
+    // wrapper sets the weight, not the subject - so the pattern tolerates it.
+    .filter(({ sel }) => /\.axi-link\b/.test(sel) || /\.axi-prose :?w?h?e?r?e?\(?a\b/.test(sel))
 
   // `:disabled` joins `:hover` as a state rather than an appearance: the dead
   // state is declared once, in utilities.css, for every interactive object at
   // once, so the rule that carries it names both spellings without being a
   // second place the link's look is written down.
-  const rest = () => rules.find(({ sel }) => !/:where|:hover|:disabled/.test(sel))
+  //
+  // The state is what excludes a rule here, not the `:where()` around it. The
+  // at-rest rule now carries a `:where()` of its own - `.axi-prose :where(a)`,
+  // so an ink class on a prose link is not outweighed by it - and excluding
+  // every `:where` left this guard with no resting rule to find at all.
+  const rest = () => rules.find(({ sel }) => !/:hover|:disabled/.test(sel))
 
   it('declares both spellings in a single rule', () => {
     const r = rest()
     expect(r, 'no at-rest link rule found').toBeTruthy()
-    expect(r.sel).toMatch(/\.axi-link\s*,\s*\.axi-prose a/)
+    expect(r.sel).toMatch(/\.axi-link\s*,\s*\.axi-prose :where\(a\)/)
     // And nowhere else: a second rule naming either spelling on its own is the
     // drift this is here to prevent.
-    expect(rules.filter(({ sel }) => !/:where|:hover|:disabled/.test(sel))).toHaveLength(1)
+    expect(rules.filter(({ sel }) => !/:hover|:disabled/.test(sel))).toHaveLength(1)
   })
 
   it('states the underline rather than inheriting it from the anchor', () => {
@@ -1204,8 +1211,29 @@ describe('a hover does not put a colour further out of reach than rest does', ()
   // ink class competes with, and the one a hover must not outweigh.
   const owner = (sel) => (sel.match(/\.[a-zA-Z][\w-]*/) || [null])[0]
 
+  // Judged one compound at a time, never a whole selector list. A rule that
+  // lists two hovers and a state - `.axi-select:where(:hover),
+  // .axi-picker__btn:where(:hover), .axi-picker__btn[aria-expanded='true']` -
+  // weighs as its heaviest member if you measure the list, so two correctly
+  // wrapped hovers were reported as offenders on account of the state beside
+  // them.
+  const splitTop = (list) => {
+    const out = []
+    let depth = 0
+    let cur = ''
+    for (const ch of list) {
+      if (ch === '(') depth++
+      else if (ch === ')') depth--
+      if (ch === ',' && depth === 0) { out.push(cur); cur = '' } else cur += ch
+    }
+    if (cur.trim()) out.push(cur)
+    return out.map((x) => x.trim())
+  }
+  const COMPOUNDS = () =>
+    RULES().flatMap((r) => splitTop(r.sel).map((sel) => ({ ...r, sel })))
+
   const colourHovers = () =>
-    RULES().filter((r) => /:hover/.test(r.sel) && /(^|[\s;])color:/.test(r.body))
+    COMPOUNDS().filter((r) => /:hover/.test(r.sel) && /(^|[\s;])color:/.test(r.body))
 
   // Colours that ARE the state rather than a default the consumer might mean to
   // replace. Both are argued at length beside their rules: an ink reaching the
@@ -1217,70 +1245,48 @@ describe('a hover does not put a colour further out of reach than rest does', ()
     // A current rail item, whose colour is the same statement the pressed pill
     // makes: this one is on. The rule pairs rest and hover deliberately so the
     // current item does not brighten further under the cursor.
-    /^\.axi-rail__item\[aria-current\], \.axi-rail__item\[aria-current\]:hover$/
+    /^\.axi-rail__item\[aria-current\]:hover$/,
+    /^\.axi-rail__nav--quiet \.axi-rail__item\[aria-current\]:hover$/
   ]
 
   it('finds the hover rules to check', () => {
     expect(colourHovers().length).toBeGreaterThan(2)
   })
 
-  // The sixteen rules that were already like this when the invariant was
-  // written down. Every one is the same latent defect: give its component an
-  // ink class and the ink is lost under the cursor. None is fixed here, for a
-  // reason worth stating - wrapping them is visually inert, but three sibling
-  // guards in this suite look their selectors up by exact text, so the change
-  // is mechanical in the stylesheet and not mechanical in the tests.
-  //
-  // This list is a ratchet, not an excuse: the test below fails if anything
-  // NEW joins it, and also if anything on it disappears, so it can only be
-  // shortened deliberately and can never rot into a list of rules that no
-  // longer exist.
-  const KNOWN_UNWRAPPED = [
-    "primitives.css .axi-select:hover, .axi-picker__btn:hover, .axi-picker__btn[aria-expanded='true']",
-    'primitives.css .axi-select option:hover, .axi-select option:focus',
-    'primitives.css .axi-picker__opt:hover, .axi-picker__opt:focus',
-    'shells.css .axi-tabs a:hover, .axi-tabs button:hover',
-    'shells.css .axi-tabs .axi-tabs__close:hover',
-    'shells.css .axi-rail__item:hover',
-    'shells.css .axi-rail__subitem:hover',
-    'shells.css .axi-menu__pop label:hover',
-    'shells.css .axi-palette__row:hover',
-    'shells.css .axi-palette__trigger:hover',
-    'shells.css .axi-card:hover .axi-card__go',
-    'shells.css .axi-drawer__close:hover',
-    'shells.css .axi-titlebar__btns button:hover',
-    'shells.css .axi-titlebar__btns button:last-child:hover',
-    'shells.css .axi-crumbs a:hover',
-    'shells.css .axi-pages__n:hover'
-  ]
-
   it('never weighs more than the resting rule of the class it belongs to', () => {
-    const all = RULES()
+    const all = COMPOUNDS()
     const offenders = []
     for (const h of colourHovers()) {
       if (STATE_COLOUR.some((re) => re.test(h.sel))) continue
       const cls = owner(h.sel)
       if (!cls) continue
       // The resting rule: the lightest rule naming this class that sets a
-      // colour and is not itself a state.
+      // colour on the SAME element and is not itself a state. Same element
+      // matters - `.axi-prose` colours the container and an <a> inside it
+      // inherits that, which no specificity can lose to, so comparing a link's
+      // hover against the container's rule asks the wrong question and reports
+      // a correctly wrapped hover as an offender.
+      const subject = (sel) => {
+        const last = sel.trim().split(/[\s>+~]+/).pop()
+        return (last.match(/^(?:[\w-]+|\.[\w-]+|\*)/) || [''])[0]
+      }
+      const subj = subject(h.sel)
       const resting = all
         .filter((r) => r.sel.includes(cls) && /(^|[\s;])color:/.test(r.body))
         .filter((r) => !/:hover|:focus|\[aria-|\[data-/.test(r.sel))
+        .filter((r) => subject(r.sel) === subj)
         .map((r) => weigh(r.sel))
       if (!resting.length) continue
       const lightest = Math.min(...resting)
       if (weigh(h.sel) > lightest) offenders.push(`${h.file} ${h.sel}`)
     }
-    const fresh = offenders.filter((o) => !KNOWN_UNWRAPPED.includes(o))
+    // There is no allowlist. There used to be one, holding sixteen rules that
+    // predated the invariant; every one of them is now wrapped, so the guard is
+    // simply "none", which is the only version of it that cannot be added to.
     expect(
-      fresh,
+      offenders,
       'this hover outweighs its own resting rule, so an ink class that reaches the component at rest loses it under the cursor'
     ).toEqual([])
-    // The ratchet's other tooth: a name on the list that no longer offends has
-    // either been fixed (delete it) or renamed (rename it). Either way the list
-    // must move, or it stops describing the stylesheet.
-    const stale = KNOWN_UNWRAPPED.filter((k) => !offenders.includes(k))
-    expect(stale, 'these no longer offend - take them off the list').toEqual([])
   })
 
   it('never names a colour outside the token set', () => {
@@ -1343,13 +1349,6 @@ describe('every interactive object says so when it is dead', () => {
     body
   }))
 
-  const POINTER = rules
-    .filter((r) => /cursor:\s*pointer/.test(r.body))
-    .flatMap((r) => r.sel.split(',').map((s) => s.trim()))
-  // `.axi-input` is the twenty-fourth: a field is interactive without being a
-  // pointer, and the textarea wears the same class.
-  const INTERACTIVE = [...new Set([...POINTER, '.axi-input'])].sort()
-
   // A comma inside :is() is not a selector boundary, so the list is split at
   // depth zero only - splitting on every comma reported ":is(:disabled" and
   // "[aria-disabled=\"true\"])" as two selectors apiece.
@@ -1365,6 +1364,18 @@ describe('every interactive object says so when it is dead', () => {
     if (cur.trim()) out.push(cur)
     return out.map((s) => s.trim())
   }
+
+  // A comma inside :where() is not a selector boundary either. `.axi-tabs
+  // :where(a, button)` split naively yielded ".axi-tabs :where(a" and
+  // "button)", neither of which is a selector, and both of which then read as
+  // interactive objects with no dead state.
+  const POINTER = rules
+    .filter((r) => /cursor:\s*pointer/.test(r.body))
+    .flatMap((r) => splitTop(r.sel))
+  // `.axi-input` is the twenty-fourth: a field is interactive without being a
+  // pointer, and the textarea wears the same class.
+  const INTERACTIVE = [...new Set([...POINTER, '.axi-input'])].sort()
+
 
   const disabledRule = rules.find((r) => /:is\(:disabled, \[aria-disabled="true"\]\)/.test(r.sel))
   const covered = splitTop(disabledRule ? disabledRule.sel : '')

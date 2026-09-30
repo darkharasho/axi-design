@@ -96,8 +96,7 @@
    to a second row instead of taking width off the widest one. The strip is the
    item that can give: it scrolls, and the row stays a row. */
 .axi-mast .axi-tabs { margin-left: auto; flex-shrink: 1; min-width: 0; overflow-x: auto; }
-.axi-tabs a,
-.axi-tabs button {
+.axi-tabs :where(a, button) {
   padding: 8px 16px;
   font: 800 13.5px/1 var(--axi-sans);
   color: var(--axi-text-dim); text-decoration: none;
@@ -106,8 +105,7 @@
   border: var(--axi-border-control) solid transparent;
   border-radius: var(--axi-radius-sm);
 }
-.axi-tabs a:hover,
-.axi-tabs button:hover { color: var(--axi-text); border-color: var(--axi-rule); }
+.axi-tabs :where(a:hover, button:hover) { color: var(--axi-text); border-color: var(--axi-rule); }
 /* The current tab is filled and blocked - the same treatment a pressed pill
    gets, because it is the same idea: this one is on. */
 .axi-tabs a[aria-current="page"],
@@ -139,13 +137,13 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
-.axi-tabs .axi-tabs__close {
+.axi-tabs :where(.axi-tabs__close) {
   padding: 0 6px;
   font: var(--axi-t-micro);
   color: var(--axi-text-faint);
   border-color: transparent;
 }
-.axi-tabs .axi-tabs__close:hover { color: var(--axi-text); border-color: transparent; }
+.axi-tabs :where(.axi-tabs__close:hover) { color: var(--axi-text); border-color: transparent; }
 
 /* ---------- rail ---------- */
 /* Vertical navigation, for a set too large for a tab strip to hold. Same
@@ -219,7 +217,7 @@
   border-radius: var(--axi-radius-sm);
   cursor: pointer;
 }
-.axi-rail__item:hover { color: var(--axi-text); background: var(--axi-surface-raised); }
+.axi-rail__item:where(:hover) { color: var(--axi-text); background: var(--axi-surface-raised); }
 /* The same treatment a pressed pill and a current tab get. Only ever one of
    these on screen. Any aria-current value, because the right one depends on
    what the rail navigates - `page` for a view, `location` for a place within
@@ -282,7 +280,7 @@
   border-radius: var(--axi-radius-sm);
   cursor: pointer;
 }
-.axi-rail__subitem:hover { color: var(--axi-text-dim); background: var(--axi-surface-raised); }
+.axi-rail__subitem:where(:hover) { color: var(--axi-text-dim); background: var(--axi-surface-raised); }
 .axi-rail__subitem[aria-current] { color: var(--axi-text); }
 /* An annotation on an item, not a measurement of it, so rule 5 draws it
    outlined rather than filled. */
@@ -430,13 +428,13 @@
   box-shadow: var(--axi-shadow-panel);
 }
 .axi-menu__pop[hidden] { display: none; }
-.axi-menu__pop label {
+.axi-menu__pop :where(label) {
   display: flex; gap: 9px; align-items: flex-start;
   padding: 7px 8px; border-radius: var(--axi-radius-sm);
   font-size: 13px; font-weight: 600; color: var(--axi-text-dim); cursor: pointer;
 }
 /* A hovered row sinks - the same fill the select's and the picker's rows use. */
-.axi-menu__pop label:hover { background: var(--axi-well-fill); color: var(--axi-text); }
+.axi-menu__pop :where(label:hover) { background: var(--axi-well-fill); color: var(--axi-text); }
 .axi-menu__pop input { margin: 3px 0 0; }
 
 /* ---------- command palette ---------- */
@@ -526,7 +524,7 @@
   color: var(--axi-text-dim);
   font: var(--axi-t-small); text-align: left; cursor: pointer;
 }
-.axi-palette__row:hover { background: var(--axi-surface-raised); color: var(--axi-text); }
+.axi-palette__row:where(:hover) { background: var(--axi-surface-raised); color: var(--axi-text); }
 .axi-palette__row[data-active] { background: var(--axi-accent); color: var(--axi-accent-ink); }
 /* The row's own ink is set above, but a row carries a glyph and a second line
    of text that were coloured on their own; on the filled row they all become
@@ -558,7 +556,7 @@
   cursor: pointer;
   transition: transform .1s, box-shadow .1s, color .1s;
 }
-.axi-palette__trigger:hover {
+.axi-palette__trigger:where(:hover) {
   color: var(--axi-text);
   box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
@@ -705,7 +703,7 @@
   color: var(--axi-text-faint);
 }
 .axi-card__go { margin-left: auto; color: var(--axi-accent); font-weight: 900; text-transform: uppercase; letter-spacing: .05em; }
-.axi-card:hover .axi-card__go { color: var(--axi-text); }
+.axi-card:where(:hover) :where(.axi-card__go) { color: var(--axi-text); }
 
 /* ---------- drawer ---------- */
 /* A scrim's layer is not a property of the scrim. It is "directly below the
@@ -778,7 +776,7 @@
   font-size: 15px; font-weight: 900; cursor: pointer;
   transition: transform .1s, box-shadow .1s;
 }
-.axi-drawer__close:hover {
+.axi-drawer__close:where(:hover) {
   background: var(--axi-accent); color: var(--axi-accent-ink);
   box-shadow: var(--axi-shadow-control);
   transform: translate(-2px, -2px);
@@ -920,7 +918,7 @@
   -webkit-app-region: drag;
 }
 .axi-titlebar__btns { margin-left: auto; display: flex; height: 100%; -webkit-app-region: no-drag; }
-.axi-titlebar__btns button {
+.axi-titlebar__btns :where(button) {
   width: 44px;
   border: 0;
   background: transparent;
@@ -931,10 +929,10 @@
 /* No lift here. A window button is chrome, not content: it has nothing to
    lift off, and 44px of movement in the corner of every screen is exactly
    the scattered motion rule 4 rations. It answers on the neutral ramp. */
-.axi-titlebar__btns button:hover { background: var(--axi-surface); color: var(--axi-text); }
+.axi-titlebar__btns :where(button:hover) { background: var(--axi-surface); color: var(--axi-text); }
 /* Close is the one destructive control in the chrome, and the one place a
    status ink belongs in a titlebar. */
-.axi-titlebar__btns button:last-child:hover { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
+.axi-titlebar__btns :where(button:last-child:hover) { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
 /* The scrolling region under the chrome. */
 .axi-window__body { flex: 1; overflow-y: auto; }
 
@@ -953,8 +951,8 @@
   flex-wrap: wrap;
   font: var(--axi-t-small);
 }
-.axi-crumbs a { color: var(--axi-text-dim); text-decoration: none; }
-.axi-crumbs a:hover { color: var(--axi-accent); }
+.axi-crumbs :where(a) { color: var(--axi-text-dim); text-decoration: none; }
+.axi-crumbs :where(a:hover) { color: var(--axi-accent); }
 /* 7px, matching the prose bullet (src/prose.css) exactly, with the same
    --axi-border-hairline outline: rule 7 calls the motif "a 45deg-rotated
    outlined square", and a bare fill with no border does not match it. The
@@ -988,7 +986,7 @@
   border: var(--axi-border-control) solid var(--axi-ink-line);
   border-radius: var(--axi-radius-sm);
 }
-.axi-pages__n:hover { color: var(--axi-text); }
+.axi-pages__n:where(:hover) { color: var(--axi-text); }
 .axi-pages__n[aria-current="page"] {
   background: var(--axi-accent);
   color: var(--axi-accent-ink);

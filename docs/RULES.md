@@ -323,6 +323,21 @@ a colour that is a fill's contrast pair — `.axi-btn--primary`'s accent ink —
 too, because an ink there would put a status colour on the accent block and cost
 the label its legibility, which is rule 5's reason for the chip.
 
+Applying this everywhere it was owed had one consequence worth naming, because
+it is the rule arriving rather than a regression: hovering the **current**
+breadcrumb used to turn it accent, and now it does not move. `[aria-current]`
+outweighs a wrapped hover, which is the rail's stated refusal — the current item
+does not brighten further under the cursor — reaching the one component that had
+been disagreeing with it by accident of specificity.
+
+Two things about *checking* this, both learned by getting them wrong. Weigh one
+compound, never a selector list: a rule that lists two wrapped hovers beside a
+state weighs as the state if you measure the list, and reports the two correct
+hovers as offenders. And compare a hover only against a resting rule that
+matches the **same element**: an `<a>` inside `.axi-prose` takes the container's
+colour by inheritance, which no specificity can lose to, so measuring the link's
+hover against the container's rule asks a question neither rule is answering.
+
 ## 7. The diamond is the family motif
 
 A 45°-rotated outlined square. Bullet, status dot, language marker, and scaled

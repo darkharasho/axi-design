@@ -115,11 +115,10 @@
 .axi-select:is(:disabled, [aria-disabled="true"]),
 .axi-switch:is(:disabled, [aria-disabled="true"]),
 .axi-table__sort:is(:disabled, [aria-disabled="true"]),
-.axi-menu__pop label:is(:disabled, [aria-disabled="true"]),
-.axi-prose a:is(:disabled, [aria-disabled="true"]),
-.axi-tabs a:is(:disabled, [aria-disabled="true"]),
-.axi-tabs button:is(:disabled, [aria-disabled="true"]),
-.axi-titlebar__btns button:is(:disabled, [aria-disabled="true"]) {
+.axi-menu__pop :where(label):is(:disabled, [aria-disabled="true"]),
+.axi-prose :where(a):is(:disabled, [aria-disabled="true"]),
+.axi-tabs :where(a, button):is(:disabled, [aria-disabled="true"]),
+.axi-titlebar__btns :where(button):is(:disabled, [aria-disabled="true"]) {
   opacity: .5;
   cursor: not-allowed;
 }
