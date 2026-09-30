@@ -684,6 +684,44 @@ The line to hold is the one-for-one rule above, not a list of layers. A theme
 that restates the block still paints every component; a theme that invents one
 does not.
 
+### A change to the language is not finished until every theme wears it
+
+The one-for-one rule above is written as an obligation on a *theme* — here is
+what a new theme owes the language. Read only that way it has a hole in it, and
+the hole is every change that goes the other direction. A token added to
+`tokens.css`, a component added to `src/`, a look retuned: each of those is a
+change to the thing the themes are mirroring, and none of them is finished when
+the main theme looks right. There are three themes — the language itself in
+`src/tokens.css`, `flat`, and `glass` — and a change lands in all three or it
+has not landed.
+
+That is the symmetric half of the toll already stated above. **A new theme
+capability costs a main-theme token first; a change to the main theme costs
+every theme a look.** Neither direction is optional, and the second is the one
+easy to skip, because the default theme is the one on screen while you work.
+
+What "answered in every theme" means depends on the shape of the change:
+
+- **A new token.** Every theme either restates it or can point at why it does
+  not need to. Two reasons count. The default is inert — `--axi-surface-filter`
+  and `--axi-ground-image` are `none`, so a theme that wants neither is already
+  correct. Or the token aliases one the theme did restate —
+  `--axi-surface-float: var(--axi-surface)`, so `flat` restating the surface
+  restates the float with it. A token holding a literal of its own is answered
+  by neither of those, and every theme has to say it. This is checked; see
+  below.
+- **A new component.** It renders under all three, and you look at it under all
+  three. The gallery's theme switcher is there for exactly the reason the accent
+  switcher is: a component that hard-coded something looks fine until you
+  change the thing it hard-coded. A panel that reads as a panel on opaque slate
+  can vanish on a translucent one.
+- **A retuned look.** The `-paint` companions are the case that made this a
+  section. Lifting them meant every surface a theme grades needs a flat
+  companion beside it, and both themes had to be edited in the same commit as
+  the tokens — edit one and the other hands a gradient straight to
+  `background-color`, which is not a subtle failure but it is an invisible one
+  from the theme you happened to be looking at.
+
 **What is mechanically enforced.** `tests/themes.test.mjs` reads every
 `dist/themes/*.css` and checks the mirror rather than trusting it: the file
 contains exactly one rule, its selector is `[data-axi-theme="<id>"]` for the
@@ -692,6 +730,16 @@ non-empty value, and every property it declares is already declared in
 `tokens.css`. A theme-only component fails the first check, because drawing one
 takes a second selector. An invented token fails the last. The suite passes
 vacuously while no theme exists, and binds the moment the first file lands.
+
+The section above is checked from the other side by the same file: a token that
+*any* theme restates must be restated by *every* theme, unless that theme
+inherits an answer already — the main-theme default is inert, or the token
+aliases another the theme did restate, and the check follows the alias chain
+rather than taking the two reasons on trust. So a token one theme has an opinion
+about cannot be a token another theme forgot. What no test can check is the
+third bullet, the look you did not look at: a component can paint under all
+three themes and still be wrong under two of them, and the only instrument for
+that is the theme switcher in the gallery.
 
 ## Adding a component
 
@@ -702,7 +750,11 @@ vacuously while no theme exists, and binds the moment the first file lands.
    [Themes](#themes).
 4. Add it to the gallery, and check it with the accent switcher — if it does
    not follow the accent, it hard-coded something.
-5. `npm run build` and commit `dist/axi.css` with your source change.
+5. Then check it with the theme switcher, under all three — the language,
+   `flat` and `glass`. Translucent surfaces and a 16px corner break different
+   things than opaque ones do, and a component is not done until it reads right
+   under each. See [Themes](#themes).
+6. `npm run build` and commit `dist/axi.css` with your source change.
 
 ### A style only reachable through a layer will be re-invented
 
