@@ -971,7 +971,11 @@ describe('a link is one object, in or out of prose', () => {
     .map(([, sel, body]) => ({ sel: sel.trim(), body }))
     .filter(({ sel }) => /\.axi-link\b/.test(sel) || /\.axi-prose a\b/.test(sel))
 
-  const rest = () => rules.find(({ sel }) => !/:where|:hover/.test(sel))
+  // `:disabled` joins `:hover` as a state rather than an appearance: the dead
+  // state is declared once, in utilities.css, for every interactive object at
+  // once, so the rule that carries it names both spellings without being a
+  // second place the link's look is written down.
+  const rest = () => rules.find(({ sel }) => !/:where|:hover|:disabled/.test(sel))
 
   it('declares both spellings in a single rule', () => {
     const r = rest()
@@ -979,7 +983,7 @@ describe('a link is one object, in or out of prose', () => {
     expect(r.sel).toMatch(/\.axi-link\s*,\s*\.axi-prose a/)
     // And nowhere else: a second rule naming either spelling on its own is the
     // drift this is here to prevent.
-    expect(rules.filter(({ sel }) => !/:where|:hover/.test(sel))).toHaveLength(1)
+    expect(rules.filter(({ sel }) => !/:where|:hover|:disabled/.test(sel))).toHaveLength(1)
   })
 
   it('states the underline rather than inheriting it from the anchor', () => {
@@ -1325,5 +1329,73 @@ describe('the quiet action is a control that is only its label', () => {
     expect(glyph).toMatch(/min-width:/)
     expect(glyph).toMatch(/min-height:/)
     expect(bodyOf('.axi-action--glyph:where(:hover)')).toMatch(/text-decoration:\s*none/)
+  })
+})
+
+describe('every interactive object says so when it is dead', () => {
+  // Derived, not listed. The interactive surface is whatever declares
+  // `cursor: pointer` plus the field class - so adding a new interactive
+  // component upstream fails this guard until the component gets a disabled
+  // state, and no hand-maintained list can rot out of step with the language.
+  const all = COMPONENT_FILES().map(read).join('\n')
+  const rules = [...stripComments(all).matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({
+    sel: sel.trim().replace(/\s+/g, ' '),
+    body
+  }))
+
+  const POINTER = rules
+    .filter((r) => /cursor:\s*pointer/.test(r.body))
+    .flatMap((r) => r.sel.split(',').map((s) => s.trim()))
+  // `.axi-input` is the twenty-fourth: a field is interactive without being a
+  // pointer, and the textarea wears the same class.
+  const INTERACTIVE = [...new Set([...POINTER, '.axi-input'])].sort()
+
+  // A comma inside :is() is not a selector boundary, so the list is split at
+  // depth zero only - splitting on every comma reported ":is(:disabled" and
+  // "[aria-disabled=\"true\"])" as two selectors apiece.
+  const splitTop = (list) => {
+    const out = []
+    let depth = 0
+    let cur = ''
+    for (const ch of list) {
+      if (ch === '(') depth++
+      else if (ch === ')') depth--
+      if (ch === ',' && depth === 0) { out.push(cur); cur = '' } else cur += ch
+    }
+    if (cur.trim()) out.push(cur)
+    return out.map((s) => s.trim())
+  }
+
+  const disabledRule = rules.find((r) => /:is\(:disabled, \[aria-disabled="true"\]\)/.test(r.sel))
+  const covered = splitTop(disabledRule ? disabledRule.sel : '')
+    .map((s) => s.replace(/:is\(:disabled, \[aria-disabled="true"\]\)$/, ''))
+
+  it('covers every selector that offers a pointer, and the field', () => {
+    expect(disabledRule, 'no disabled-state rule at all').toBeTruthy()
+    const missing = INTERACTIVE.filter((sel) => !covered.includes(sel))
+    expect(missing, `interactive with no dead state: ${missing.join(', ')}`).toEqual([])
+  })
+
+  it('names nothing that is not interactive, so the list cannot drift wide', () => {
+    const extra = covered.filter((sel) => !INTERACTIVE.includes(sel))
+    expect(extra, `dead state on a non-interactive selector: ${extra.join(', ')}`).toEqual([])
+  })
+
+  it('fades the control instead of recolouring it, so an ink survives', () => {
+    // A colour swap is the defect the ink layer exists to prevent: a disabled
+    // .axi-action.axi-ink-danger must fade with its verdict, not lose it.
+    expect(disabledRule.body).toMatch(/opacity:\s*\.5/)
+    expect(disabledRule.body).toMatch(/cursor:\s*not-allowed/)
+    expect(disabledRule.body).not.toMatch(/(^|[;{\s])(color|background|border|fill)[-a-z]*\s*:/i)
+  })
+
+  it('leaves pointer events alone, so a dead control can still be read', () => {
+    expect(disabledRule.body).not.toMatch(/pointer-events/)
+  })
+
+  it('lives where a state can overrule a component without !important', () => {
+    expect(read('utilities.css')).toMatch(/:is\(:disabled, \[aria-disabled="true"\]\)/)
+    expect(ORDER[ORDER.length - 1]).toBe('utilities.css')
+    expect(disabledRule.body).not.toMatch(/!important/)
   })
 })

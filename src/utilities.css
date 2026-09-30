@@ -1,5 +1,6 @@
 /* axi design language - utilities.
-   Two families of single-purpose class, and the file is last in the cascade
+   Two families of single-purpose class and one state, and the file is last in
+   the cascade
    because that is the whole point of it: a utility has to be able to overrule
    the component it sits inside, and it is not allowed to buy that with
    !important or with a padded selector.
@@ -52,3 +53,73 @@
 .axi-edge-accent { border-color: var(--axi-accent); }
 .axi-edge-rule { border-color: var(--axi-rule); }
 .axi-edge-line { border-color: var(--axi-ink-line); }
+
+/* ---------- the dead state ---------- */
+/* Twenty-four things in this language are interactive: twenty-three declare
+   `cursor: pointer`, and the twenty-fourth is `.axi-input`, which both the
+   single-line field and the textarea wear. Before this rule, two of the
+   twenty-four said anything at all when they were disabled - the checkbox and
+   the radio, which got `opacity: .5; cursor: not-allowed` in forms.css. The
+   other twenty-three were, computed-style for computed-style, indistinguishable
+   from their working selves: a disabled `.axi-btn` drew the same fill, the same
+   border and the same ink as an enabled one, and still told the cursor it was a
+   pointer. The control did not merely fail to look dead; it actively promised
+   it was alive.
+
+   So every consumer invented the state. In the app this language was built
+   for, twenty-four sites had written `disabled:opacity-50
+   disabled:cursor-not-allowed` by hand - the same two declarations forms.css
+   already contained, retyped once per control - and a replay stepper had
+   invented a third answer, swapping the ink to a dimmer token instead.
+
+   Why opacity and the cursor, and deliberately nothing else. A disabled
+   control has to stay recognisable as the control it is: whatever fill, border
+   and ink said "primary button" or "danger action" a moment ago must still say
+   it, only faded. Opacity does that to every layer at once without naming any
+   of them, which is also the one form this can take that does not fight the
+   ink layer below - the stepper's colour swap is exactly the defect the ink
+   layer exists to prevent, because a disabled `.axi-action.axi-ink-danger`
+   would lose its verdict rather than fade with it.
+
+   Why this file. A disabled state has to overrule the resting rule of the
+   component it sits inside, and it is not allowed to buy that with
+   !important - which is this file's whole reason for existing, and the reason
+   the state lives here rather than beside each component. `:is()` carries its
+   most specific argument's weight, so each of these selectors weighs one class
+   and one pseudo-class: enough to beat any component's own resting rule, and
+   nothing upstream sets `cursor` or `opacity` on a hover that could out-rank
+   it.
+
+   Pointer events are left alone. `:disabled` already blocks activation
+   natively, and `[aria-disabled="true"]` means "focusable, but ignore the
+   action" - a control the reader can still reach and still read a title from.
+   Removing pointer events would take away the tooltip that explains why the
+   thing is dead, which is the one piece of help a dead control can offer. */
+.axi-accordion__head:is(:disabled, [aria-disabled="true"]),
+.axi-action:is(:disabled, [aria-disabled="true"]),
+.axi-btn:is(:disabled, [aria-disabled="true"]),
+.axi-card:is(:disabled, [aria-disabled="true"]),
+.axi-check:is(:disabled, [aria-disabled="true"]),
+.axi-chip--action:is(:disabled, [aria-disabled="true"]),
+.axi-drawer__close:is(:disabled, [aria-disabled="true"]),
+.axi-input:is(:disabled, [aria-disabled="true"]),
+.axi-link:is(:disabled, [aria-disabled="true"]),
+.axi-palette__row:is(:disabled, [aria-disabled="true"]),
+.axi-palette__trigger:is(:disabled, [aria-disabled="true"]),
+.axi-picker__btn:is(:disabled, [aria-disabled="true"]),
+.axi-picker__opt:is(:disabled, [aria-disabled="true"]),
+.axi-pill:is(:disabled, [aria-disabled="true"]),
+.axi-radio:is(:disabled, [aria-disabled="true"]),
+.axi-rail__item:is(:disabled, [aria-disabled="true"]),
+.axi-rail__subitem:is(:disabled, [aria-disabled="true"]),
+.axi-select:is(:disabled, [aria-disabled="true"]),
+.axi-switch:is(:disabled, [aria-disabled="true"]),
+.axi-table__sort:is(:disabled, [aria-disabled="true"]),
+.axi-menu__pop label:is(:disabled, [aria-disabled="true"]),
+.axi-prose a:is(:disabled, [aria-disabled="true"]),
+.axi-tabs a:is(:disabled, [aria-disabled="true"]),
+.axi-tabs button:is(:disabled, [aria-disabled="true"]),
+.axi-titlebar__btns button:is(:disabled, [aria-disabled="true"]) {
+  opacity: .5;
+  cursor: not-allowed;
+}

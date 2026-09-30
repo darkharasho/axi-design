@@ -55,7 +55,11 @@ function ruleNotices(numbers, ruleTitles) {
 }
 
 export function componentPage(entry, ruleTitles) {
-  const chips = entry.classes.map((c) => `<span class="axi-chip axi-chip--meta">${c}</span>`).join('\n      ')
+  // An entry may name selectors instead of classes - the dead state is spelled
+  // with `disabled` and `aria-disabled`, not with a class - and the chip strip
+  // is what tells the reader what to write, so it has to carry both.
+  const chips = [...entry.classes, ...(entry.selectors ?? [])]
+    .map((c) => `<span class="axi-chip axi-chip--meta">${c}</span>`).join('\n      ')
   const notes = entry.notes ? `<div class="axi-prose">${renderMarkdown(entry.notes).html}</div>` : ''
   const examples = entry.examples.map((ex, i) => example(ex, i, entry.id)).join('\n')
 

@@ -73,4 +73,51 @@ name a screen reader can read and a sighted reader does not need to see.`,
       },
     ],
   },
+  {
+    id: 'dead',
+    name: 'The dead state',
+    layer: 'utilities',
+    classes: [],
+    selectors: [':disabled', '[aria-disabled="true"]'],
+    summary: 'Every interactive object fades and refuses the pointer when it carries `disabled` or `aria-disabled="true"`. No class to add: the state is declared once, for all twenty-four of them.',
+    rules: [],
+    knobs: [],
+    notes: `Twenty-four objects in this language are interactive - twenty-three
+declare \`cursor: pointer\`, and the twenty-fourth is \`.axi-input\`, worn by both
+the field and the textarea. Until 1.41.0 two of them said anything when
+disabled. The rest were, computed-style for computed-style, identical to their
+working selves and still promised \`cursor: pointer\`.
+
+It fades rather than recolours, on purpose. A disabled control has to stay
+recognisable as the control it is: whatever fill, border and ink said "primary"
+or "danger" a moment ago should still say it, only fainter. Opacity does that to
+every layer at once without naming any of them, and it is the only form the
+state can take that does not fight the ink layer - a colour swap would take a
+verdict away from a disabled \`.axi-action.axi-ink-danger\` instead of dimming
+it.
+
+Pointer events are left alone. \`:disabled\` already blocks activation, and
+\`aria-disabled\` means "focusable, but ignore the action" - so the control can
+still be reached and its title still read, which is the one piece of help a dead
+control has to offer.`,
+    examples: [
+      {
+        title: 'The same three controls, alive and dead',
+        html: `<div class="axi-row">
+  <button class="axi-btn axi-btn--primary">Publish</button>
+  <button class="axi-btn axi-btn--primary" disabled>Publish</button>
+  <button class="axi-action axi-ink-danger">Discard</button>
+  <button class="axi-action axi-ink-danger" disabled>Discard</button>
+  <input class="axi-input" value="report.json">
+  <input class="axi-input" value="report.json" disabled>
+</div>`,
+      },
+      {
+        title: 'A link that cannot be followed yet',
+        note: 'An anchor takes no `disabled`, so it says so the only way it can',
+        html: `<a class="axi-link" href="#">Open the report</a>
+<a class="axi-link" href="#" aria-disabled="true">Open the report</a>`,
+      },
+    ],
+  },
 ]

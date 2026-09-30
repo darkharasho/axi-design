@@ -25,8 +25,9 @@ function component(entry) {
     `layer: ${LAYER_NAMES[entry.layer]}`,
     `url: ${url(`components/${entry.id}/`)}`,
     `summary: ${entry.summary}`,
-    `classes: ${entry.classes.join(', ')}`,
   ]
+  if (entry.classes.length) lines.push(`classes: ${entry.classes.join(', ')}`)
+  if (entry.selectors?.length) lines.push(`selectors: ${entry.selectors.join(', ')}`)
   const knobs = knobsFor(entry.knobs)
   if (knobs.length) {
     lines.push('knobs:')

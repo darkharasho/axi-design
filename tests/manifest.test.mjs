@@ -37,10 +37,23 @@ describe('manifest entry shape', () => {
     }
   })
 
-  it('lists at least one class and one example', () => {
+  // Almost every entry is a set of classes, but the language also contains one
+  // thing a consumer spells without adding a class: the dead state, which
+  // arrives from `disabled` and `aria-disabled` alone. Such an entry names its
+  // spellings in `selectors` instead, and the requirement stays the same - an
+  // entry must tell the reader something to write.
+  it('lists at least one spelling and one example', () => {
     for (const e of ALL) {
-      expect(e.classes.length).toBeGreaterThan(0)
+      expect(e.classes.length + (e.selectors ?? []).length, `${e.id} names nothing to write`).toBeGreaterThan(0)
       expect(e.examples.length).toBeGreaterThan(0)
+    }
+  })
+
+  it('never uses selectors as a way around documenting a class', () => {
+    for (const e of ALL) {
+      for (const sel of e.selectors ?? []) {
+        expect(sel, `${e.id} lists a class as a selector`).not.toMatch(/^\./)
+      }
     }
   })
 

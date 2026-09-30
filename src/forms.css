@@ -73,8 +73,6 @@
   transform: rotate(45deg);
 }
 .axi-radio:checked::after { opacity: 1; }
-.axi-check:disabled,
-.axi-radio:disabled { cursor: not-allowed; opacity: .5; }
 
 /* ---------- textarea ---------- */
 /* Not a component: the same .axi-input a single-line field uses, with the two
