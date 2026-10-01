@@ -2516,6 +2516,12 @@ textarea.axi-input {
   display: flex; align-items: center; gap: 12px;
   height: 38px; padding-left: 14px;
   background: var(--axi-ground-deep);
+  /* The chrome takes the surface filter for the same reason a panel does: on a
+     theme that makes its surfaces translucent, the one strip a reader never
+     scrolls away is the one that has to agree. --axi-surface-filter is none on
+     every opaque surface, so this is inert there - the same inert-by-default
+     shape the panels already use. */
+  backdrop-filter: var(--axi-surface-filter);
   border-bottom: var(--axi-border-control) solid var(--axi-ink-line);
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);
@@ -2540,6 +2546,13 @@ textarea.axi-input {
 /* Close is the one destructive control in the chrome, and the one place a
    status ink belongs in a titlebar. */
 .axi-titlebar__btns :where(button:last-child:hover) { background: var(--axi-danger); color: var(--axi-ink-on-fill); }
+/* The page-wide ring sits 2px OUTSIDE its element, which a window button
+   cannot afford: it is flush to the top of the frame and flush to its
+   neighbours, so an outward ring spills past the window edge and reads as a
+   loud accent box across the corner of the chrome. Pull it inward, the same
+   way a picker option and a select option already do inside their own tight
+   containers. */
+.axi-titlebar__btns :where(button:focus-visible) { outline-offset: -3px; }
 /* The scrolling region under the chrome. */
 .axi-window__body { flex: 1; overflow-y: auto; }
 
