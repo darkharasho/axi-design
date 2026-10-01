@@ -138,6 +138,15 @@ one stroke at the language's own weight and colour. A margin instead - even a
 which on the default surface is 7px of edge and reads unmistakably as two
 buttons touching.
 
+On a filled tone that stroke is drawn in \`--axi-accent-ink\` rather than
+\`--axi-ink-line\`. Every other edge in the language is the ink line, which is
+opaque near-black on the main surface but a light translucent edge on flat and
+glass - right for catching light against a dark surface, and unable to resolve
+into an edge at all across two bright accent fields. The accent ink is what
+the label is already drawn in and is near-black on all three surfaces, so the
+divider reads everywhere and the main surface is unchanged, where the two
+tokens are the same colour.
+
 Hover belongs to the control. The generic button hover would translate
 whichever half the cursor found and tear the seam open two pixels wide, so the
 translate moves to the wrapper and both halves take the hover block together.

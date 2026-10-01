@@ -388,6 +388,28 @@ button.axi-panel--tile:hover,
 .axi-btn-split > .axi-btn + .axi-btn {
   margin-inline-start: calc(var(--axi-border-control) * -1);
 }
+/* A filled half needs the seam drawn in the ink that sits ON the fill, not in
+   the line that sits around it. --axi-ink-line is opaque near-black on the
+   main theme, where it reads as a stroke against anything; on flat and glass
+   it is a light translucent edge - rgba(255,255,255,.10) and
+   rgba(180,200,255,.16) - chosen to catch light against a dark surface, which
+   is every other place the language draws it. Laid across two bright accent
+   fields it is not faint, it is the wrong direction: a lightener on a light
+   fill can never resolve into an edge, so the shared stroke was there and
+   simply could not be seen, and the control read as one undivided lozenge.
+
+   --axi-accent-ink is the language's answer to "what reads on top of the
+   accent" - it is what the label is already drawn in - and it is near-black on
+   all three surfaces. On the main theme it is literally --axi-ink-line, so
+   this changes nothing there and the 3px seam is the same stroke it was.
+
+   Either half being filled is enough: the stroke you see is the second half's
+   border, and a dark hairline reads against the plain fill on the other side
+   of it just as well. */
+.axi-btn-split > .axi-btn--primary + .axi-btn,
+.axi-btn-split > .axi-btn + .axi-btn--primary {
+  border-inline-start-color: var(--axi-accent-ink);
+}
 /* Neither half casts a shadow across the seam. The surfaces that spell their
    relief as a soft drop give every control a blur that reaches outward on all
    four sides - glass's is `0 6px 16px`, so it extends roughly 8px sideways -

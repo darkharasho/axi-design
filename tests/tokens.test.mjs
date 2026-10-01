@@ -2346,6 +2346,23 @@ describe('the split button is joined by construction', () => {
     expect(css.indexOf('.axi-btn--primary:hover')).toBeLessThan(css.indexOf('.axi-btn-split'))
   })
 
+  it('draws the seam of a filled control in the ink that reads on its fill', () => {
+    const seam = split().find((r) => /--primary \+ \.axi-btn/.test(r.sel))
+    expect(seam, 'no filled-tone seam rule found').toBeDefined()
+    // --axi-ink-line is what every other edge is drawn in, and it is opaque
+    // near-black only on the main theme; flat and glass spell it as a light
+    // translucent edge for catching light against a dark surface. On a bright
+    // accent fill a lightener cannot resolve into an edge at all, so the
+    // shared stroke was present and invisible. --axi-accent-ink is the ink the
+    // label is already drawn in, and is near-black on all three.
+    expect(seam.body).toMatch(/border-inline-start-color:\s*var\(--axi-accent-ink\)/)
+    // Either half being filled is enough - the stroke you see is the second
+    // half's border, whichever side the fill is on.
+    expect(seam.sel).toMatch(/\.axi-btn \+ \.axi-btn--primary/)
+    // Physical sides would put the divider on the control's outer edge in RTL.
+    expect(seam.body).not.toMatch(/border-(left|right)-color/)
+  })
+
   it('clips each half\u2019s shadow at the seam, on both sides and in both directions', () => {
     const clips = split().filter((r) => /clip-path/.test(r.body))
     // Four rules: each half in LTR, each half again under :dir(rtl). inset()
