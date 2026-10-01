@@ -2345,4 +2345,32 @@ describe('the split button is joined by construction', () => {
     const css = prim()
     expect(css.indexOf('.axi-btn--primary:hover')).toBeLessThan(css.indexOf('.axi-btn-split'))
   })
+
+  it('clips each half\u2019s shadow at the seam, on both sides and in both directions', () => {
+    const clips = split().filter((r) => /clip-path/.test(r.body))
+    // Four rules: each half in LTR, each half again under :dir(rtl). inset()
+    // is physical, so RTL has to restate the pair - inheriting it would clip
+    // the control's outer edges instead of its seam, which is worse than not
+    // clipping at all.
+    expect(clips).toHaveLength(4)
+    expect(clips.filter((r) => /:dir\(rtl\)/.test(r.sel))).toHaveLength(2)
+
+    for (const r of clips) {
+      // Open on three sides, flush on the fourth: the half keeps the drop the
+      // surface gave it everywhere except where a sibling is 8px away. -100%
+      // is the box's own size, so no surface can out-grow the slack.
+      const m = r.body.match(/clip-path:\s*inset\(([^)]+)\)/)
+      const sides = m[1].trim().split(/\s+/)
+      expect(sides, r.sel).toHaveLength(4)
+      expect(sides.filter((v) => v === '0'), r.sel).toHaveLength(1)
+      expect(sides.filter((v) => v === '-100%'), r.sel).toHaveLength(3)
+      // Never while focused: the ring is an outline 2px outside the box, and a
+      // clip flush with that edge would cut it in half on the seam side.
+      expect(r.sel, r.sel).toMatch(/:not\(:focus-visible\)/)
+    }
+
+    // The two halves clip opposite edges - left and right, never the same one.
+    const ltr = clips.filter((r) => !/:dir\(rtl\)/.test(r.sel)).map((r) => r.body.match(/inset\(([^)]+)\)/)[1].trim())
+    expect(new Set(ltr).size).toBe(2)
+  })
 })

@@ -388,6 +388,38 @@ button.axi-panel--tile:hover,
 .axi-btn-split > .axi-btn + .axi-btn {
   margin-inline-start: calc(var(--axi-border-control) * -1);
 }
+/* Neither half casts a shadow across the seam. The surfaces that spell their
+   relief as a soft drop give every control a blur that reaches outward on all
+   four sides - glass's is `0 6px 16px`, so it extends roughly 8px sideways -
+   and a half of a joined control has a sibling 8px away rather than the page.
+   The toggle paints after the label half, so its leftward bleed lands on top
+   of its neighbour as a dark vertical band just inside the seam, which is the
+   second way this control could read as two buttons rather than one. The
+   label half bleeds the other way for the same reason, and shows wherever the
+   toggle's fill is translucent - which on glass is every tone but the ink'd
+   ones.
+
+   So each half clips its own shadow flush with the edge it shares, and leaves
+   the other three sides alone to drop as far as the surface says. The clip is
+   a no-op on the main theme, whose block is a hard offset that only ever
+   travels right and down, and nearly one on flat; it does its work exactly
+   where the blur is wide enough to cross.
+
+   -100% is the box's own width or height, which is always more slack than a
+   control-sized blur needs, and stays right if a surface ever spells a bigger
+   one - a literal here would be a number to maintain.
+
+   `inset()` is physical, so RTL restates the pair rather than inheriting a
+   clip on the wrong edges; this is the one place in the component where the
+   logical properties above cannot carry the direction.
+
+   Not while focused: the focus ring is an `outline` drawn 2px outside the box,
+   so a clip flush with that edge would cut it in half on the seam side. A
+   keyboard user seeing a complete ring is worth more than the band. */
+.axi-btn-split > .axi-btn:where(:not(:focus-visible)):first-child { clip-path: inset(-100% 0 -100% -100%); }
+.axi-btn-split > .axi-btn:where(:not(:focus-visible)):last-child { clip-path: inset(-100% -100% -100% 0); }
+.axi-btn-split:dir(rtl) > .axi-btn:where(:not(:focus-visible)):first-child { clip-path: inset(-100% -100% -100% 0); }
+.axi-btn-split:dir(rtl) > .axi-btn:where(:not(:focus-visible)):last-child { clip-path: inset(-100% 0 -100% -100%); }
 /* Hover is the whole control's. The generic .axi-btn hover translates the
    button and deepens its block; left alone, that moves one half of a joined
    control two pixels up and away from the other and tears the seam open -

@@ -144,6 +144,16 @@ translate moves to the wrapper and both halves take the hover block together.
 Colour is the one thing that stays per-half - the brighten still lands only
 under the cursor, which is the entire reason the control has two targets.
 
+Neither half casts a shadow across the seam. On the surfaces that spell relief
+as a soft drop, a control's blur reaches outward on all four sides - glass's
+travels about 8px sideways - and a half of a joined control has a sibling
+there rather than the page. Left alone, the disclosure half's bleed lands on
+top of its neighbour as a dark band just inside the seam, which is the second
+way this control reads as two buttons. Each half therefore clips its own
+shadow flush with the edge it shares and drops normally on the other three.
+The clip lifts while a half is focused, because the focus ring is an outline
+drawn outside the box and a clip flush with that edge would cut it in half.
+
 The halves are ordinary \`.axi-btn\`s, so every tone and ink works unchanged:
 a consumer whose action turns destructive swaps \`--primary\` for
 \`.axi-ink-danger\` on both and the seam follows. The wrapper is
