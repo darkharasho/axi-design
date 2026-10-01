@@ -147,6 +147,7 @@ not "what does the system look like". Everything else is
 | `--axi-action-hit` | the hit target of an `.axi-action--glyph`, whose label is one character and gives the pointer nothing to land on | `24px` | `<button class="axi-action axi-action--glyph" style="--axi-action-hit: 32px">` |
 | `--axi-well-pad` | the padding inside an `.axi-well` | `10px` | `<div class="axi-well" style="--axi-well-pad: 18px">` |
 | `--axi-well-radius` | an `.axi-well`'s corner radius, for a well used at reading scale rather than page scale | `var(--axi-radius)` | `<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">` |
+| `--axi-empty-pad` | the padding inside an `.axi-empty`, for an empty state standing in a tighter space than a table would | `24px 16px` | `<div class="axi-empty" style="--axi-empty-pad: 12px">` |
 | `--axi-rail-w` | an `.axi-rail`'s width, for labels longer than the default holds | `208px` | `<aside class="axi-rail" style="--axi-rail-w: 260px">` |
 | `--axi-rail-pad` | the padding inside an `.axi-rail` | `10px` | `<aside class="axi-rail" style="--axi-rail-pad: 6px">` |
 | `--axi-toolbar-pad` | the padding inside an `.axi-toolbar` | `14px` | `<div class="axi-toolbar" style="--axi-toolbar-pad: 4px 7px">` |

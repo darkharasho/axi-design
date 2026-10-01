@@ -323,6 +323,31 @@ still how you say anything about its inside.`,
     ],
   },
   {
+    id: 'empty',
+    name: 'Empty state',
+    layer: 'layout',
+    classes: ['.axi-empty'],
+    summary: 'A well with nothing in it but the sentence saying so: the place a table or a chart would stand when there is no data to stand there.',
+    rules: [3, 5],
+    knobs: ['--axi-empty-pad'],
+    notes: `Every view that can have no data has to say so somewhere, and the first
+consumer counted said it eighty times - a dashed box, centred, small, dim - in
+eighty copies of the same eleven utilities, none of them a word the language
+had. The dashes meant "provisional"; the language says provisional with the
+outlined/filled distinction, so the edge here is the well's own rule.
+
+It is a well because an absence is a recess: the object that would have been
+raised here is not, and what shows is the field behind it. The pad is generous
+on purpose - an empty state as tall as a single row reads as a row that failed
+to render, not as a statement that there are none.`,
+    examples: [
+      {
+        title: 'Where a table would be',
+        html: `<div class="axi-empty">No fights match the current filter.</div>`,
+      },
+    ],
+  },
+  {
     id: 'split',
     name: 'Split pane',
     layer: 'layout',

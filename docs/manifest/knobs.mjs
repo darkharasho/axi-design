@@ -108,6 +108,12 @@ export const KNOBS = [
     example: '<div class="axi-well" style="--axi-well-radius: var(--axi-radius-sm)">',
   },
   {
+    name: '--axi-empty-pad',
+    sets: 'the padding inside an `.axi-empty`, for an empty state standing in a tighter space than a table would',
+    fallback: '`24px 16px`',
+    example: '<div class="axi-empty" style="--axi-empty-pad: 12px">',
+  },
+  {
     name: '--axi-rail-w',
     sets: "an `.axi-rail`'s width, for labels longer than the default holds",
     fallback: '`208px`',
