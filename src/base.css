@@ -72,3 +72,43 @@ a { color: inherit; }
     transform: none !important;
   }
 }
+
+/* The scrollbar is chrome, and chrome is drawn in the language's own ink. A
+   browser's default bar is a light capsule on a light channel, which is two
+   things this language does not have: a colour at partial opacity over the
+   ground (rule 2) and the one radius the system refuses (see --axi-radius).
+   The consumer that first themed it had written both anyway - a 999px thumb
+   in white at 35% - in its own stylesheet, because the language said nothing
+   here, and a decision the language leaves unsaid is one every consumer makes
+   differently.
+
+   So: the thumb is the rule ink, a rectangle, in a transparent channel. The
+   channel is transparent rather than the ground for the reason the well's fill
+   gives: an opaque page colour inside a translucent pane is a black patch, and
+   a bar runs down the inside of panes and wells as often as down the page.
+
+   Two spellings, one per engine, and neither is a fallback for the other.
+   `::-webkit-scrollbar` is the only spelling that controls the SHAPE - the
+   standard `scrollbar-color` pair recolours whatever the engine draws, and
+   what Chromium draws is a capsule with arrow buttons, the shape this language
+   refuses. Worse, Chromium (121+) switches the pseudo-elements off entirely the
+   moment either standard property is set, so writing both does not combine
+   them: it hands Chromium the capsule and throws the rectangle away. (The
+   consumer this replaces had written both, and had been tuning a webkit block
+   Chromium stopped reading, for years.) So the standard pair is scoped to the
+   engines that have no pseudo-element to disable, which today is Firefox, and
+   the pseudo-elements carry the design everywhere else. scrollbar-color
+   inherits, so the root says it once; scrollbar-width does not, so it is set
+   on everything.
+
+   The quiet-scroll rule in utilities.css still wins where it applies: those
+   selectors carry a class and these carry none, so a strip that has asked for
+   no bar gets none, and everything else gets this one. */
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-color: var(--axi-rule) transparent; }
+  * { scrollbar-width: thin; }
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--axi-rule); border-radius: 0; }

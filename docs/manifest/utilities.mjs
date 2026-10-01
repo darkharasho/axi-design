@@ -172,4 +172,40 @@ on which one the consumer picked.`,
       },
     ],
   },
+  {
+    id: 'scrollbar',
+    name: 'The scrollbar',
+    layer: 'utilities',
+    classes: [],
+    selectors: ['::-webkit-scrollbar', 'scrollbar-color'],
+    summary: 'Every scrollbar is a rectangle of the rule ink in a transparent channel. Nothing to write: it is declared once, in base.css, for the page and every pane and well that scrolls.',
+    rules: [2, 3, 4],
+    knobs: [],
+    aliases: ['scroll', 'thumb', 'overflow'],
+    notes: `The browser's default is a light capsule on a light channel: a colour at
+partial opacity over the ground and the one radius this language refuses. The
+thumb here is \`--axi-rule\`, square, in a transparent channel - the bar runs
+down the inside of a translucent pane as often as down the page, and an opaque
+channel there would be a black patch. The shape is only controllable through
+\`::-webkit-scrollbar\`, and Chromium drops those the moment the standard
+\`scrollbar-color\` pair is set - so the pair is scoped to engines without the
+pseudo-element, and every engine gets exactly one spelling.
+
+A strip that wants no bar at all says \`.axi-scroll-quiet\`; that rule carries a
+class and this one does not, so it wins wherever it is written.`,
+    examples: [
+      {
+        title: 'A well that scrolls',
+        html: `<div class="axi-well" style="height: 120px; overflow-y: auto; padding: 12px">
+  <p style="margin: 0 0 10px">Line one of a list long enough to scroll.</p>
+  <p style="margin: 0 0 10px">Line two.</p>
+  <p style="margin: 0 0 10px">Line three.</p>
+  <p style="margin: 0 0 10px">Line four.</p>
+  <p style="margin: 0 0 10px">Line five.</p>
+  <p style="margin: 0 0 10px">Line six.</p>
+  <p style="margin: 0">Line seven.</p>
+</div>`,
+      },
+    ],
+  },
 ]

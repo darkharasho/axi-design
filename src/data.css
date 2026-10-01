@@ -715,3 +715,132 @@
 .axi-legend:has([aria-pressed="true"]) .axi-legend__key:where(:not([aria-pressed="true"], :hover)) {
   color: var(--axi-text-faint);
 }
+
+/* ---------- library charts ---------- */
+/* The language draws its own bars, plot and ticks above. An app that needs a
+   stacked area, a brush or a pie reaches for a charting library instead, and
+   the library arrives with its own furniture: a dashed grey grid, a #666 axis,
+   a slate tooltip with a half-rem corner. Every series it draws is the
+   consumer's data and keeps its own colour (rule 10). Everything drawn AROUND
+   the series is furniture, and furniture is the language's.
+
+   This is the binding for recharts, which is the library the suite uses. It
+   is scoped to `.axi-chart` so a chart opts in by wrapping, and it reaches the
+   library's elements by the class names recharts puts on them. recharts spreads
+   stroke and fill onto its SVG as presentation attributes, which a stylesheet
+   outranks, so nothing here needs to be passed into the library - and nothing
+   here is written with !important. A consumer that hands the library an inline
+   `contentStyle` has written a second design for the tooltip, and the answer
+   is to stop writing it, not for the language to shout over it: the tooltip is
+   `.axi-tooltip--flow` as custom content, drawn once, like every other tooltip.
+
+   The grammar is the one every component here already follows. Furniture is
+   drawn in the neutral ramp and recedes: the grid at --axi-grid, a step below
+   the rule (see tokens.css); the axis as a rule at the hairline weight, the
+   same line the table draws between rows; tick labels in the faint ink with
+   tabular figures, so a y-axis whose digits change width holds still. Every
+   small object standing on a series - a point, a bar, a slice - takes the ink
+   edge rule 3 gives every other small object, at the hairline because it is a
+   mark and not a raised surface, and keeps its fill, because the fill is which
+   series it belongs to. The hover band is the raised step's -paint companion
+   (a `fill` cannot be a gradient) rather than a white wash, which is rule 2.
+
+   The brush is the one place an accent is spent. Its two travellers are the
+   only thing in any chart you can grab, and they are small: a target you have
+   to find before you can use it is what the accent is for, unlike the hover
+   band, which is already under the pointer. The slide between them is the
+   surface as one paint, the trough behind them a well. One accent in the plot,
+   on the one control.
+
+   Solid, never dashed. A dash is decoration, and fifteen charts of dashes is a
+   texture rather than a scale; the reference line - a threshold, a claim - is
+   solid too, because it is one of the few lines in a chart meant to be read. */
+.axi-chart {
+  /* Every figure in a chart is a label of a number, so the whole scope reads
+     tabular. Nothing else is declared on the scope: a chart's size belongs to
+     the library's container and the consumer's layout. */
+  font-variant-numeric: tabular-nums;
+}
+.axi-chart .recharts-cartesian-grid line {
+  stroke: var(--axi-grid);
+  stroke-dasharray: none;
+  stroke-width: 1;
+}
+/* Stripes are a second background inside a chart that already has one. */
+.axi-chart .recharts-cartesian-grid-bg,
+.axi-chart .recharts-cartesian-gridstripes-horizontal,
+.axi-chart .recharts-cartesian-gridstripes-vertical { display: none; }
+
+.axi-chart .recharts-cartesian-axis-line {
+  stroke: var(--axi-rule);
+  stroke-width: var(--axi-border-hairline);
+}
+.axi-chart .recharts-cartesian-axis-tick-line { stroke: var(--axi-rule); }
+.axi-chart .recharts-cartesian-axis-tick-value { fill: var(--axi-text-faint); }
+.axi-chart .recharts-label,
+.axi-chart .recharts-legend-item-text { fill: var(--axi-text-dim); color: var(--axi-text-dim); }
+/* The legend is a key, so it reads as labels rather than as chips - the same
+   type .axi-legend__key sets. */
+.axi-chart .recharts-legend-wrapper {
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+}
+
+/* The hover band. A fill change rather than a wash: the next surface up, as
+   one paint, edged with the rule at the hairline like every line here. */
+.axi-chart .recharts-tooltip-cursor {
+  fill: var(--axi-surface-raised-paint);
+  fill-opacity: 1;
+  stroke: var(--axi-rule);
+  stroke-width: var(--axi-border-hairline);
+}
+/* A line chart's cursor is a crosshair, not a band, so it stays a line. */
+.axi-chart .recharts-curve.recharts-tooltip-cursor {
+  fill: none;
+  stroke: var(--axi-rule);
+  stroke-dasharray: none;
+}
+
+/* Small objects standing on a series keep their fill and take the ink edge. */
+.axi-chart .recharts-line-dot,
+.axi-chart .recharts-scatter-symbol > path,
+.axi-chart .recharts-pie-sector > path,
+.axi-chart .recharts-bar-rectangle > path {
+  stroke: var(--axi-ink-line);
+  stroke-width: var(--axi-border-hairline);
+}
+.axi-chart .recharts-active-dot > * {
+  stroke: var(--axi-ink-line);
+  stroke-width: var(--axi-border-control);
+}
+.axi-chart .recharts-bar-background-rectangle { fill: var(--axi-well-fill); }
+
+.axi-chart .recharts-reference-line-line {
+  stroke: var(--axi-text-faint);
+  stroke-width: var(--axi-border-hairline);
+  stroke-dasharray: none;
+}
+
+/* The brush: a well, a slide, two travellers, and the preview curve dropped to
+   furniture weight because it is context rather than data you read off. */
+.axi-chart .recharts-brush > rect:first-of-type {
+  fill: var(--axi-well-fill);
+  stroke: var(--axi-well-line);
+  stroke-width: var(--axi-border-control);
+}
+.axi-chart .recharts-brush-slide {
+  fill: var(--axi-surface-paint);
+  fill-opacity: 1;
+}
+.axi-chart .recharts-brush-traveller > rect {
+  fill: var(--axi-accent);
+  stroke: var(--axi-ink-line);
+  stroke-width: var(--axi-border-hairline);
+}
+.axi-chart .recharts-brush-traveller > line { stroke: var(--axi-accent-ink); }
+.axi-chart .recharts-brush-texts { fill: var(--axi-text-faint); }
+.axi-chart .recharts-brush .recharts-curve {
+  stroke: var(--axi-text-faint);
+  fill: none;
+}

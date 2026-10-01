@@ -658,4 +658,70 @@ is a bar chart, and \`.axi-bars\` already is one.`,
       },
     ],
   },
+  {
+    id: 'chart',
+    name: 'Library chart',
+    layer: 'data',
+    classes: ['.axi-chart'],
+    summary: 'A scope that draws a charting library\'s furniture in the language: grid, axis, ticks, hover band, legend and brush in the neutral ramp, every series kept in its own colour. Bound to recharts.',
+    rules: [2, 3, 9, 10],
+    knobs: [],
+    aliases: ['recharts', 'furniture', 'gridlines', 'brush', 'library'],
+    notes: `Wrap a recharts chart (its \`ResponsiveContainer\`, or any ancestor) in
+\`.axi-chart\` and the furniture arrives: the grid at \`--axi-grid\`, the axis
+as a hairline rule, faint tabular tick labels, the hover band as the raised
+step, a point, bar or slice edged in ink and keeping its series fill, and a
+brush drawn as a well with the plot's one accent on its two travellers. Rule
+10's subsection *A chart's furniture recedes* is the text this binds.
+
+Nothing here is \`!important\`. The library's tooltip is not styled at all:
+pass custom content wearing \`.axi-tooltip axi-tooltip--flow\` instead of an
+inline \`contentStyle\`, which is a second design the language will not shout
+over. Under the main theme the tooltip is that one exception rule 3 names, and
+the chart gets it by using it rather than by redrawing it.`,
+    examples: [
+      {
+        title: 'A bar chart\'s furniture, drawn statically',
+        note: 'The library emits this structure; the language only colours it. Series fills are the consumer\'s.',
+        html: `<div class="axi-chart" style="height: 150px">
+  <svg width="100%" height="150" viewBox="0 0 320 150" aria-hidden="true">
+    <g class="recharts-cartesian-grid">
+      <line x1="40" y1="20" x2="310" y2="20"></line>
+      <line x1="40" y1="55" x2="310" y2="55"></line>
+      <line x1="40" y1="90" x2="310" y2="90"></line>
+    </g>
+    <g class="recharts-tooltip-cursor-wrapper"><rect class="recharts-tooltip-cursor" x="128" y="20" width="60" height="105"></rect></g>
+    <g class="recharts-bar-rectangle"><path d="M52 60 h36 v65 h-36 z" fill="var(--axi-series, var(--axi-accent))"></path></g>
+    <g class="recharts-bar-rectangle"><path d="M140 32 h36 v93 h-36 z" fill="var(--axi-series, var(--axi-accent))"></path></g>
+    <g class="recharts-bar-rectangle"><path d="M228 80 h36 v45 h-36 z" fill="var(--axi-text-faint)"></path></g>
+    <g class="recharts-reference-line"><line class="recharts-reference-line-line" x1="40" y1="48" x2="310" y2="48"></line></g>
+    <g class="recharts-cartesian-axis">
+      <line class="recharts-cartesian-axis-line" x1="40" y1="125" x2="310" y2="125"></line>
+      <text class="recharts-cartesian-axis-tick-value" x="70" y="141" text-anchor="middle" font-size="10">0:00</text>
+      <text class="recharts-cartesian-axis-tick-value" x="158" y="141" text-anchor="middle" font-size="10">1:30</text>
+      <text class="recharts-cartesian-axis-tick-value" x="246" y="141" text-anchor="middle" font-size="10">3:00</text>
+      <text class="recharts-cartesian-axis-tick-value" x="34" y="24" text-anchor="end" font-size="10">12k</text>
+      <text class="recharts-cartesian-axis-tick-value" x="34" y="94" text-anchor="end" font-size="10">4k</text>
+    </g>
+  </svg>
+</div>`,
+      },
+      {
+        title: 'A brush under a plot',
+        note: 'A well, a slide at the surface paint, and the plot\'s one accent on the two travellers',
+        html: `<div class="axi-chart">
+  <svg width="100%" height="40" viewBox="0 0 320 40" aria-hidden="true">
+    <g class="recharts-brush">
+      <rect x="2" y="2" width="316" height="36"></rect>
+      <rect class="recharts-brush-slide" x="96" y="2" width="128" height="36"></rect>
+      <g class="recharts-brush-traveller"><rect x="90" y="2" width="8" height="36"></rect><line x1="94" y1="14" x2="94" y2="26"></line></g>
+      <g class="recharts-brush-traveller"><rect x="222" y="2" width="8" height="36"></rect><line x1="226" y1="14" x2="226" y2="26"></line></g>
+      <text class="recharts-brush-texts" x="86" y="24" text-anchor="end" font-size="10">0:48</text>
+      <text class="recharts-brush-texts" x="234" y="24" font-size="10">2:36</text>
+    </g>
+  </svg>
+</div>`,
+      },
+    ],
+  },
 ]

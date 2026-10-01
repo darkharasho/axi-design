@@ -75,6 +75,28 @@ a.axi-panel--tile:hover,
 button.axi-panel--tile:hover,
 .axi-panel--tile[role='button']:hover { box-shadow: var(--axi-shadow-control-hover); }
 
+/* The status cap rule 5 describes, as a thing you can write. A verdict about
+   the reading inside a panel, a tile or a stat is said once, across its head,
+   in the status ink - directly over the value it judges - and the rest of the
+   outline stays the ink line every other edge in the language is drawn in. Not
+   down the left: a full-height stripe is the box's frame, and five tiles in a
+   row become five coloured frames saying nothing about any one number.
+
+   It recolours the top edge the element already has rather than adding a bar,
+   so it is drawn at the element's own weight by construction - the panel step
+   on a panel, the control step on a tile or a stat - which is rule 5's own
+   argument against a heavy cap on a light frame. The state is an attribute the
+   consumer declares about its data (rule 13), read by the three objects a
+   reading lives in; a card's strip is a different claim (which category) and
+   keeps its own word.
+
+   Four values and no fifth: the accent is not a verdict, and a cap in it would
+   say "picked" about a thing nobody picked. */
+.axi-panel[data-status="ok"],     .axi-stat[data-status="ok"]     { border-top-color: var(--axi-ok); }
+.axi-panel[data-status="warn"],   .axi-stat[data-status="warn"]   { border-top-color: var(--axi-warn); }
+.axi-panel[data-status="danger"], .axi-stat[data-status="danger"] { border-top-color: var(--axi-danger); }
+.axi-panel[data-status="meta"],   .axi-stat[data-status="meta"]   { border-top-color: var(--axi-meta); }
+
 /* The one of these you picked. A grid of panels, tiles or cards where one is
    chosen - a theme picker, a fight picker, a leader you have opened - and the
    surface has to say which.

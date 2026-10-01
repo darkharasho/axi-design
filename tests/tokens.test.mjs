@@ -2155,3 +2155,144 @@ describe('a hover reveals no control, and a legend key recedes rather than fades
     expect(hover).toMatch(/^\.axi-legend__key:where\(button:hover\)$/)
   })
 })
+
+describe('a chart\'s furniture recedes, and a library chart is bound rather than shouted over', () => {
+  const chartBlock = () => {
+    const css = stripComments(read('data.css'))
+    const i = css.indexOf('.axi-chart {')
+    expect(i, 'the library-chart binding has left data.css').toBeGreaterThan(-1)
+    return css.slice(i)
+  }
+  const rulesIn = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+
+  it('is written into rule 10', () => {
+    const rules = readFileSync(resolve(process.cwd(), 'docs/RULES.md'), 'utf8')
+    const section = rules.match(/### A chart's furniture recedes[\s\S]*?(?=\n## )/)
+    expect(section, 'rule 10 no longer rules on furniture').not.toBeNull()
+    expect(section[0]).toMatch(/a step below the rule/)
+    expect(section[0]).toMatch(/One accent is spent inside a plot/)
+    expect(section[0]).toMatch(/without `!important`/)
+  })
+
+  it('declares the gridline as a token derived from the rule, so a theme has nothing to restate', () => {
+    const tokens = stripComments(read('tokens.css'))
+    const decl = tokens.match(/--axi-grid:\s*([^;]+);/)
+    expect(decl, '--axi-grid is not a token').not.toBeNull()
+    expect(decl[1]).toMatch(/color-mix\(in srgb, var\(--axi-rule\) \d+%, transparent\)/)
+    // Derived: no theme may pin it, or the grid stops following a relit rule.
+    for (const name of ['glass', 'flat']) {
+      const theme = readFileSync(resolve(process.cwd(), `themes/${name}.json`), 'utf8')
+      expect(theme, `${name} restates --axi-grid`).not.toMatch(/--axi-grid"/)
+    }
+    const grid = rulesIn(chartBlock()).find((r) => r.sel === '.axi-chart .recharts-cartesian-grid line')
+    expect(grid, 'the grid rule is gone').toBeDefined()
+    expect(grid.body).toMatch(/stroke:\s*var\(--axi-grid\)/)
+    expect(grid.body).toMatch(/stroke-dasharray:\s*none/)
+  })
+
+  it('shouts over nothing: no !important, and no rule for the library\'s own tooltip', () => {
+    const block = chartBlock()
+    expect(block).not.toMatch(/!important/)
+    expect(block).not.toMatch(/recharts-default-tooltip|recharts-tooltip-wrapper/)
+  })
+
+  it('scopes every rule to .axi-chart and dashes nothing', () => {
+    for (const { sel, body } of rulesIn(chartBlock())) {
+      expect(sel.startsWith('.axi-chart'), `${sel} escapes the scope`).toBe(true)
+      const dash = body.match(/stroke-dasharray:\s*([^;]+)/)
+      if (dash) expect(dash[1].trim(), `${sel} dashes a line`).toBe('none')
+    }
+  })
+
+  it('edges a point, a bar and a slice in ink and never sets their fill', () => {
+    // Rule 10: the fill is which series it belongs to, and it is the consumer's.
+    const marks = rulesIn(chartBlock()).filter((r) => /line-dot|scatter-symbol|pie-sector|bar-rectangle >|active-dot/.test(r.sel))
+    expect(marks.length).toBeGreaterThan(1)
+    for (const { sel, body } of marks) {
+      expect(body, `${sel} paints a series`).not.toMatch(/(^|[^-])fill\s*:/)
+      expect(body, `${sel} has no ink edge`).toMatch(/stroke:\s*var\(--axi-ink-line\)/)
+    }
+  })
+
+  it('spends the accent once, on the brush travellers', () => {
+    const accented = rulesIn(chartBlock()).filter((r) => /var\(--axi-accent\)/.test(r.body))
+    expect(accented.map((r) => r.sel)).toEqual(['.axi-chart .recharts-brush-traveller > rect'])
+  })
+
+  it('fills the hover band and the brush slide with a paint companion, never a surface that may be a gradient', () => {
+    for (const { sel, body } of rulesIn(chartBlock())) {
+      const fill = body.match(/(^|[^-])fill:\s*var\((--axi-surface[a-z-]*)\)/)
+      if (fill) expect(fill[2], `${sel} fills with ${fill[2]}`).toMatch(/-paint$/)
+    }
+  })
+})
+
+describe('the scrollbar is chrome drawn in the language, and a quiet strip still wins', () => {
+  const base = () => stripComments(read('base.css'))
+  const rulesIn = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+
+  it('draws the thumb in the rule ink, as a rectangle, with no channel colour named', () => {
+    const thumb = rulesIn(base()).find((r) => r.sel === '::-webkit-scrollbar-thumb')
+    expect(thumb, 'base.css no longer draws the thumb').toBeDefined()
+    expect(thumb.body).toMatch(/background:\s*var\(--axi-rule\)/)
+    expect(thumb.body).toMatch(/border-radius:\s*0/)
+    const track = rulesIn(base()).find((r) => /::-webkit-scrollbar-track/.test(r.sel))
+    expect(track.body).toMatch(/background:\s*transparent/)
+    expect(base()).toMatch(/scrollbar-color:\s*var\(--axi-rule\) transparent/)
+  })
+
+  it('scopes the standard pair to engines without the pseudo-element, because Chromium cannot hold both', () => {
+    // Chromium 121+ disables ::-webkit-scrollbar once scrollbar-color or
+    // scrollbar-width is set, and its standard bar is the capsule with arrows
+    // this language refuses. The pair is for Firefox; the pseudo-elements are
+    // the design everywhere that reads them.
+    const css = base()
+    const scoped = css.match(/@supports not selector\(::-webkit-scrollbar\)\s*\{([\s\S]*?)\}\s*\}/)
+    expect(scoped, 'the standard pair is not scoped').not.toBeNull()
+    expect(scoped[1]).toMatch(/scrollbar-color:\s*var\(--axi-rule\) transparent/)
+    expect(scoped[1]).toMatch(/scrollbar-width:\s*thin/)
+    const outside = css.replace(scoped[0], '')
+    expect(outside, 'a standard scrollbar property escaped the scope').not.toMatch(/scrollbar-(color|width)\s*:/)
+  })
+
+  it('carries no class, so the quiet-scroll rule outranks it wherever a strip asks for no bar', () => {
+    for (const { sel } of rulesIn(base()).filter((r) => /scrollbar/.test(r.sel))) {
+      expect(sel, `${sel} would out-rank .axi-scroll-quiet`).not.toMatch(/\./)
+    }
+    const quiet = rulesIn(stripComments(read('utilities.css'))).find((r) => r.sel.includes('.axi-scroll-quiet::-webkit-scrollbar'))
+    expect(quiet, 'the quiet-scroll rule is gone').toBeDefined()
+    expect(quiet.body).toMatch(/width:\s*0/)
+  })
+})
+
+describe('a status cap is an attribute on the head of the thing it judges', () => {
+  const prim = () => stripComments(read('primitives.css'))
+  const rulesIn = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+  const caps = () => rulesIn(prim()).filter((r) => /\[data-status=/.test(r.sel))
+
+  it('is rule 5 as written: the head, in the status ink, at the element\'s own weight', () => {
+    const found = caps()
+    expect(found).toHaveLength(4)
+    for (const { sel, body } of found) {
+      // Recolours the edge the element already has; adds no width, no bar, no
+      // left stripe. A `border-top-width` here would be rule 5's third step.
+      expect(body.trim(), sel).toMatch(/^border-top-color:\s*var\(--axi-(ok|warn|danger|meta)\);?$/)
+      expect(sel).not.toMatch(/left/)
+    }
+  })
+
+  it('reads the attribute on the three objects a reading lives in, and offers no accent value', () => {
+    const sels = caps().map((r) => r.sel).join('\n')
+    for (const status of ['ok', 'warn', 'danger', 'meta']) {
+      expect(sels).toMatch(new RegExp(`\\.axi-panel\\[data-status="${status}"\\]`))
+      expect(sels).toMatch(new RegExp(`\\.axi-stat\\[data-status="${status}"\\]`))
+    }
+    expect(sels).not.toMatch(/accent/)
+    expect(caps().map((r) => r.body).join('')).not.toMatch(/--axi-accent/)
+  })
+
+  it('stands before the picked state, so the thing you picked still owns its whole outline', () => {
+    const css = prim()
+    expect(css.indexOf('[data-status="ok"]')).toBeLessThan(css.indexOf('[aria-current]'))
+  })
+})

@@ -122,6 +122,20 @@
      --axi-ink-on-fill below, on the other side of the same token. */
   --axi-ground-deep: var(--axi-ink-line);
   --axi-rule: #3a4250;            /* internal rules, inside an outlined panel */
+  /* A gridline is quieter than a rule. A rule divides two things; a grid is
+     scaffolding a value is read against, and it has to sit barely above the
+     ground it is drawn on or the chart becomes a grid of boxes with numbers
+     in them - the failure rule 3 names for tables, arriving in a plot.
+
+     Derived, not picked, and that is the point of its being a token. The one
+     consumer that had drawn a chart grid wrote #262c36 for it: the default
+     rule laid over the default ground at 47%, to within one step per channel,
+     and a fixed slate that stayed slate under glass and under flat while both
+     themes relit their rules. Mixing toward transparent rather than toward
+     the ground keeps it right on a panel fill too, and keeps it following
+     --axi-rule when a theme restates that - so a theme has nothing to say
+     here, and says nothing. */
+  --axi-grid: color-mix(in srgb, var(--axi-rule) 47%, transparent);
   /* --- the well --- */
   /* A field sunk INTO a surface rather than raised off one: a table picker's
      list, a bar's trough, a column of cards standing on the page. The language
@@ -347,6 +361,46 @@ a { color: inherit; }
   }
 }
 
+/* The scrollbar is chrome, and chrome is drawn in the language's own ink. A
+   browser's default bar is a light capsule on a light channel, which is two
+   things this language does not have: a colour at partial opacity over the
+   ground (rule 2) and the one radius the system refuses (see --axi-radius).
+   The consumer that first themed it had written both anyway - a 999px thumb
+   in white at 35% - in its own stylesheet, because the language said nothing
+   here, and a decision the language leaves unsaid is one every consumer makes
+   differently.
+
+   So: the thumb is the rule ink, a rectangle, in a transparent channel. The
+   channel is transparent rather than the ground for the reason the well's fill
+   gives: an opaque page colour inside a translucent pane is a black patch, and
+   a bar runs down the inside of panes and wells as often as down the page.
+
+   Two spellings, one per engine, and neither is a fallback for the other.
+   `::-webkit-scrollbar` is the only spelling that controls the SHAPE - the
+   standard `scrollbar-color` pair recolours whatever the engine draws, and
+   what Chromium draws is a capsule with arrow buttons, the shape this language
+   refuses. Worse, Chromium (121+) switches the pseudo-elements off entirely the
+   moment either standard property is set, so writing both does not combine
+   them: it hands Chromium the capsule and throws the rectangle away. (The
+   consumer this replaces had written both, and had been tuning a webkit block
+   Chromium stopped reading, for years.) So the standard pair is scoped to the
+   engines that have no pseudo-element to disable, which today is Firefox, and
+   the pseudo-elements carry the design everywhere else. scrollbar-color
+   inherits, so the root says it once; scrollbar-width does not, so it is set
+   on everything.
+
+   The quiet-scroll rule in utilities.css still wins where it applies: those
+   selectors carry a class and these carry none, so a strip that has asked for
+   no bar gets none, and everything else gets this one. */
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-color: var(--axi-rule) transparent; }
+  * { scrollbar-width: thin; }
+}
+::-webkit-scrollbar { width: 10px; height: 10px; }
+::-webkit-scrollbar-track,
+::-webkit-scrollbar-corner { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--axi-rule); border-radius: 0; }
+
 /* --- primitives.css --- */
 /* axi design language - primitives.
    The pieces that recur in every property. Two rules govern the whole file:
@@ -424,6 +478,28 @@ a { color: inherit; }
 a.axi-panel--tile:hover,
 button.axi-panel--tile:hover,
 .axi-panel--tile[role='button']:hover { box-shadow: var(--axi-shadow-control-hover); }
+
+/* The status cap rule 5 describes, as a thing you can write. A verdict about
+   the reading inside a panel, a tile or a stat is said once, across its head,
+   in the status ink - directly over the value it judges - and the rest of the
+   outline stays the ink line every other edge in the language is drawn in. Not
+   down the left: a full-height stripe is the box's frame, and five tiles in a
+   row become five coloured frames saying nothing about any one number.
+
+   It recolours the top edge the element already has rather than adding a bar,
+   so it is drawn at the element's own weight by construction - the panel step
+   on a panel, the control step on a tile or a stat - which is rule 5's own
+   argument against a heavy cap on a light frame. The state is an attribute the
+   consumer declares about its data (rule 13), read by the three objects a
+   reading lives in; a card's strip is a different claim (which category) and
+   keeps its own word.
+
+   Four values and no fifth: the accent is not a verdict, and a cap in it would
+   say "picked" about a thing nobody picked. */
+.axi-panel[data-status="ok"],     .axi-stat[data-status="ok"]     { border-top-color: var(--axi-ok); }
+.axi-panel[data-status="warn"],   .axi-stat[data-status="warn"]   { border-top-color: var(--axi-warn); }
+.axi-panel[data-status="danger"], .axi-stat[data-status="danger"] { border-top-color: var(--axi-danger); }
+.axi-panel[data-status="meta"],   .axi-stat[data-status="meta"]   { border-top-color: var(--axi-meta); }
 
 /* The one of these you picked. A grid of panels, tiles or cards where one is
    chosen - a theme picker, a fight picker, a leader you have opened - and the
@@ -3378,6 +3454,135 @@ textarea.axi-input {
 .axi-legend__key[aria-pressed="true"] { color: var(--axi-text); }
 .axi-legend:has([aria-pressed="true"]) .axi-legend__key:where(:not([aria-pressed="true"], :hover)) {
   color: var(--axi-text-faint);
+}
+
+/* ---------- library charts ---------- */
+/* The language draws its own bars, plot and ticks above. An app that needs a
+   stacked area, a brush or a pie reaches for a charting library instead, and
+   the library arrives with its own furniture: a dashed grey grid, a #666 axis,
+   a slate tooltip with a half-rem corner. Every series it draws is the
+   consumer's data and keeps its own colour (rule 10). Everything drawn AROUND
+   the series is furniture, and furniture is the language's.
+
+   This is the binding for recharts, which is the library the suite uses. It
+   is scoped to `.axi-chart` so a chart opts in by wrapping, and it reaches the
+   library's elements by the class names recharts puts on them. recharts spreads
+   stroke and fill onto its SVG as presentation attributes, which a stylesheet
+   outranks, so nothing here needs to be passed into the library - and nothing
+   here is written with !important. A consumer that hands the library an inline
+   `contentStyle` has written a second design for the tooltip, and the answer
+   is to stop writing it, not for the language to shout over it: the tooltip is
+   `.axi-tooltip--flow` as custom content, drawn once, like every other tooltip.
+
+   The grammar is the one every component here already follows. Furniture is
+   drawn in the neutral ramp and recedes: the grid at --axi-grid, a step below
+   the rule (see tokens.css); the axis as a rule at the hairline weight, the
+   same line the table draws between rows; tick labels in the faint ink with
+   tabular figures, so a y-axis whose digits change width holds still. Every
+   small object standing on a series - a point, a bar, a slice - takes the ink
+   edge rule 3 gives every other small object, at the hairline because it is a
+   mark and not a raised surface, and keeps its fill, because the fill is which
+   series it belongs to. The hover band is the raised step's -paint companion
+   (a `fill` cannot be a gradient) rather than a white wash, which is rule 2.
+
+   The brush is the one place an accent is spent. Its two travellers are the
+   only thing in any chart you can grab, and they are small: a target you have
+   to find before you can use it is what the accent is for, unlike the hover
+   band, which is already under the pointer. The slide between them is the
+   surface as one paint, the trough behind them a well. One accent in the plot,
+   on the one control.
+
+   Solid, never dashed. A dash is decoration, and fifteen charts of dashes is a
+   texture rather than a scale; the reference line - a threshold, a claim - is
+   solid too, because it is one of the few lines in a chart meant to be read. */
+.axi-chart {
+  /* Every figure in a chart is a label of a number, so the whole scope reads
+     tabular. Nothing else is declared on the scope: a chart's size belongs to
+     the library's container and the consumer's layout. */
+  font-variant-numeric: tabular-nums;
+}
+.axi-chart .recharts-cartesian-grid line {
+  stroke: var(--axi-grid);
+  stroke-dasharray: none;
+  stroke-width: 1;
+}
+/* Stripes are a second background inside a chart that already has one. */
+.axi-chart .recharts-cartesian-grid-bg,
+.axi-chart .recharts-cartesian-gridstripes-horizontal,
+.axi-chart .recharts-cartesian-gridstripes-vertical { display: none; }
+
+.axi-chart .recharts-cartesian-axis-line {
+  stroke: var(--axi-rule);
+  stroke-width: var(--axi-border-hairline);
+}
+.axi-chart .recharts-cartesian-axis-tick-line { stroke: var(--axi-rule); }
+.axi-chart .recharts-cartesian-axis-tick-value { fill: var(--axi-text-faint); }
+.axi-chart .recharts-label,
+.axi-chart .recharts-legend-item-text { fill: var(--axi-text-dim); color: var(--axi-text-dim); }
+/* The legend is a key, so it reads as labels rather than as chips - the same
+   type .axi-legend__key sets. */
+.axi-chart .recharts-legend-wrapper {
+  font: var(--axi-t-micro);
+  letter-spacing: var(--axi-ls-micro);
+  text-transform: uppercase;
+}
+
+/* The hover band. A fill change rather than a wash: the next surface up, as
+   one paint, edged with the rule at the hairline like every line here. */
+.axi-chart .recharts-tooltip-cursor {
+  fill: var(--axi-surface-raised-paint);
+  fill-opacity: 1;
+  stroke: var(--axi-rule);
+  stroke-width: var(--axi-border-hairline);
+}
+/* A line chart's cursor is a crosshair, not a band, so it stays a line. */
+.axi-chart .recharts-curve.recharts-tooltip-cursor {
+  fill: none;
+  stroke: var(--axi-rule);
+  stroke-dasharray: none;
+}
+
+/* Small objects standing on a series keep their fill and take the ink edge. */
+.axi-chart .recharts-line-dot,
+.axi-chart .recharts-scatter-symbol > path,
+.axi-chart .recharts-pie-sector > path,
+.axi-chart .recharts-bar-rectangle > path {
+  stroke: var(--axi-ink-line);
+  stroke-width: var(--axi-border-hairline);
+}
+.axi-chart .recharts-active-dot > * {
+  stroke: var(--axi-ink-line);
+  stroke-width: var(--axi-border-control);
+}
+.axi-chart .recharts-bar-background-rectangle { fill: var(--axi-well-fill); }
+
+.axi-chart .recharts-reference-line-line {
+  stroke: var(--axi-text-faint);
+  stroke-width: var(--axi-border-hairline);
+  stroke-dasharray: none;
+}
+
+/* The brush: a well, a slide, two travellers, and the preview curve dropped to
+   furniture weight because it is context rather than data you read off. */
+.axi-chart .recharts-brush > rect:first-of-type {
+  fill: var(--axi-well-fill);
+  stroke: var(--axi-well-line);
+  stroke-width: var(--axi-border-control);
+}
+.axi-chart .recharts-brush-slide {
+  fill: var(--axi-surface-paint);
+  fill-opacity: 1;
+}
+.axi-chart .recharts-brush-traveller > rect {
+  fill: var(--axi-accent);
+  stroke: var(--axi-ink-line);
+  stroke-width: var(--axi-border-hairline);
+}
+.axi-chart .recharts-brush-traveller > line { stroke: var(--axi-accent-ink); }
+.axi-chart .recharts-brush-texts { fill: var(--axi-text-faint); }
+.axi-chart .recharts-brush .recharts-curve {
+  stroke: var(--axi-text-faint);
+  fill: none;
 }
 
 /* --- feedback.css --- */

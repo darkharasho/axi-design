@@ -224,6 +224,41 @@ sites: it looked picked and announced nothing.`,
     ],
   },
   {
+    id: 'cap',
+    name: 'Status cap',
+    layer: 'layout',
+    classes: [],
+    selectors: ['[data-status="ok"]', '[data-status="warn"]', '[data-status="danger"]', '[data-status="meta"]'],
+    summary: 'A verdict on the reading inside a panel, tile or stat, said once across its head in the status ink. Declared as an attribute; the top edge follows.',
+    rules: [5, 13],
+    knobs: [],
+    aliases: ['verdict', 'severity', 'judgement', 'threshold'],
+    notes: `Put \`data-status="ok|warn|danger|meta"\` on an \`.axi-panel\`, an
+\`.axi-panel--tile\` or an \`.axi-stat\` and its top edge takes the status ink at
+the weight the element already has. Rule 5 says why it is the head and not the
+left edge: a full-height stripe reads as the box's frame, and a row of them
+reads as a row of coloured frames.
+
+There is no accent value. The accent means the thing you picked, and a verdict
+is the data's, not the reader's. A card that wants to say which *category* it
+belongs to uses \`.axi-card--strip\`, which is a different claim.`,
+    examples: [
+      {
+        title: 'Three readings, each capped with its verdict',
+        note: 'Tiles; the cap is the control weight because the tile is',
+        html: `<div class="axi-grid" style="--axi-grid-min: 150px;">
+  <div class="axi-panel axi-panel--tile" data-status="ok"><p class="axi-eyebrow">Stability uptime</p><b class="axi-stat__n">94%</b></div>
+  <div class="axi-panel axi-panel--tile" data-status="warn"><p class="axi-eyebrow">Cleanses / min</p><b class="axi-stat__n">38</b></div>
+  <div class="axi-panel axi-panel--tile" data-status="danger"><p class="axi-eyebrow">Deaths on tag</p><b class="axi-stat__n">11</b></div>
+</div>`,
+      },
+      {
+        title: 'A stat with a cap',
+        html: `<div class="axi-stat" data-status="meta" style="max-width: 180px"><b class="axi-stat__n">4</b><span class="axi-stat__k">Needs re-parse</span></div>`,
+      },
+    ],
+  },
+  {
     id: 'well',
     name: 'Well',
     layer: 'layout',

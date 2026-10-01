@@ -506,6 +506,28 @@ their meanings inside a chart, so nothing else may borrow them for a category.
 The status inks still mean status inside a plot: a line drawn in `--axi-danger`
 is asserting that the quantity is bad, not that it is the third series.
 
+### A chart's furniture recedes
+
+Rule 10 is about the series. Everything drawn *around* a series - gridlines,
+the axis, tick labels, the hover band, a brush - is furniture, and furniture is
+drawn in the neutral ramp so the series are the only colour in the plot. The
+grid sits a step below the rule, at `--axi-grid`, because a rule divides two
+things and a grid is only what a value is read against; the axis is a rule at
+the hairline; tick labels are the faint ink with tabular figures. A point, a
+bar or a slice keeps its own fill and takes the hairline ink edge every small
+object takes under rule 3. Nothing in a chart is dashed: a dash is decoration,
+and a threshold is one of the few lines in a chart meant to be read.
+
+One accent is spent inside a plot, and only on the one thing in it you can
+grab - a brush's travellers. The hover band is already under the pointer and
+needs no colour to be found.
+
+An app that draws its charts with a library gets the same furniture by
+wrapping the chart in `.axi-chart`, which binds these decisions to the
+library's own element classes. The binding is written without `!important`:
+a consumer that hands the library an inline style has drawn a second design,
+and the remedy is to stop handing it, not for the language to shout over it.
+
 ## 11. An indicator of work animates a composited property
 
 Spinners, progress strips and pulses almost always report on something

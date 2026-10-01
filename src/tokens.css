@@ -118,6 +118,20 @@
      --axi-ink-on-fill below, on the other side of the same token. */
   --axi-ground-deep: var(--axi-ink-line);
   --axi-rule: #3a4250;            /* internal rules, inside an outlined panel */
+  /* A gridline is quieter than a rule. A rule divides two things; a grid is
+     scaffolding a value is read against, and it has to sit barely above the
+     ground it is drawn on or the chart becomes a grid of boxes with numbers
+     in them - the failure rule 3 names for tables, arriving in a plot.
+
+     Derived, not picked, and that is the point of its being a token. The one
+     consumer that had drawn a chart grid wrote #262c36 for it: the default
+     rule laid over the default ground at 47%, to within one step per channel,
+     and a fixed slate that stayed slate under glass and under flat while both
+     themes relit their rules. Mixing toward transparent rather than toward
+     the ground keeps it right on a panel fill too, and keeps it following
+     --axi-rule when a theme restates that - so a theme has nothing to say
+     here, and says nothing. */
+  --axi-grid: color-mix(in srgb, var(--axi-rule) 47%, transparent);
   /* --- the well --- */
   /* A field sunk INTO a surface rather than raised off one: a table picker's
      list, a bar's trough, a column of cards standing on the page. The language
