@@ -165,21 +165,35 @@ describe('the generated theme files', () => {
     // material drawn in another's block is the component drift this file is
     // here to prevent, not an example of it.
     //
+    // --axi-offset-* was on this list too, on the reading that a theme restates
+    // the composed --axi-shadow-* wholesale or not at all and that retuning the
+    // offsets underneath would leave the two spellings of "the block"
+    // disagreeing. The reasoning was right and the conclusion was one case too
+    // wide. Consumers compose blocks from the offsets directly - the language
+    // asks them not to, but the tokens are public and they do - and a theme that
+    // restated --axi-shadow-* as a soft drop while leaving a 6px near-black step
+    // standing underneath shipped exactly the disagreement this rule exists to
+    // prevent, just on the other side: a hard plate behind every card on a theme
+    // that had already said its relief is soft. So a theme may zero the scale,
+    // and may do nothing else to it. Zero is not a retune, it is the same
+    // sentence --axi-shadow-* is already saying; any other value is two blocks
+    // arguing.
+    //
     // What stays the language, and why each one is not the same call:
-    //   --axi-offset-*  the step scale the main block is composed FROM. A theme
-    //                   restates the composed --axi-shadow-* wholesale or not at
-    //                   all; retuning the offsets underneath it would leave the
-    //                   two spellings of "the block" disagreeing.
     //   measure         --axi-page, --axi-gutter. Where the text wraps is not a
     //                   look, and a theme that moved it would reflow the page.
     //   type            --axi-sans, --axi-mono, --axi-t-*, --axi-ls-*. Same,
     //                   harder: the type scale is the voice.
     const FILLS = ['--axi-accent', '--axi-meta', '--axi-ok', '--axi-warn', '--axi-danger']
-    const FORM = /^--axi-(offset|page|gutter|sans|mono|t|ls)(-|$)/
+    const FORM = /^--axi-(page|gutter|sans|mono|t|ls)(-|$)/
+    const OFFSET = /^--axi-offset(-|$)/
     for (const theme of THEMES) {
-      for (const name of Object.keys(theme.tokens)) {
+      for (const [name, value] of Object.entries(theme.tokens)) {
         expect(FILLS.includes(name), `${theme.id} restates the fill ${name}`).toBe(false)
         expect(FORM.test(name), `${theme.id} restates the language token ${name}`).toBe(false)
+        if (OFFSET.test(name)) {
+          expect(value, `${theme.id} retunes ${name} instead of zeroing it`).toBe('0')
+        }
       }
     }
 
@@ -189,8 +203,14 @@ describe('the generated theme files', () => {
     for (const open of ['--axi-shadow-panel', '--axi-border-control', '--axi-radius', '--axi-radius-sm']) {
       expect(FORM.test(open), `${open} should be a theme's to restate`).toBe(false)
     }
-    for (const shut of ['--axi-offset-panel', '--axi-page', '--axi-gutter', '--axi-t-body', '--axi-ls-label', '--axi-sans']) {
+    for (const shut of ['--axi-page', '--axi-gutter', '--axi-t-body', '--axi-ls-label', '--axi-sans']) {
       expect(FORM.test(shut), `${shut} should be the language's`).toBe(true)
+    }
+    // The offsets are the half-open case: a theme reaches them, but only to
+    // switch them off. Pin both halves so neither drifts back into the other.
+    for (const off of ['--axi-offset-panel', '--axi-offset-control', '--axi-offset-panel-hover', '--axi-offset-control-hover']) {
+      expect(FORM.test(off), `${off} should not be shut to a theme outright`).toBe(false)
+      expect(OFFSET.test(off), `${off} should be held to zero`).toBe(true)
     }
   })
 })
