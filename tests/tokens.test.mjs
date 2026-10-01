@@ -2296,3 +2296,98 @@ describe('a status cap is an attribute on the head of the thing it judges', () =
     expect(css.indexOf('[data-status="ok"]')).toBeLessThan(css.indexOf('[aria-current]'))
   })
 })
+
+// The split button's whole claim is that it reads as one control on all three
+// surfaces, and the surfaces disagree about every number involved:
+// --axi-border-control is 3px on axi and 1px on flat and glass,
+// --axi-radius-sm is 0, 4px and 10px. So "joined" cannot be a value anyone
+// tuned - it has to be the same expression as the border it is cancelling,
+// and the corners have to be the surface's. The consumer that prompted this
+// component had written a 1px seam and a 10px corner, which was right on
+// exactly one of the three.
+describe('the split button is joined by construction', () => {
+  const prim = () => stripComments(read('primitives.css'))
+  const rulesIn = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+  const split = () => rulesIn(prim()).filter((r) => /\.axi-btn-split/.test(r.sel))
+
+  it('cancels exactly the border it shares, rather than spacing the halves apart', () => {
+    const seam = split().find((r) => /\.axi-btn \+ \.axi-btn/.test(r.sel))
+    expect(seam, 'no seam rule found').toBeDefined()
+    // Negative, and equal to the border width on whatever surface is active:
+    // the second half's border lands on its sibling's and the two become one
+    // stroke. Any positive margin leaves two borders and a sliver of
+    // background between them - 7px of edge on the default surface.
+    expect(seam.body).toMatch(/margin-inline-start:\s*calc\(var\(--axi-border-control\) \* -1\)/)
+    expect(split().map((r) => r.body).join('')).not.toMatch(/margin[^:]*:\s*\d/)
+  })
+
+  it('takes its outer corners from the surface and squares the inner ones', () => {
+    const bodies = split().map((r) => r.body).join('')
+    // Four logical corners, each set once, each from the token. The shorthand
+    // is what made the hand-written version need a comment saying the rule
+    // above it had already squared both right corners.
+    for (const corner of ['start-start', 'end-start', 'start-end', 'end-end']) {
+      expect(bodies, corner).toMatch(new RegExp(`border-${corner}-radius:\\s*var\\(--axi-radius-sm\\)`))
+    }
+    // The only whole-shorthand radius in the component is the square it
+    // starts from; every other corner is named and tokenised above.
+    const shorthands = [...bodies.matchAll(/(?<![-\w])border-radius:\s*([^;]+)/g)].map((m) => m[1].trim())
+    expect(shorthands).toEqual(['0'])
+  })
+
+  it('moves the hover lift to the wrapper, so neither half can leave the other behind', () => {
+    const wrapper = split().find((r) => r.sel === '.axi-btn-split:where(:hover)')
+    const half = split().find((r) => r.sel === '.axi-btn-split > .axi-btn:where(:hover)')
+    expect(wrapper.body).toMatch(/transform:\s*translate\(-2px, -2px\)/)
+    expect(half.body).toMatch(/transform:\s*none/)
+    // And it must stay below the button section it adjusts: these rules weigh
+    // the same as .axi-btn--primary:hover and win on source order alone.
+    const css = prim()
+    expect(css.indexOf('.axi-btn--primary:hover')).toBeLessThan(css.indexOf('.axi-btn-split'))
+  })
+
+  it('draws the seam of a filled control in the ink that reads on its fill', () => {
+    const seam = split().find((r) => /--primary \+ \.axi-btn/.test(r.sel))
+    expect(seam, 'no filled-tone seam rule found').toBeDefined()
+    // --axi-ink-line is what every other edge is drawn in, and it is opaque
+    // near-black only on the main theme; flat and glass spell it as a light
+    // translucent edge for catching light against a dark surface. On a bright
+    // accent fill a lightener cannot resolve into an edge at all, so the
+    // shared stroke was present and invisible. --axi-accent-ink is the ink the
+    // label is already drawn in, and is near-black on all three.
+    expect(seam.body).toMatch(/border-inline-start-color:\s*var\(--axi-accent-ink\)/)
+    // Either half being filled is enough - the stroke you see is the second
+    // half's border, whichever side the fill is on.
+    expect(seam.sel).toMatch(/\.axi-btn \+ \.axi-btn--primary/)
+    // Physical sides would put the divider on the control's outer edge in RTL.
+    expect(seam.body).not.toMatch(/border-(left|right)-color/)
+  })
+
+  it('clips each half\u2019s shadow at the seam, on both sides and in both directions', () => {
+    const clips = split().filter((r) => /clip-path/.test(r.body))
+    // Four rules: each half in LTR, each half again under :dir(rtl). inset()
+    // is physical, so RTL has to restate the pair - inheriting it would clip
+    // the control's outer edges instead of its seam, which is worse than not
+    // clipping at all.
+    expect(clips).toHaveLength(4)
+    expect(clips.filter((r) => /:dir\(rtl\)/.test(r.sel))).toHaveLength(2)
+
+    for (const r of clips) {
+      // Open on three sides, flush on the fourth: the half keeps the drop the
+      // surface gave it everywhere except where a sibling is 8px away. -100%
+      // is the box's own size, so no surface can out-grow the slack.
+      const m = r.body.match(/clip-path:\s*inset\(([^)]+)\)/)
+      const sides = m[1].trim().split(/\s+/)
+      expect(sides, r.sel).toHaveLength(4)
+      expect(sides.filter((v) => v === '0'), r.sel).toHaveLength(1)
+      expect(sides.filter((v) => v === '-100%'), r.sel).toHaveLength(3)
+      // Never while focused: the ring is an outline 2px outside the box, and a
+      // clip flush with that edge would cut it in half on the seam side.
+      expect(r.sel, r.sel).toMatch(/:not\(:focus-visible\)/)
+    }
+
+    // The two halves clip opposite edges - left and right, never the same one.
+    const ltr = clips.filter((r) => !/:dir\(rtl\)/.test(r.sel)).map((r) => r.body.match(/inset\(([^)]+)\)/)[1].trim())
+    expect(new Set(ltr).size).toBe(2)
+  })
+})
