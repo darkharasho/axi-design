@@ -727,6 +727,98 @@ button.axi-panel--tile:hover,
 .axi-btn--xs   { --axi-btn-pad: 5px 9px;  --axi-btn-size: 11px; }
 .axi-btn--icon { --axi-btn-pad: 7px; }
 
+/* ---------- split button ---------- */
+/* One control with two targets: a primary action and a disclosure half that
+   opens a menu of its variants. The name is `.axi-btn-split` and not
+   `.axi-split` because that one is already the split *pane* in
+   src/layout.css - a pane and a button are not the same noun, and the
+   language only gets one of them per name.
+
+   The whole component exists because a consumer hand-wrote it and got the
+   radius wrong, which was not carelessness: a split button is the one place
+   where a corner is sometimes square and sometimes the surface's, so it is
+   the one place where a literal gets written. That consumer's control was
+   rounded at 10px on all three surfaces, correct on glass and wrong on the
+   other two, while every ordinary .axi-btn beside it followed
+   --axi-radius-sm. A joined control is not hard, it is just impossible to
+   get right once per app.
+
+   The requirement the consumer stated is the one the rules below are built
+   to: it has to feel like one button on all styles. Not two buttons placed
+   carefully - one control that happens to have a seam. Everything here
+   follows from that, and the three surfaces disagree about enough
+   (--axi-border-control is 3px on axi and 1px on flat and glass,
+   --axi-shadow-control is a hard offset block on axi and a soft drop
+   elsewhere) that "looks joined" had to be true by construction rather than
+   by tuning. */
+.axi-btn-split {
+  position: relative;
+  display: inline-flex;
+  /* stretch, not center: the two halves hold different content - a word and a
+     glyph - so content-sized heights drift apart by a pixel or two and the
+     seam stops being straight. */
+  align-items: stretch;
+  /* The wrapper moves and the halves do not, which is what makes the hover a
+     property of the control rather than of whichever half the cursor found. */
+  transition: transform .1s;
+}
+/* Corners: square at the seam, the surface's radius on the outside. Logical
+   properties rather than the `border-radius: 0 10px 10px 0` shorthand, so an
+   RTL consumer gets a control joined on the correct side without restating
+   anything - and so that each corner is set exactly once. The shorthand is
+   how the hand-written version ended up needing a comment explaining that
+   the rule above it had already squared both right corners. */
+.axi-btn-split > .axi-btn { border-radius: 0; }
+.axi-btn-split > .axi-btn:first-child {
+  border-start-start-radius: var(--axi-radius-sm);
+  border-end-start-radius: var(--axi-radius-sm);
+}
+.axi-btn-split > .axi-btn:last-child {
+  border-start-end-radius: var(--axi-radius-sm);
+  border-end-end-radius: var(--axi-radius-sm);
+}
+/* The seam is one shared edge, not a gap and not a drawn line. Pulling the
+   second half back by the control border width lands its left border exactly
+   on the first half's right border, so the two become a single stroke at the
+   language's own weight, in the language's own colour, on every surface and
+   under every ink. A 1px margin instead - which is what the hand-written
+   version used - puts two borders and a sliver of background between the
+   halves: 7px of edge on the default surface where the border is 3px, which
+   is why that control read as two buttons touching.
+
+   Negative margin and not `border-inline-start: 0`, because dropping the
+   border would make the toggle one border-width shorter than its sibling and
+   the stretch above would have to fight it. */
+.axi-btn-split > .axi-btn + .axi-btn {
+  margin-inline-start: calc(var(--axi-border-control) * -1);
+}
+/* Hover is the whole control's. The generic .axi-btn hover translates the
+   button and deepens its block; left alone, that moves one half of a joined
+   control two pixels up and away from the other and tears the seam open -
+   the most visible way this component could fail at being one button.
+   So: the translate moves to the wrapper, and both halves take the hover
+   block whichever one the cursor is over.
+
+   What stays per-half is colour. The generic hover's dim-to-plain brighten
+   still lands only on the half under the cursor, which is the whole reason a
+   split button has two targets - the control lifts as one, and the reader can
+   still see which action they are about to take.
+
+   Specificity: these two rules weigh the same as `.axi-btn--primary:hover`
+   and win on source order, which is the ordering this section depends on -
+   it must stay below the button section it adjusts. The `:where()` keeps the
+   wrapper's hover from spending a point, so the ink layer still out-ranks
+   everything here, per rule 6. */
+.axi-btn-split:where(:hover) { transform: translate(-2px, -2px); }
+.axi-btn-split > .axi-btn:where(:hover) { transform: none; }
+.axi-btn-split:where(:hover) > .axi-btn { box-shadow: var(--axi-shadow-control); }
+.axi-btn-split:where(:hover) > .axi-btn--primary { box-shadow: var(--axi-shadow-control-hover); }
+/* The disclosure half. Vertical padding is zero because the stretch above
+   already gave it the label half's height, and 20px sides around a single
+   chevron is the wide-rectangle failure --icon exists to fix. The gap is for
+   the consumers that put a status dot beside the chevron. */
+.axi-btn-split__toggle { --axi-btn-pad: 0 11px; gap: 5px; }
+
 /* ---------- pill ---------- */
 /* A filter toggle. Its pressed state fills with whatever colour the consumer
    has put on it, so the control reads as the thing it filters to rather than

@@ -110,6 +110,70 @@ told to divide the space, and the label's ellipsis is unreachable.`,
     ],
   },
   {
+    id: 'btn-split',
+    name: 'Split button',
+    layer: 'primitives',
+    classes: [
+      '.axi-btn-split',
+      '.axi-btn-split__toggle',
+    ],
+    summary: 'A primary action and a disclosure half joined on one shared edge. It lifts as a single control and brightens only the half under the cursor.',
+    rules: [4, 6],
+    knobs: [],
+    aliases: ['disclosure', 'dropdown', 'caret'],
+    notes: `A split button is the one control in the language where a corner is
+sometimes square and sometimes the surface's, so it is the one control where a
+consumer writing it by hand will write a literal. The one that prompted this
+component was rounded at 10px on all three surfaces - right on glass, wrong on
+flat, and visibly wrong on the default surface, where every ordinary
+\`.axi-btn\` beside it was square. Joining two buttons is not difficult; it is
+just not something to get right once per app.
+
+The requirement is that it feel like one button on every surface, and the two
+rules that carry it are both about refusing to treat the halves separately.
+The seam is a single shared edge: the second half is pulled back by
+\`--axi-border-control\` so its border lands exactly on its sibling's, making
+one stroke at the language's own weight and colour. A margin instead - even a
+1px one - puts two borders and a sliver of background between the halves,
+which on the default surface is 7px of edge and reads unmistakably as two
+buttons touching.
+
+Hover belongs to the control. The generic button hover would translate
+whichever half the cursor found and tear the seam open two pixels wide, so the
+translate moves to the wrapper and both halves take the hover block together.
+Colour is the one thing that stays per-half - the brighten still lands only
+under the cursor, which is the entire reason the control has two targets.
+
+The halves are ordinary \`.axi-btn\`s, so every tone and ink works unchanged:
+a consumer whose action turns destructive swaps \`--primary\` for
+\`.axi-ink-danger\` on both and the seam follows. The wrapper is
+\`position: relative\` so the menu the disclosure half opens can anchor to the
+control rather than to the page.`,
+    examples: [
+      {
+        title: 'A primary action and its variants',
+        note: 'The halves share one edge, so the control lifts as a unit',
+        html: `<div class="axi-btn-split">
+  <button class="axi-btn axi-btn--primary">Go live</button>
+  <button class="axi-btn axi-btn--primary axi-btn-split__toggle" aria-label="More stream actions" aria-haspopup="menu" aria-expanded="false">
+    <svg class="axi-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+</div>`,
+      },
+      {
+        title: 'The same control once the action turns destructive',
+        note: 'An ink on both halves; the shared edge follows it',
+        html: `<div class="axi-btn-split">
+  <button class="axi-btn axi-ink-danger">End stream</button>
+  <button class="axi-btn axi-ink-danger axi-btn-split__toggle" aria-label="More stream actions" aria-haspopup="menu" aria-expanded="false">
+    <span class="axi-diamond axi-diamond--danger"></span>
+    <svg class="axi-icon" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2"><path d="m18 15-6-6-6 6"/></svg>
+  </button>
+</div>`,
+      },
+    ],
+  },
+  {
     id: 'chip',
     name: 'Chip',
     layer: 'primitives',

@@ -2296,3 +2296,53 @@ describe('a status cap is an attribute on the head of the thing it judges', () =
     expect(css.indexOf('[data-status="ok"]')).toBeLessThan(css.indexOf('[aria-current]'))
   })
 })
+
+// The split button's whole claim is that it reads as one control on all three
+// surfaces, and the surfaces disagree about every number involved:
+// --axi-border-control is 3px on axi and 1px on flat and glass,
+// --axi-radius-sm is 0, 4px and 10px. So "joined" cannot be a value anyone
+// tuned - it has to be the same expression as the border it is cancelling,
+// and the corners have to be the surface's. The consumer that prompted this
+// component had written a 1px seam and a 10px corner, which was right on
+// exactly one of the three.
+describe('the split button is joined by construction', () => {
+  const prim = () => stripComments(read('primitives.css'))
+  const rulesIn = (css) => [...css.matchAll(/([^{}]+)\{([^{}]*)\}/g)].map(([, sel, body]) => ({ sel: sel.trim().replace(/\s+/g, ' '), body }))
+  const split = () => rulesIn(prim()).filter((r) => /\.axi-btn-split/.test(r.sel))
+
+  it('cancels exactly the border it shares, rather than spacing the halves apart', () => {
+    const seam = split().find((r) => /\.axi-btn \+ \.axi-btn/.test(r.sel))
+    expect(seam, 'no seam rule found').toBeDefined()
+    // Negative, and equal to the border width on whatever surface is active:
+    // the second half's border lands on its sibling's and the two become one
+    // stroke. Any positive margin leaves two borders and a sliver of
+    // background between them - 7px of edge on the default surface.
+    expect(seam.body).toMatch(/margin-inline-start:\s*calc\(var\(--axi-border-control\) \* -1\)/)
+    expect(split().map((r) => r.body).join('')).not.toMatch(/margin[^:]*:\s*\d/)
+  })
+
+  it('takes its outer corners from the surface and squares the inner ones', () => {
+    const bodies = split().map((r) => r.body).join('')
+    // Four logical corners, each set once, each from the token. The shorthand
+    // is what made the hand-written version need a comment saying the rule
+    // above it had already squared both right corners.
+    for (const corner of ['start-start', 'end-start', 'start-end', 'end-end']) {
+      expect(bodies, corner).toMatch(new RegExp(`border-${corner}-radius:\\s*var\\(--axi-radius-sm\\)`))
+    }
+    // The only whole-shorthand radius in the component is the square it
+    // starts from; every other corner is named and tokenised above.
+    const shorthands = [...bodies.matchAll(/(?<![-\w])border-radius:\s*([^;]+)/g)].map((m) => m[1].trim())
+    expect(shorthands).toEqual(['0'])
+  })
+
+  it('moves the hover lift to the wrapper, so neither half can leave the other behind', () => {
+    const wrapper = split().find((r) => r.sel === '.axi-btn-split:where(:hover)')
+    const half = split().find((r) => r.sel === '.axi-btn-split > .axi-btn:where(:hover)')
+    expect(wrapper.body).toMatch(/transform:\s*translate\(-2px, -2px\)/)
+    expect(half.body).toMatch(/transform:\s*none/)
+    // And it must stay below the button section it adjusts: these rules weigh
+    // the same as .axi-btn--primary:hover and win on source order alone.
+    const css = prim()
+    expect(css.indexOf('.axi-btn--primary:hover')).toBeLessThan(css.indexOf('.axi-btn-split'))
+  })
+})
