@@ -13,7 +13,7 @@
   --axi-surface-filter: blur(18px) saturate(140%);
   --axi-ink-line: rgba(180, 200, 255, .16);
   --axi-rule: rgba(180, 200, 255, .14);
-  --axi-ground-deep: #0c0e12;
+  --axi-ground-deep: rgba(12, 14, 18, .72);
   --axi-well-fill: rgba(6, 8, 14, .32);
   --axi-accent-ink: #0c0e12;
   --axi-ink-on-fill: #0c0e12;
@@ -21,6 +21,10 @@
   --axi-text-dim: #b3bdd0;
   --axi-text-faint: #7f8aa0;
   --axi-scrim: rgba(4, 6, 12, .66);
+  --axi-offset-panel: 0;
+  --axi-offset-control: 0;
+  --axi-offset-panel-hover: 0;
+  --axi-offset-control-hover: 0;
   --axi-shadow-panel: 0 18px 44px rgba(0, 0, 0, .55), inset 0 1px 0 rgba(255, 255, 255, .14);
   --axi-shadow-control: 0 6px 16px rgba(0, 0, 0, .45), inset 0 1px 0 rgba(255, 255, 255, .12);
   --axi-shadow-panel-hover: 0 26px 60px rgba(0, 0, 0, .6), inset 0 1px 0 rgba(255, 255, 255, .2);

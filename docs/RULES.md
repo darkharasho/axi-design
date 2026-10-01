@@ -830,10 +830,19 @@ What is **not** a theme's to restate, and each for its own reason:
   companions are not on this list: `--axi-accent-ink` and `--axi-ink-on-fill`
   are the colour a word is written in when it sits on a fill, and a theme that
   lightens the outline has to be able to hold them dark.
-- **The offset scale.** `--axi-offset-*` is what the main theme's block is
-  composed *from*. A theme restates the composed `--axi-shadow-*` wholesale or
-  leaves it; retuning the offsets underneath would leave the two spellings of
-  "the block" disagreeing.
+- **The offset scale, except to switch it off.** `--axi-offset-*` is what the
+  main theme's block is composed *from*, and retuning it underneath a restated
+  `--axi-shadow-*` would leave the two spellings of "the block" disagreeing.
+  A theme may set the offsets to `0` and may do nothing else to them. Zero is
+  not a retune — it is the same sentence the restated `--axi-shadow-*` is
+  already saying. This started out as a flat prohibition and shipped a bug:
+  the tokens are public, consumers compose blocks from them directly rather
+  than asking for `--axi-shadow-panel`, and a theme whose relief is a soft drop
+  was leaving a 6px near-black step standing behind every one of those cards.
+  On a square corner it read as a stray backdrop; on a rounded one it read as
+  broken rounding. A consumer still composing from the offsets now gets no
+  relief on a theme rather than the wrong one, which is a visible prompt to ask
+  for the composed block instead.
 - **The measure.** `--axi-page`, `--axi-gutter`. Where the text wraps is not a
   look, and moving it would reflow every page rather than repaint it.
 - **The type.** `--axi-sans`, `--axi-mono`, `--axi-t-*`, `--axi-ls-*`. The same

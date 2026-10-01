@@ -17,6 +17,10 @@
   --axi-text-dim: #8b929e;
   --axi-text-faint: #5d6577;
   --axi-scrim: rgba(4, 5, 8, .72);
+  --axi-offset-panel: 0;
+  --axi-offset-control: 0;
+  --axi-offset-panel-hover: 0;
+  --axi-offset-control-hover: 0;
   --axi-shadow-panel: 0 2px 8px rgba(0, 0, 0, .4), 0 1px 3px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .05);
   --axi-shadow-control: 0 1px 4px rgba(0, 0, 0, .3), inset 0 1px 0 rgba(255, 255, 255, .045);
   --axi-shadow-panel-hover: 0 6px 18px rgba(0, 0, 0, .5), 0 2px 5px rgba(0, 0, 0, .35), inset 0 1px 0 rgba(255, 255, 255, .07);
