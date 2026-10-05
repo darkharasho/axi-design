@@ -1001,6 +1001,9 @@ button.axi-panel--tile:hover,
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);
   text-transform: uppercase;
+  /* A chip is one fact: as a flex item in a tight strip it would otherwise
+     shrink to its widest word and a multi-word label breaks in two. */
+  white-space: nowrap;
 }
 .axi-chip--ok { background: var(--axi-ok); color: var(--axi-ink-on-fill); }
 .axi-chip--warn { background: var(--axi-warn); color: var(--axi-ink-on-fill); }
