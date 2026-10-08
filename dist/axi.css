@@ -1333,7 +1333,11 @@ button.axi-panel--tile:hover,
     margin-top: 9px; padding: 6px;
     border: var(--axi-border-panel) solid var(--axi-ink-line);
     border-radius: var(--axi-radius);
-    background: var(--axi-surface-raised);
+    /* Float, for the reason .axi-menu__pop is: options scroll past behind it,
+       and on a platform without backdrop-filter - Electron on Linux, for one -
+       a translucent fill is all that is left, and the list reads as text over
+       text. */
+    background: var(--axi-surface-float);
     backdrop-filter: var(--axi-surface-filter);
     box-shadow: var(--axi-shadow-panel);
   }
@@ -1349,8 +1353,8 @@ button.axi-panel--tile:hover,
     text-transform: uppercase;
   }
   /* A row under the cursor sinks rather than lighting up, so the hover is the
-     level's fill - and this popover is filled with --axi-surface-raised, which
-     a theme may take translucent, so an opaque row here is the black patch
+     level's fill - and this popover is filled with --axi-surface-float, which
+     a theme may still tint, so an opaque row here is the black patch
      --axi-well-fill exists to prevent. Same for the picker's rows below. */
   .axi-select :where(option:hover, option:focus) {
     background: var(--axi-well-fill); color: var(--axi-text);
@@ -3782,24 +3786,72 @@ textarea.axi-input {
    it was working hardest. tests/motion.test.mjs enforces it. */
 
 /* ---------- spinner ---------- */
-/* The family motif, turning. A square rotated 45deg is the diamond, so the
-   loop runs 45deg -> 405deg: one full turn that begins and ends on the
-   motif rather than on a square.
-   That start and end also make it correct under reduced motion for free.
-   base.css only shortens the animation to one .01ms iteration; it never sets
-   animation-fill-mode, so once that instant run finishes the element reverts
-   to its specified transform: rotate(45deg) - the motif at rest, and visually
-   identical to where the loop begins. */
-@keyframes axi-spin { from { transform: rotate(45deg); } to { transform: rotate(405deg); } }
+/* Three bars cut into a well, one of them lit, and the light steps along
+   them. It came back from axibridge, which drew it for a strip that sat
+   beside the work it reported on; the turning diamond it replaced read as a
+   rough outline at the 12px a caller actually uses, because a 1px stroke
+   rotated 45deg lands on half pixels for most of the turn.
+
+   Rule 11 is why it is built this way rather than as three bars taking turns
+   to change colour. That would animate background-color, which runs on the
+   main thread - the thread that is busy while this is on screen. So the three
+   unlit bars are static paint on the well, and the lit bar is one ::after
+   block moving across them by transform, which the compositor keeps running
+   through a blocked render. steps(3, end) over three pitches lands it on each
+   bar and wraps; jump-none would spread three stops over two pitches and miss.
+
+   Every length is rounded to a whole pixel off --axi-spinner-size, so the bars
+   stay crisp at any size rather than smearing across a pixel boundary. The
+   box is as tall as the knob says and as wide as three bars need.
+
+   Under reduced motion base.css shortens the run to one .01ms iteration and
+   never sets animation-fill-mode, so the block reverts to its specified
+   position: lit on the first bar, standing still. */
+@keyframes axi-spin { to { transform: translateX(calc(var(--_pitch) * 3)); } }
 .axi-spinner {
+  --_s: var(--axi-spinner-size, 20px);
+  --_bar: max(2px, round(calc(var(--_s) * .16), 1px));
+  --_gap: max(1px, round(calc(var(--_s) * .1), 1px));
+  --_pitch: calc(var(--_bar) + var(--_gap));
+  /* The unlit bars are drawn in the faint ink, not the rule: a rule is meant
+     to all but disappear, and glass takes it to .14 alpha, where the three
+     bars vanish and the lit one reads as a lone mark twitching sideways. */
+  --_off: color-mix(in srgb, var(--axi-text-faint) 40%, transparent);
+  position: relative;
   display: inline-block;
   flex: none;
-  width: var(--axi-spinner-size, 20px);
-  height: var(--axi-spinner-size, 20px);
-  border: var(--axi-border-control) solid var(--axi-accent);
-  border-radius: var(--axi-radius-sm);
-  transform: rotate(45deg);
-  animation: axi-spin 1.1s linear infinite;
+  box-sizing: border-box;
+  vertical-align: middle;
+  width: calc(var(--_bar) * 3 + var(--_gap) * 4 + var(--axi-border-hairline) * 2);
+  height: var(--_s);
+  padding: var(--_gap);
+  border: var(--axi-border-hairline) solid var(--axi-well-line);
+  /* Capped at the padding plus the border, so the inner corner never reaches
+     the bars - at 12px glass's 4px corner would shave the end bar. */
+  border-radius: min(var(--axi-radius-xs), calc(var(--_gap) + var(--axi-border-hairline)));
+  background-color: var(--axi-well-fill);
+  background-image:
+    linear-gradient(var(--_off), var(--_off)),
+    linear-gradient(var(--_off), var(--_off)),
+    linear-gradient(var(--_off), var(--_off));
+  background-origin: content-box;
+  background-clip: content-box;
+  background-repeat: no-repeat;
+  background-size: var(--_bar) 100%;
+  background-position: 0 0, var(--_pitch) 0, calc(var(--_pitch) * 2) 0;
+}
+.axi-spinner::after {
+  content: '';
+  position: absolute;
+  top: var(--_gap);
+  bottom: var(--_gap);
+  left: var(--_gap);
+  width: var(--_bar);
+  background: var(--axi-accent);
+  /* Ask for the layer up front rather than at the first frame, which is
+     roughly when the thread stops being free to grant it. */
+  will-change: transform;
+  animation: axi-spin .9s steps(3, end) infinite;
 }
 
 /* ---------- indeterminate meter ---------- */
