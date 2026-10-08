@@ -929,7 +929,11 @@ button.axi-panel--tile:hover,
     margin-top: 9px; padding: 6px;
     border: var(--axi-border-panel) solid var(--axi-ink-line);
     border-radius: var(--axi-radius);
-    background: var(--axi-surface-raised);
+    /* Float, for the reason .axi-menu__pop is: options scroll past behind it,
+       and on a platform without backdrop-filter - Electron on Linux, for one -
+       a translucent fill is all that is left, and the list reads as text over
+       text. */
+    background: var(--axi-surface-float);
     backdrop-filter: var(--axi-surface-filter);
     box-shadow: var(--axi-shadow-panel);
   }
@@ -945,8 +949,8 @@ button.axi-panel--tile:hover,
     text-transform: uppercase;
   }
   /* A row under the cursor sinks rather than lighting up, so the hover is the
-     level's fill - and this popover is filled with --axi-surface-raised, which
-     a theme may take translucent, so an opaque row here is the black patch
+     level's fill - and this popover is filled with --axi-surface-float, which
+     a theme may still tint, so an opaque row here is the black patch
      --axi-well-fill exists to prevent. Same for the picker's rows below. */
   .axi-select :where(option:hover, option:focus) {
     background: var(--axi-well-fill); color: var(--axi-text);
