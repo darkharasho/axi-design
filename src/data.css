@@ -83,7 +83,10 @@
    every ink class a consumer could put on a cell, so the column that carries
    the measured value was silently still the dim one. */
 .axi-table :where(thead th) {
-  padding: 0 10px 10px;
+  /* Padded top and bottom alike. A head with no top padding only reads right
+     with nothing above it; under --sticky it is a surface of its own, and a
+     label pressed against that surface's top edge looks clipped. */
+  padding: 10px 10px 11px;
   font: var(--axi-t-micro);
   letter-spacing: var(--axi-ls-micro);
   text-transform: uppercase;
@@ -291,7 +294,7 @@
 /* Twenty columns do not get a leaderboard's padding. The type steps down with
    them; everything else about the table is unchanged, which is the point of
    its being a modifier rather than a second table. */
-.axi-table--dense thead th { padding: 0 7px 6px; }
+.axi-table--dense thead th { padding: 8px 7px 9px; }
 .axi-table--dense :is(td, tbody th) { padding: 5px 7px; font: var(--axi-t-micro); }
 /* Proportional columns, for a table inside a pane rather than a page.
 
