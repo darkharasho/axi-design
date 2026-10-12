@@ -102,6 +102,61 @@
   .axi-meter--busy .axi-meter__fill { transform: none; }
 }
 
+/* ---------- skeleton ---------- */
+/* A placeholder bar standing in for a piece of text or a figure while the
+   data behind it loads. It goes inside the real element it stands in for, so
+   its height is a fraction of that element's font and the finished text lands
+   on the same line box with nothing moving. --axi-skeleton-w sets the length:
+   a bar is a guess at the length of what is coming, not a measurement.
+
+   The fill is the reading ink mixed toward transparent - a neutral, which rule
+   2 leaves free, the same way the spinner draws its unlit bars. The sweep is
+   rule 11's: a band of the same neutral travelling across by transform, which
+   the compositor keeps running while the load holds the main thread. It is
+   flat rather than feathered because rule 1 has no exception for a soft
+   transition; the indeterminate meter travels a hard-edged fill for the same
+   reason. Under reduced motion the band is not drawn at all - a still bar
+   already says "not here yet". */
+@keyframes axi-skeleton-sweep { to { transform: translateX(250%); } }
+.axi-skeleton {
+  position: relative;
+  overflow: hidden;
+  display: inline-block;
+  vertical-align: middle;
+  height: .62em;
+  width: var(--axi-skeleton-w, 100%);
+  max-width: 100%;
+  border-radius: var(--axi-radius-xs);
+  /* Held in custom properties, not written into background: the colour scan
+     reads `transparent` in a colour property as a literal. */
+  --_fill: color-mix(in srgb, var(--axi-text) 14%, transparent);
+  --_band: color-mix(in srgb, var(--axi-text) 10%, transparent);
+  background: var(--_fill);
+}
+/* 40% wide, from fully left of the bar (-100% of itself) to fully right of it
+   (250% of itself is the bar's whole width). */
+.axi-skeleton::after {
+  content: '';
+  position: absolute;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  width: 40%;
+  background: var(--_band);
+  transform: translateX(-100%);
+  will-change: transform;
+  animation: axi-skeleton-sweep 1.6s ease-in-out infinite;
+}
+/* A figure is set larger than its label, so its bar is taller. */
+.axi-skeleton--figure { height: .78em; }
+/* A chip's own box, for a cell that will hold one. */
+.axi-skeleton--chip { height: 1.4em; width: var(--axi-skeleton-w, 56px); }
+/* An icon or avatar tile: a fixed square, not a line of text. */
+.axi-skeleton--tile { flex: none; width: 22px; height: 22px; }
+@media (prefers-reduced-motion: reduce) {
+  .axi-skeleton::after { display: none; }
+}
+
 /* ---------- notice status ---------- */
 /* Rule 5: the icon is the part of a notice that asserts something, so the
    status lives there. The body text stays in the reading ink at every status

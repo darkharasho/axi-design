@@ -26,3 +26,37 @@ describe('the busy meter under reduced motion', () => {
     expect(frames.slice(0, frames.indexOf('}\n}'))).not.toMatch(/width:/)
   })
 })
+
+describe('the skeleton', () => {
+  // The rule block for one selector, from its opening brace to its close.
+  const block = (sel) => {
+    const start = css.indexOf(`${sel} {`)
+    expect(start, `${sel} is not defined`).toBeGreaterThan(-1)
+    return css.slice(start, css.indexOf('}', start) + 1)
+  }
+
+  it('takes its height from the font of the element it sits in', () => {
+    expect(block('.axi-skeleton')).toMatch(/height:\s*\.62em/)
+    expect(block('.axi-skeleton')).toMatch(/width:\s*var\(--axi-skeleton-w,\s*100%\)/)
+    expect(block('.axi-skeleton--figure')).toMatch(/height:\s*\.78em/)
+  })
+
+  it('fills with a neutral, never a saturated ink', () => {
+    expect(block('.axi-skeleton')).toMatch(/color-mix\(in srgb,\s*var\(--axi-text\)/)
+  })
+
+  // Rule 1 has no exception for a soft transition, so the sweep is a flat
+  // band travelling by transform - the indeterminate meter's shape.
+  it('sweeps a flat band, not a gradient', () => {
+    const after = block('.axi-skeleton::after')
+    expect(after).not.toMatch(/gradient\(/)
+    expect(after).toMatch(/animation:\s*axi-skeleton-sweep/)
+    const frames = css.slice(css.indexOf('@keyframes axi-skeleton-sweep'))
+    expect(frames.slice(0, frames.indexOf('}'))).toMatch(/transform:/)
+  })
+
+  it('draws no sweep under reduced motion', () => {
+    const media = css.slice(css.lastIndexOf('@media (prefers-reduced-motion: reduce)'))
+    expect(media).toMatch(/\.axi-skeleton::after\s*\{\s*display:\s*none;/)
+  })
+})

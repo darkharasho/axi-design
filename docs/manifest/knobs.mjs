@@ -342,6 +342,12 @@ export const KNOBS = [
     example: '<span class="axi-spinner" style="--axi-spinner-size: 34px"></span>',
   },
   {
+    name: '--axi-skeleton-w',
+    sets: 'the length of an `.axi-skeleton` bar',
+    fallback: '`100%` (`56px` on `.axi-skeleton--chip`)',
+    example: '<span class="axi-skeleton" style="--axi-skeleton-w: 96px"></span>',
+  },
+  {
     name: '--axi-icon-size',
     sets: "an `.axi-icon`'s box, both dimensions",
     fallback: '`1.25em`',

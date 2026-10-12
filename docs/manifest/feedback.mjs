@@ -74,4 +74,39 @@ telling you how far along it is.`,
       },
     ],
   },
+  {
+    id: 'skeleton',
+    name: 'Skeleton',
+    layer: 'feedback',
+    classes: ['.axi-skeleton', '.axi-skeleton--figure', '.axi-skeleton--chip', '.axi-skeleton--tile'],
+    summary: 'A placeholder bar for text or a figure that is still loading. It sits inside the real element, so the finished content lands where the bar was.',
+    rules: [1, 2, 11],
+    knobs: ['--axi-skeleton-w'],
+    aliases: ['placeholder', 'loading', 'shimmer', 'ghost'],
+    notes: `Put the bar inside the element it stands in for - a \`.axi-stat__n\`,
+a table cell, a row name - never beside it. Its height is a fraction of that
+element's font, so when the data lands the text takes the same line box and
+nothing below it moves. Keep the surrounding markup real as well: the real
+table head, the real stat labels. A skeleton is the finished view with its
+data missing, not a drawing of one.
+
+Set the length with \`--axi-skeleton-w\`. Vary it from a fixed list rather than
+at random, so a re-render draws the same skeleton instead of a twitching one.
+
+The sweep is a flat band moved by \`transform\` (rule 11), not a feathered
+gradient (rule 1). Under \`prefers-reduced-motion\` the band is not drawn and
+the bar holds still. Mark the region that holds skeletons with
+\`aria-busy="true"\` and a label naming what is loading; the bars themselves
+say nothing to a screen reader.`,
+    examples: [
+      {
+        title: 'Each variant',
+        html: `<div class="axi-row"><span class="axi-skeleton" style="--axi-skeleton-w: 120px"></span><span class="axi-skeleton axi-skeleton--figure" style="--axi-skeleton-w: 56px"></span><span class="axi-skeleton axi-skeleton--chip"></span><span class="axi-skeleton axi-skeleton--tile"></span></div>`,
+      },
+      {
+        title: 'Inside a stat',
+        html: `<div class="axi-stat"><b class="axi-stat__n"><span class="axi-skeleton axi-skeleton--figure" style="--axi-skeleton-w: 56px"></span></b><span class="axi-stat__k">Members</span></div>`,
+      },
+    ],
+  },
 ]

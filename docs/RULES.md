@@ -542,6 +542,12 @@ So an indicator that reports on work may animate only `transform` and
 that is about honesty rather than composition, and it is not negotiable for
 anything that claims to show liveness.
 
+A loading skeleton is an indicator of work too, and it is held to the same
+line. `.axi-skeleton`'s sweep is a band moved by `transform`; the bar under it
+is static paint. The band is flat rather than feathered, because rule 1's
+exceptions are gradients that draw a shape with hard stops, never a soft
+transition. Under `prefers-reduced-motion` the band is not drawn at all.
+
 Motion elsewhere is still rationed by rule 4.
 
 ## 12. An icon is drawn in the language's angles, at control weight

@@ -331,6 +331,44 @@
     </div>
   </section>
 
+  <section class="docs-section" id="feedback">
+    <h2>Feedback</h2>
+    <p>Rule 11. A skeleton stands in for content that is still loading. Each bar sits inside the real element it replaces, so the finished text lands on the same line and nothing moves.</p>
+
+    <div class="axi-row" style="margin-bottom: 16px;">
+      <span class="axi-skeleton" style="--axi-skeleton-w: 120px"></span>
+      <span class="axi-skeleton axi-skeleton--figure" style="--axi-skeleton-w: 56px"></span>
+      <span class="axi-skeleton axi-skeleton--chip"></span>
+      <span class="axi-skeleton axi-skeleton--tile"></span>
+    </div>
+
+    <div class="axi-grid" style="--axi-grid-min: 150px; margin-bottom: 16px;" aria-busy="true" aria-label="Loading stats…">
+      <div class="axi-stat"><b class="axi-stat__n"><span class="axi-skeleton axi-skeleton--figure" style="--axi-skeleton-w: 48px"></span></b><span class="axi-stat__k">Fights</span></div>
+      <div class="axi-stat"><b class="axi-stat__n"><span class="axi-skeleton axi-skeleton--figure" style="--axi-skeleton-w: 36px"></span></b><span class="axi-stat__k">Won</span></div>
+      <div class="axi-stat"><b class="axi-stat__n"><span class="axi-skeleton axi-skeleton--figure" style="--axi-skeleton-w: 36px"></span></b><span class="axi-stat__k">Lost</span></div>
+    </div>
+
+    <div class="axi-panel" style="--axi-panel-pad: 18px; margin-bottom: 16px;" aria-busy="true" aria-label="Loading damage…">
+      <p class="axi-eyebrow">Top damage</p>
+      <table class="axi-table">
+        <thead>
+          <tr><th>Player</th><th>Damage</th><th>Down contrib.</th><th>Share</th></tr>
+        </thead>
+        <tbody>
+          <tr><td><span class="axi-table__who"><span class="axi-skeleton axi-skeleton--tile"></span><span class="axi-skeleton" style="--axi-skeleton-w: 118px"></span></span></td><td class="axi-table__num"><span class="axi-skeleton" style="--axi-skeleton-w: 64px"></span></td><td><span class="axi-skeleton" style="--axi-skeleton-w: 22px"></span></td><td><span class="axi-skeleton" style="--axi-skeleton-w: 36px"></span></td></tr>
+          <tr><td><span class="axi-table__who"><span class="axi-skeleton axi-skeleton--tile"></span><span class="axi-skeleton" style="--axi-skeleton-w: 86px"></span></span></td><td class="axi-table__num"><span class="axi-skeleton" style="--axi-skeleton-w: 64px"></span></td><td><span class="axi-skeleton" style="--axi-skeleton-w: 22px"></span></td><td><span class="axi-skeleton" style="--axi-skeleton-w: 36px"></span></td></tr>
+          <tr><td><span class="axi-table__who"><span class="axi-skeleton axi-skeleton--tile"></span><span class="axi-skeleton" style="--axi-skeleton-w: 134px"></span></span></td><td class="axi-table__num"><span class="axi-skeleton" style="--axi-skeleton-w: 64px"></span></td><td><span class="axi-skeleton" style="--axi-skeleton-w: 22px"></span></td><td><span class="axi-skeleton" style="--axi-skeleton-w: 36px"></span></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="axi-panel" style="--axi-panel-pad: 12px;" aria-busy="true" aria-label="Loading list…">
+      <div class="axi-row" style="margin-bottom: 8px;"><span class="axi-skeleton axi-skeleton--tile"></span><span class="axi-skeleton" style="--axi-skeleton-w: 140px"></span></div>
+      <div class="axi-row" style="margin-bottom: 8px;"><span class="axi-skeleton axi-skeleton--tile"></span><span class="axi-skeleton" style="--axi-skeleton-w: 96px"></span></div>
+      <div class="axi-row"><span class="axi-skeleton axi-skeleton--tile"></span><span class="axi-skeleton" style="--axi-skeleton-w: 118px"></span></div>
+    </div>
+  </section>
+
   <section class="docs-section" id="prose">
     <h2>Prose</h2>
     <p>One class on the container; nothing inside carries a class.</p>
